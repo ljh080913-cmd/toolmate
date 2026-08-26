@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주식 물타기 평단가 & 분할매수 계산기 | ToolMate</title>
+  <meta name="description" content="현재 보유 주식의 평단가와 수량, 추가 매수할 주가와 수량을 입력하면 물타기 후 최종 평단가, 총 매수금액, 본전 탈출에 필요한 상승률(%)을 즉시 계산합니다.">
+  <meta name="keywords" content="주식물타기계산기,평단가계산기,물타기계산기,주식분할매수,본전탈출계산기,주식수익률계산기">
+  <link rel="canonical" href="https://toolmate.kr/주식%20물타기%20평단가%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .stock-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #7c2d12 0%, #991b1b 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .main-avg { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #fef08a; margin: 8px 0; }
+    .stock-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .stock-box { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .stock-box .v { font-size: 1.25rem; font-weight: 800; color: #fef08a; font-family: var(--font-mono); }
+    .stock-box .l { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .stock-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="stock-wrap">
+      <div class="page-header">
+        <span class="pill-badge">📉 주식 & 코인 스마트 물타기</span>
+        <h1 class="page-title">주식 물타기 평단가 & 분할매수 계산기</h1>
+        <p class="page-desc">추가 매수(물타기) 시 내 평균 매수단가가 얼마로 내려가는지, 본전까지 필요한 상승률을 0.1초 만에 시뮬레이션합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <!-- 1. 기존 보유 주식 -->
+        <h3 style="font-size:1rem; font-weight:800; margin-bottom:12px; color:var(--danger);">1️⃣ 현재 보유 중인 주식</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">현재 내 평단가 (원)</label>
+            <input type="number" id="curPrice" class="input-field" value="75000" step="100" oninput="calcStock()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">현재 보유 수량 (주)</label>
+            <input type="number" id="curQty" class="input-field" value="100" step="1" oninput="calcStock()">
+          </div>
+        </div>
+
+        <!-- 2. 추가 매수할 주식 -->
+        <h3 style="font-size:1rem; font-weight:800; margin:16px 0 12px; color:var(--primary);">2️⃣ 추가 매수할 주식 (물타기)</h3>
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">추가 매수 단가 (원)</label>
+            <input type="number" id="addPrice" class="input-field" value="60000" step="100" oninput="calcStock()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">추가 매수 수량 (주)</label>
+            <input type="number" id="addQty" class="input-field" value="100" step="1" oninput="calcStock()">
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">물타기 후 최종 평균 매수단가</div>
+          <div class="main-avg" id="finalAvgDisplay">67,500원</div>
+          <div style="font-size:0.9rem; opacity:0.9;" id="escapeRateText">💡 추가 매수가(60,000원) 대비 +12.5% 상승 시 본전 탈출!</div>
+
+          <div class="stock-grid">
+            <div class="stock-box">
+              <div class="v" id="totalQtyText">200주</div>
+              <div class="l">최종 총 보유 수량</div>
+            </div>
+            <div class="stock-box">
+              <div class="v" id="totalInvestText">13,500,000원</div>
+              <div class="l">최종 총 투자 금액</div>
+            </div>
+            <div class="stock-box">
+              <div class="v" id="avgDownPctText">-10.0%</div>
+              <div class="l">평단가 인하 효과</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>성공적인 주식 분할매수와 물타기 원칙</h2>
+        <p>물타기는 평균 매입 단가를 낮추어 반등 시 원금 회수 및 수익 전환 시점을 앞당기는 투자 전략입니다. 하지만 무분별한 물타기는 비중 과다로 이어질 수 있습니다.</p>
+        <ul>
+          <li><strong>비중 관리:</strong> 1회 매수 시 전체 투자금의 10~20% 이내로 분할 진입하는 것이 안전합니다.</li>
+          <li><strong>지지선 확인:</strong> 단순 주가 하락이 아닌 기술적 지지선 및 기업 펀더멘털을 확인 후 분할 매수해야 합니다.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcStock() {
+      const p1 = parseFloat(document.getElementById('curPrice').value) || 0;
+      const q1 = parseFloat(document.getElementById('curQty').value) || 0;
+      const p2 = parseFloat(document.getElementById('addPrice').value) || 0;
+      const q2 = parseFloat(document.getElementById('addQty').value) || 0;
+
+      const totalCost = (p1 * q1) + (p2 * q2);
+      const totalQty = q1 + q2;
+
+      if (totalQty <= 0) return;
+      const finalAvg = Math.round(totalCost / totalQty);
+      
+      const escapeRate = p2 > 0 ? (((finalAvg - p2) / p2) * 100).toFixed(1) : 0;
+      const avgDown = p1 > 0 ? (((finalAvg - p1) / p1) * 100).toFixed(1) : 0;
+
+      document.getElementById('finalAvgDisplay').textContent = finalAvg.toLocaleString() + '원';
+      document.getElementById('escapeRateText').textContent = `💡 추가 매수가(${p2.toLocaleString()}원) 대비 +${escapeRate}% 상승 시 본전 탈출!`;
+      document.getElementById('totalQtyText').textContent = `${totalQty.toLocaleString()}주`;
+      document.getElementById('totalInvestText').textContent = `${Math.round(totalCost).toLocaleString()}원`;
+      document.getElementById('avgDownPctText').textContent = `${avgDown}%`;
+    }
+
+    calcStock();
+  </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 연차 일수 & 미사용 연차수당 계산기 | ToolMate</title>
+  <meta name="description" content="근로기준법 제60조 기준 입사일별 법정 연차 발생 일수와 퇴직 시 지급받는 통상임금 기준 미사용 연차수당을 즉시 계산합니다.">
+  <meta name="keywords" content="연차계산기,연차수당계산기,미사용연차수당,법정연차일수,근로기준법연차,통상임금">
+  <link rel="canonical" href="https://toolmate.kr/연차%20일수%20및%20연차수당%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .annual-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #047857 0%, #065f46 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .result-hero .main-pay { font-size: 3.2rem; font-weight: 900; font-family: var(--font-mono); color: #6ee7b7; margin: 8px 0; }
+    .stat-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .stat-card { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .stat-card .val { font-size: 1.3rem; font-weight: 800; color: #6ee7b7; }
+    .stat-card .lbl { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .stat-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="annual-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🌴 근로기준법 제60조 법정 기준</span>
+        <h1 class="page-title">연차 발생 일수 & 미사용 연차수당 계산기</h1>
+        <p class="page-desc">입사일 기준 내 법정 연차가 몇 개인지, 그리고 쓰지 않고 남은 연차를 돈(연차수당)으로 환산하면 얼마인지 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">📅 입사일</label>
+            <input type="date" id="joinDate" class="input-field" value="2024-01-01" oninput="calcAnnual()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">📅 정산 기준일 (퇴사일 또는 오늘)</label>
+            <input type="date" id="baseDate" class="input-field" oninput="calcAnnual()">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">💰 월 통상임금 (기본급 + 고정수당)</label>
+            <input type="number" id="monthlySalary" class="input-field" value="3000000" step="10000" oninput="calcAnnual()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🏖️ 미사용 잔여 연차 일수</label>
+            <input type="number" id="remainDays" class="input-field" value="5" min="0" step="0.5" oninput="calcAnnual()">
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">예상 미사용 연차수당 (세전)</div>
+          <div class="main-pay" id="totalAllowance">574,162원</div>
+          <div style="font-size:0.9rem; opacity:0.9;" id="summaryText">통상시급: 14,354원 × 8시간 × 5일</div>
+
+          <div class="stat-row">
+            <div class="stat-card">
+              <div class="val" id="tenureText">약 2.5년</div>
+              <div class="lbl">총 근속 기간</div>
+            </div>
+            <div class="stat-card">
+              <div class="val" id="totalLeaveText">15일</div>
+              <div class="lbl">당해 연도 발생 법정 연차</div>
+            </div>
+            <div class="stat-card">
+              <div class="val" id="dailyPayText">114,832원</div>
+              <div class="lbl">1일 통상임금 (8시간 기준)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>근로기준법 연차휴가 발생 기준 (입사 1년 미만 vs 1년 이상)</h2>
+        <p><strong>입사 1년 미만 근로자:</strong> 1개월 개근 시 매월 1일씩 유급휴가가 발생하여 1년간 최대 11일의 연차가 주어집니다.</p>
+        <p><strong>1년 이상 근로자:</strong> 1년간 80% 이상 출근 시 15일이 주어지며, 이후 근속 2년마다 1일씩 가산되어 최대 25일까지 늘어납니다.</p>
+        <h3>미사용 연차수당 계산 공식</h3>
+        <p><strong>연차수당 = 1일 통상임금(통상시급 × 1일 소정근로시간 8h) × 미사용 연차 일수</strong></p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    const today = new Date();
+    document.getElementById('baseDate').value = today.toISOString().split('T')[0];
+
+    function calcAnnual() {
+      const joinStr = document.getElementById('joinDate').value;
+      const baseStr = document.getElementById('baseDate').value;
+      const salary = parseFloat(document.getElementById('monthlySalary').value) || 0;
+      const remain = parseFloat(document.getElementById('remainDays').value) || 0;
+
+      if (!joinStr || !baseStr) return;
+      const join = new Date(joinStr);
+      const base = new Date(baseStr);
+      if (join > base) return;
+
+      const diffDays = Math.floor((base - join) / (1000 * 60 * 60 * 24));
+      const years = Math.floor(diffDays / 365);
+      const months = Math.floor((diffDays % 365) / 30);
+
+      // 법정 연차 계산
+      let leaveDays = 15;
+      if (years < 1) {
+        leaveDays = Math.min(11, months);
+      } else {
+        const extraYears = Math.floor((years - 1) / 2);
+        leaveDays = Math.min(25, 15 + extraYears);
+      }
+
+      // 통상임금 (주 40시간 = 월 209시간 기준)
+      const hourlyPay = salary / 209;
+      const dailyPay = hourlyPay * 8;
+      const totalAllowance = Math.round(dailyPay * remain);
+
+      document.getElementById('totalAllowance').textContent = totalAllowance.toLocaleString() + '원';
+      document.getElementById('summaryText').textContent = `통상시급: ${Math.round(hourlyPay).toLocaleString()}원 × 8시간 × ${remain}일`;
+      document.getElementById('tenureText').textContent = `${years}년 ${months}개월`;
+      document.getElementById('totalLeaveText').textContent = `${leaveDays}일`;
+      document.getElementById('dailyPayText').textContent = `${Math.round(dailyPay).toLocaleString()}원`;
+    }
+
+    calcAnnual();
+  </script>
+</body>
+</html>

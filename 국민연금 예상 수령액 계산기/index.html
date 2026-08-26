@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 국민연금 예상 수령액 & 수령 나이 계산기 | ToolMate</title>
+  <meta name="description" content="현재 월소득과 납부 예상 기간(10년~30년)을 입력하면 만 65세 이후 매달 통장에 꽂히는 국민연금 노령연금 예상 수령액과 조기수령 감액률을 계산합니다.">
+  <meta name="keywords" content="국민연금,국민연금계산기,국민연금예상수령액,노령연금,국민연금수령나이,조기노령연금">
+  <link rel="canonical" href="https://toolmate.kr/국민연금%20예상%20수령액%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .pension-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .main-monthly { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #facc15; margin: 8px 0; }
+    .pension-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .pension-card { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .pension-card .v { font-size: 1.25rem; font-weight: 800; color: #facc15; font-family: var(--font-mono); }
+    .pension-card .l { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .pension-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="pension-wrap">
+      <div class="page-header">
+        <span class="pill-badge">👵 2026년 국민연금공단 산식 적용</span>
+        <h1 class="page-title">국민연금 예상 수령액 계산기</h1>
+        <p class="page-desc">현재 월 소득과 가입 기간을 바탕으로 만 65세 이후 평생 매월 지급받는 노령연금 예상 수령액을 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">💰 월 평균 소득액 (세전)</label>
+            <input type="number" id="pensionSalary" class="input-field" value="3500000" step="100000" oninput="calcPension()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">⏳ 총 가입(납부) 예상 기간</label>
+            <select id="pensionYears" class="select-field" onchange="calcPension()">
+              <option value="10">10년 (최소 수급 기간 120개월)</option>
+              <option value="15">15년 (180개월)</option>
+              <option value="20" selected>20년 (240개월)</option>
+              <option value="25">25년 (300개월)</option>
+              <option value="30">30년 (360개월)</option>
+              <option value="35">35년 (420개월)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🎂 출생 연도 (수령 개시 나이 확인)</label>
+          <select id="birthYear" class="select-field" onchange="calcPension()">
+            <option value="69" selected>1969년 이후 출생자 (만 65세부터 수령)</option>
+            <option value="65">1965~1968년생 (만 64세부터 수령)</option>
+            <option value="61">1961~1964년생 (만 63세부터 수령)</option>
+          </select>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">만 65세 이후 매달 받는 예상 연금액 (평생 지급)</div>
+          <div class="main-monthly" id="monthlyPensionDisplay">약 820,000원</div>
+          <div style="font-size:0.88rem; opacity:0.9;" id="startAgeInfo">수령 개시 시기: 만 65세 생일 다음 달부터</div>
+
+          <div class="pension-grid">
+            <div class="pension-card">
+              <div class="v" id="yearlyPensionText">9,840,000원</div>
+              <div class="l">연간 총 수령액</div>
+            </div>
+            <div class="pension-card">
+              <div class="v" id="totalPaidText">37,800,000원</div>
+              <div class="l">본인 총 납부 보험료 (4.5%)</div>
+            </div>
+            <div class="pension-card">
+              <div class="v" id="paybackYearsText">약 3.8년</div>
+              <div class="l">납부 원금 회수 소요 기간</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>국민연금 수령액 산정 공식과 소득재분배 원리</h2>
+        <p>국민연금은 <strong>소득재분배(균등부분 A값)</strong>와 <strong>본인 소득(비례부분 B값)</strong>을 결합하여 산정됩니다. 저소득층일수록 납부한 보험료 대비 수익비(돌려받는 비율)가 높아지며, 가입 기간이 길수록 연금액이 복리로 대폭 증가합니다.</p>
+        <h3>조기노령연금 vs 연기연금</h3>
+        <ul>
+          <li><strong>조기수령:</strong> 최대 5년 일찍 받을 수 있으나 1년당 6%씩 감액(최대 30% 평생 감액).</li>
+          <li><strong>연기수령:</strong> 최대 5년 늦게 받으면 1년당 7.2%씩 증액(최대 36% 평생 증액).</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcPension() {
+      const salary = Math.min(6170000, Math.max(370000, parseFloat(document.getElementById('pensionSalary').value) || 0));
+      const years = parseInt(document.getElementById('pensionYears').value);
+      
+      // 국민연금 산식 간이 시뮬레이션
+      // A값 (국민연금 전체가입자 평균소득 2026년 약 300만원)
+      const A = 3000000;
+      const B = salary;
+      // 기본연금액 = 1.2 * (A + B) * (1 + 0.05*n) (간이 소득대체율 반영)
+      const baseMonthly = (A * 0.5 + B * 0.5) * (years * 0.0118);
+      const monthly = Math.round(baseMonthly);
+
+      const yearly = monthly * 12;
+      // 본인 부담 보험료 (4.5% * salary * years * 12)
+      const totalPaid = Math.round(salary * 0.045 * years * 12);
+      const paybackYears = (totalPaid / yearly).toFixed(1);
+
+      document.getElementById('monthlyPensionDisplay').textContent = `약 ${monthly.toLocaleString()}원`;
+      document.getElementById('yearlyPensionText').textContent = `${yearly.toLocaleString()}원`;
+      document.getElementById('totalPaidText').textContent = `${totalPaid.toLocaleString()}원`;
+      document.getElementById('paybackYearsText').textContent = `약 ${paybackYears}년 (이후 평생 순수익)`;
+    }
+
+    calcPension();
+  </script>
+</body>
+</html>

@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>차수별 더치페이 복합 정산기 (1차·2차·3차 모임 n빵) | ToolMate</title>
+  <meta name="description" content="1차 밥집 5명, 2차 노래방 3명, 3차 맥주 4명 등 차수별로 참석자가 다른 복잡한 술자리 모임 정산을 1초 만에 개인별 최종 송금액으로 계산하고 카톡 메시지를 생성합니다.">
+  <meta name="keywords" content="차수별정산,더치페이계산기,복합정산기,회식n빵,술자리정산,1차2차3차정산,단톡방정산">
+  <link rel="canonical" href="https://toolmate.kr/차수별%20더치페이%20복합%20정산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .split-wrap { max-width: 800px; margin: 0 auto; }
+    .round-card { background: var(--surface-alt); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 18px; margin-bottom: 16px; }
+    .round-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .round-title { font-size: 1.05rem; font-weight: 800; color: var(--text-main); }
+    .member-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .chip-btn { padding: 6px 14px; border-radius: var(--radius-full); font-size: 0.85rem; font-weight: 700; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.15s ease; }
+    .chip-btn.selected { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 6px var(--primary-glow); }
+    .btn-add-round { width: 100%; padding: 12px; border: 2px dashed var(--border); border-radius: var(--radius-md); background: transparent; color: var(--primary); font-weight: 700; cursor: pointer; margin-bottom: 20px; }
+    .btn-add-round:hover { border-color: var(--primary); background: var(--primary-light); }
+    .receipt-box { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-top: 20px; }
+    .receipt-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px dashed var(--border); font-size: 0.95rem; }
+    .share-textarea { width: 100%; height: 140px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-alt); color: var(--text-main); font-family: var(--font-mono); font-size: 0.85rem; resize: none; outline: none; margin-top: 14px; }
+    .btn-kakao-copy { width: 100%; padding: 12px; background: #fee500; color: #191919; font-weight: 800; border: none; border-radius: var(--radius-md); cursor: pointer; margin-top: 8px; font-size: 0.95rem; }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="split-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🍻 1차·2차·3차 차수별 복합 정산</span>
+        <h1 class="page-title">차수별 더치페이 복합 정산 계산기</h1>
+        <p class="page-desc">1차 삼겹살, 2차 볼링장, 3차 맥주집 등 차수마다 참여 인원이 다른 복잡한 모임을 1초 만에 개인별 최종 송금액으로 정산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <!-- 멤버 이름 목록 -->
+        <div class="form-group">
+          <label class="form-label">👥 모임 참석자 전체 이름 (쉼표로 구분)</label>
+          <input type="text" id="memberNamesInput" class="input-field" value="나(총무), 철수, 영희, 민수, 지은" oninput="updateMembers()">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">🏦 정산받을 계좌번호 (선택)</label>
+          <input type="text" id="bankAccount" class="input-field" placeholder="예: 카카오뱅크 3333-00-00000 홍길동" oninput="calcMultiRounds()">
+        </div>
+
+        <!-- 차수 목록 -->
+        <div id="roundsContainer"></div>
+        <button type="button" class="btn-add-round" onclick="addRound()">➕ 차수 추가하기 (3차, 4차...)</button>
+
+        <!-- 최종 정산 영수증 -->
+        <div class="receipt-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="font-size:1.15rem; font-weight:800;">📋 멤버별 최종 송금액</h3>
+            <span id="grandTotalDisplay" style="color:var(--primary); font-weight:800; font-size:1.1rem;">총 모임비: 0원</span>
+          </div>
+
+          <div id="memberFinalList"></div>
+
+          <textarea id="kakaoShareText" class="share-textarea" readonly></textarea>
+          <button type="button" class="btn-kakao-copy" onclick="copyMultiKakao()">💬 카톡 단톡방 전송용 정산서 복사하기</button>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>복잡한 모임/회식 차수별 정산 원리</h2>
+        <p>친구들과의 술자리나 동아리 회식에서는 중도 참석자(2차부터 합류)나 조기 귀가자(1차만 참석)가 발생합니다. 전체 금액을 단순히 N으로 나누면 억울한 사람이 생기게 됩니다.</p>
+        <p>ToolMate 차수별 정산기는 각 차수별 발생 비용을 해당 차수에 참여한 인원에게만 정확히 배분하여 합산하므로 1원 단위 오차 없이 공평하고 깔끔한 정산이 가능합니다.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let members = ["나(총무)", "철수", "영희", "민수", "지은"];
+    let rounds = [
+      { id: 1, name: "1차 (삼겹살)", amount: 120000, participants: ["나(총무)", "철수", "영희", "민수", "지은"] },
+      { id: 2, name: "2차 (볼링/맥주)", amount: 65000, participants: ["나(총무)", "철수", "민수"] }
+    ];
+
+    function updateMembers() {
+      const val = document.getElementById('memberNamesInput').value;
+      members = val.split(',').map(s => s.trim()).filter(s => s.length > 0);
+      renderRounds();
+    }
+
+    function renderRounds() {
+      const container = document.getElementById('roundsContainer');
+      container.innerHTML = '';
+
+      rounds.forEach((r, rIdx) => {
+        const div = document.createElement('div');
+        div.className = 'round-card';
+        div.innerHTML = `
+          <div class="round-header">
+            <span class="round-title">${rIdx + 1}차: <input type="text" value="${r.name}" style="border:none; background:transparent; font-weight:800; font-size:1rem; color:var(--text-main); outline:none;" oninput="rounds[${rIdx}].name = this.value; calcMultiRounds();"></span>
+            ${rounds.length > 1 ? `<button type="button" style="background:#fee2e2; border:1px solid #fca5a5; color:#ef4444; border-radius:6px; padding:2px 8px; cursor:pointer; font-size:0.8rem; font-weight:700;" onclick="removeRound(${r.id})">삭제</button>` : ''}
+          </div>
+          <div class="form-group" style="margin-bottom:8px;">
+            <label class="form-label" style="font-size:0.82rem;">결제 금액 (원)</label>
+            <input type="number" class="input-field" value="${r.amount}" step="1000" oninput="rounds[${rIdx}].amount = parseFloat(this.value)||0; calcMultiRounds();">
+          </div>
+          <div>
+            <label class="form-label" style="font-size:0.82rem;">참석 멤버 선택 (클릭하여 켜기/끄기)</label>
+            <div class="member-chips">
+              ${members.map(m => {
+                const isSelected = r.participants.includes(m);
+                return `<button type="button" class="chip-btn ${isSelected ? 'selected' : ''}" onclick="toggleParticipant(${r.id}, '${m}')">${m}</button>`;
+              }).join('')}
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      calcMultiRounds();
+    }
+
+    function toggleParticipant(roundId, memberName) {
+      const r = rounds.find(x => x.id === roundId);
+      if (!r) return;
+      if (r.participants.includes(memberName)) {
+        if (r.participants.length <= 1) {
+          showToast('최소 1명 이상은 참석해야 합니다.');
+          return;
+        }
+        r.participants = r.participants.filter(m => m !== memberName);
+      } else {
+        r.participants.push(memberName);
+      }
+      renderRounds();
+    }
+
+    function addRound() {
+      const newId = Date.now();
+      rounds.push({
+        id: newId,
+        name: `${rounds.length + 1}차 모임`,
+        amount: 30000,
+        participants: [...members]
+      });
+      renderRounds();
+    }
+
+    function removeRound(id) {
+      if (rounds.length <= 1) return;
+      rounds = rounds.filter(r => r.id !== id);
+      renderRounds();
+    }
+
+    function calcMultiRounds() {
+      let memberTotals = {};
+      members.forEach(m => memberTotals[m] = 0);
+      let grandTotal = 0;
+
+      rounds.forEach(r => {
+        grandTotal += r.amount;
+        const count = r.participants.length || 1;
+        const perPerson = Math.round(r.amount / count);
+        r.participants.forEach(p => {
+          if (memberTotals[p] !== undefined) {
+            memberTotals[p] += perPerson;
+          }
+        });
+      });
+
+      document.getElementById('grandTotalDisplay').textContent = `총 모임비: ${grandTotal.toLocaleString()}원`;
+
+      const listEl = document.getElementById('memberFinalList');
+      listEl.innerHTML = '';
+
+      let kakaoText = `🍻 [차수별 모임 정산서]\n──────────────\n`;
+      rounds.forEach(r => {
+        kakaoText += `• ${r.name}: ${r.amount.toLocaleString()}원 (${r.participants.length}명)\n`;
+      });
+      kakaoText += `• 총 결제금액: ${grandTotal.toLocaleString()}원\n──────────────\n[개인별 입금액]\n`;
+
+      members.forEach(m => {
+        const amt = memberTotals[m] || 0;
+        const row = document.createElement('div');
+        row.className = 'receipt-row';
+        row.innerHTML = `
+          <span><b>${m}</b></span>
+          <span style="font-family:var(--font-mono); font-weight:800; color:var(--primary); font-size:1.05rem;">${amt.toLocaleString()}원</span>
+        `;
+        listEl.appendChild(row);
+        kakaoText += `👉 ${m}: ${amt.toLocaleString()}원\n`;
+      });
+
+      const bank = document.getElementById('bankAccount').value.trim();
+      if (bank) {
+        kakaoText += `──────────────\n🏦 입금 계좌: ${bank}\n`;
+      }
+      kakaoText += `\n모두 고생하셨습니다! 확인 후 입금 부탁드려요 😋`;
+
+      document.getElementById('kakaoShareText').value = kakaoText;
+    }
+
+    function copyMultiKakao() {
+      const text = document.getElementById('kakaoShareText').value;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('💬 카톡 정산서가 클립보드에 복사되었습니다!');
+      });
+    }
+
+    renderRounds();
+  </script>
+</body>
+</html>

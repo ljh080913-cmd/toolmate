@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아파트 평수 ↔ ㎡ & 올인원 단위 환산기 (인치·평·온도·무게) | ToolMate</title>
+  <meta name="description" content="아파트 평수(평) ↔ 제곱미터(㎡), 인치(inch) ↔ 센티미터(cm), 화씨(℉) ↔ 섭씨(℃), 파운드(lb) ↔ 킬로그램(kg) 등 일상 단위 실시간 1초 양방향 변환기.">
+  <meta name="keywords" content="평수계산기,평수변환기,제곱미터평수,인치센티,단위변환기,단위환산기">
+  <link rel="canonical" href="https://toolmate.kr/아파트%20평수%20및%20단위%20환산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .unit-wrap { max-width: 800px; margin: 0 auto; }
+    .unit-tab-bar { display: flex; gap: 6px; background: var(--surface-alt); padding: 4px; border-radius: var(--radius-md); margin-bottom: 20px; overflow-x: auto; }
+    .unit-tab { flex: 1; text-align: center; padding: 10px; font-size: 0.9rem; font-weight: 700; border: none; background: transparent; color: var(--text-muted); border-radius: var(--radius-sm); cursor: pointer; white-space: nowrap; }
+    .unit-tab.active { background: var(--primary); color: #fff; box-shadow: 0 2px 6px var(--primary-glow); }
+    .convert-card { display: flex; align-items: center; justify-content: space-between; gap: 14px; background: var(--surface-alt); border: 1.5px solid var(--border); border-radius: var(--radius-lg); padding: 28px 20px; }
+    .convert-col { flex: 1; text-align: center; }
+    .convert-input { width: 100%; font-size: 2.2rem; font-weight: 900; font-family: var(--font-mono); text-align: center; border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 12px; background: var(--surface); color: var(--primary); outline: none; }
+    .convert-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+    .convert-lbl { font-size: 1rem; font-weight: 800; color: var(--text-main); margin-top: 10px; }
+    .convert-arrow { font-size: 1.8rem; color: var(--text-muted); }
+    .preset-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 18px; }
+    .preset-btn { background: var(--surface); border: 1px solid var(--border); padding: 6px 14px; border-radius: var(--radius-full); font-size: 0.82rem; font-weight: 700; color: var(--text-muted); cursor: pointer; }
+    .preset-btn:hover { background: var(--primary-light); color: var(--primary); }
+    @media(max-width:600px){ .convert-card { flex-direction: column; } .convert-arrow { transform: rotate(90deg); margin: 6px 0; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="unit-wrap">
+      <div class="page-header">
+        <span class="pill-badge">📐 실시간 1초 양방향 변환</span>
+        <h1 class="page-title">아파트 평수 & 올인원 단위 환산기</h1>
+        <p class="page-desc">아파트 평수(평) ↔ 제곱미터(㎡), 인치 ↔ 센티미터, 섭씨 ↔ 화씨 등 실생활 단위를 타이핑 즉시 양방향으로 환산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="unit-tab-bar">
+          <button type="button" class="unit-tab active" onclick="switchUnit('area')">🏠 아파트 평수 (평 ↔ ㎡)</button>
+          <button type="button" class="unit-tab" onclick="switchUnit('length')">📏 길이 (인치 ↔ cm)</button>
+          <button type="button" class="unit-tab" onclick="switchUnit('weight')">⚖️ 무게 (파운드 ↔ kg)</button>
+          <button type="button" class="unit-tab" onclick="switchUnit('temp')">🌡️ 온도 (화씨 ↔ 섭씨)</button>
+        </div>
+
+        <div class="convert-card">
+          <div class="convert-col">
+            <input type="number" id="leftVal" class="convert-input" value="34" step="any" oninput="convertFromLeft()">
+            <div class="convert-lbl" id="leftLabel">평 (평수)</div>
+          </div>
+          <div class="convert-arrow">⇄</div>
+          <div class="convert-col">
+            <input type="number" id="rightVal" class="convert-input" value="112.39" step="any" oninput="convertFromRight()">
+            <div class="convert-lbl" id="rightLabel">제곱미터 (㎡)</div>
+          </div>
+        </div>
+
+        <!-- 아파트 인기 평수 프리셋 -->
+        <div class="preset-chips" id="presetArea">
+          <button type="button" class="preset-btn" onclick="setLeft(24)">24평 (59㎡)</button>
+          <button type="button" class="preset-btn" onclick="setLeft(30)">30평 (74㎡)</button>
+          <button type="button" class="preset-btn" onclick="setLeft(34)">34평 (84㎡ 국민평형)</button>
+          <button type="button" class="preset-btn" onclick="setLeft(42)">42평 (102㎡)</button>
+          <button type="button" class="preset-btn" onclick="setLeft(50)">50평 (135㎡)</button>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>1평(坪)의 기준과 제곱미터(㎡) 환산 공식</h2>
+        <p>대한민국 법정 계량 단위에 따라 부동산에서는 제곱미터(㎡) 표기가 의무화되어 있습니다. <strong>1평 = 약 3.305785㎡</strong>이며, 반대로 <strong>1㎡ = 약 0.3025평</strong>입니다.</p>
+        <p>예를 들어 가장 인기 있는 국민평형 전용 84㎡는 공급면적 기준 약 33~34평형에 해당합니다.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let curMode = 'area';
+
+    function switchUnit(mode) {
+      curMode = mode;
+      document.querySelectorAll('.unit-tab').forEach((t, i) => {
+        t.classList.toggle('active', ['area','length','weight','temp'][i] === mode);
+      });
+
+      const preset = document.getElementById('presetArea');
+      if (mode === 'area') {
+        preset.style.display = 'flex';
+        document.getElementById('leftLabel').textContent = '평 (평수)';
+        document.getElementById('rightLabel').textContent = '제곱미터 (㎡)';
+        setLeft(34);
+      } else if (mode === 'length') {
+        preset.style.display = 'none';
+        document.getElementById('leftLabel').textContent = '인치 (inch)';
+        document.getElementById('rightLabel').textContent = '센티미터 (cm)';
+        setLeft(27);
+      } else if (mode === 'weight') {
+        preset.style.display = 'none';
+        document.getElementById('leftLabel').textContent = '파운드 (lb)';
+        document.getElementById('rightLabel').textContent = '킬로그램 (kg)';
+        setLeft(150);
+      } else if (mode === 'temp') {
+        preset.style.display = 'none';
+        document.getElementById('leftLabel').textContent = '화씨 온도 (℉)';
+        document.getElementById('rightLabel').textContent = '섭씨 온도 (℃)';
+        setLeft(75);
+      }
+    }
+
+    function setLeft(val) {
+      document.getElementById('leftVal').value = val;
+      convertFromLeft();
+    }
+
+    function convertFromLeft() {
+      const lv = parseFloat(document.getElementById('leftVal').value);
+      if (isNaN(lv)) { document.getElementById('rightVal').value = ''; return; }
+
+      let rv = 0;
+      if (curMode === 'area') rv = lv * 3.305785;
+      else if (curMode === 'length') rv = lv * 2.54;
+      else if (curMode === 'weight') rv = lv * 0.453592;
+      else if (curMode === 'temp') rv = (lv - 32) * (5 / 9);
+
+      document.getElementById('rightVal').value = parseFloat(rv.toFixed(2));
+    }
+
+    function convertFromRight() {
+      const rv = parseFloat(document.getElementById('rightVal').value);
+      if (isNaN(rv)) { document.getElementById('leftVal').value = ''; return; }
+
+      let lv = 0;
+      if (curMode === 'area') lv = rv / 3.305785;
+      else if (curMode === 'length') lv = rv / 2.54;
+      else if (curMode === 'weight') lv = rv / 0.453592;
+      else if (curMode === 'temp') lv = (rv * (9 / 5)) + 32;
+
+      document.getElementById('leftVal').value = parseFloat(lv.toFixed(2));
+    }
+
+    convertFromLeft();
+  </script>
+</body>
+</html>

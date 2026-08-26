@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>퇴사 & 탕진잼 백수 생존일수 계산기 (통장 잔고 D-Day) | ToolMate</title>
+  <meta name="description" content="현재 통장 잔고와 숨만 쉬어도 나가는 월 고정비를 입력하면 앞으로 며칠 동안 백수로 놀고먹을 수 있는지 생존 일수와 생존 등급을 즉시 계산합니다.">
+  <meta name="keywords" content="퇴사계산기,백수생존일수,탕진잼계산기,통장잔고계산기,퇴사시뮬레이터,퇴사디데이">
+  <link rel="canonical" href="https://toolmate.kr/퇴사%20및%20백수%20생존일수%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .survive-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .survive-hero { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; border-radius: var(--radius-lg); padding: 32px 20px; text-align: center; margin: 24px 0; border: 1.5px solid #334155; }
+    .dday-num { font-size: 4.8rem; font-weight: 900; font-family: var(--font-mono); color: #38bdf8; line-height: 1; margin: 10px 0; }
+    .survive-grade { font-size: 1.3rem; font-weight: 800; color: #facc15; }
+    .survive-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+    .survive-box { background: rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .survive-val { font-size: 1.3rem; font-weight: 800; font-family: var(--font-mono); color: #38bdf8; }
+    .survive-lbl { font-size: 0.78rem; opacity: 0.8; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .survive-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="survive-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🏖️ 직장인 탕진잼 시뮬레이터</span>
+        <h1 class="page-title">퇴사 & 탕진잼 백수 생존일수 계산기</h1>
+        <p class="page-desc">현재 가진 돈으로 아무 일도 안 하고 숨만 쉬면 며칠 동안 버틸 수 있을까요? D-Day와 생존 등급을 즉시 확인하세요.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">💰 현재 총 자산 (통장 잔고 + 퇴직금)</label>
+            <input type="number" id="totalAsset" class="input-field" value="15000000" step="100000" oninput="calcSurvive()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🏠 숨만 쉬어도 나가는 월 고정비 (월세/공과금/보험)</label>
+            <input type="number" id="fixedCost" class="input-field" value="700000" step="50000" oninput="calcSurvive()">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">🍕 월 생활비 & 식비 (배달/외식/커피)</label>
+            <input type="number" id="livingCost" class="input-field" value="800000" step="50000" oninput="calcSurvive()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🎮 백수 라이프 소비 스타일</label>
+            <select id="lifeStyle" class="select-field" onchange="calcSurvive()">
+              <option value="1.0">평범한 백수 (기본 지출 유지)</option>
+              <option value="0.7">극단적 절약 백수 (집밥 + 라면 모드 -30%)</option>
+              <option value="1.4">플렉스 탕진 백수 (배달 + 쇼핑 + 여행 +40%)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="survive-hero">
+          <div style="font-size:0.95rem; opacity:0.85;">내 통장 잔고로 버틸 수 있는 시간</div>
+          <div class="dday-num" id="ddayDisplay">D-300일</div>
+          <div class="survive-grade" id="gradeDisplay">🏆 [자유로운 영혼] 등급</div>
+
+          <div class="survive-grid">
+            <div class="survive-box">
+              <div class="survive-val" id="monthDisplay">약 10.0개월</div>
+              <div class="survive-lbl">생존 가능 개월 수</div>
+            </div>
+            <div class="survive-box">
+              <div class="survive-val" id="monthlySpend">1,500,000원</div>
+              <div class="survive-lbl">예상 월 지출액</div>
+            </div>
+            <div class="survive-box">
+              <div class="survive-val" id="endDateDisplay">2027년 6월</div>
+              <div class="survive-lbl">통장 잔고 0원 도달일 (재취업 D-Day)</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="funnyTip" style="background:var(--surface-alt); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px; font-size:0.9rem; line-height:1.7; color:var(--text-main);">
+          💡 생존 조언 팁이 표시됩니다.
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>퇴사 전 필수 체크리스트와 비상금 전략</h2>
+        <p>퇴사 후 재취업 또는 이직 준비 기간은 평균 6개월에서 1년 정도 소요됩니다. 안정적인 이직 활동을 위해서는 최소 <strong>6개월 이상의 고정 생활비(비상금)</strong>를 확보해 두는 것이 심리적 안정에 유리합니다.</p>
+        <h3>실업급여와 건강보험 임의계속가입 활용</h3>
+        <ul>
+          <li>비자발적 퇴사 시 <strong>실업급여(구직급여)</strong>를 신청하여 월 최대 약 198만원의 생존 자금을 지원받을 수 있습니다.</li>
+          <li>퇴사 후 건강보험료가 지역가입자로 전환되어 급증하는 경우 <strong>'임의계속가입제도'</strong>를 신청하면 이전 직장 보험료 수준으로 36개월간 유지 가능합니다.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcSurvive() {
+      const asset = parseFloat(document.getElementById('totalAsset').value) || 0;
+      const fixed = parseFloat(document.getElementById('fixedCost').value) || 0;
+      const living = parseFloat(document.getElementById('livingCost').value) || 0;
+      const multiplier = parseFloat(document.getElementById('lifeStyle').value) || 1.0;
+
+      const totalMonthly = Math.round(fixed + (living * multiplier));
+      if (totalMonthly <= 0 || asset <= 0) {
+        document.getElementById('ddayDisplay').textContent = 'D-0일';
+        document.getElementById('monthDisplay').textContent = '0개월';
+        return;
+      }
+
+      const months = asset / totalMonthly;
+      const days = Math.round(months * 30.4);
+
+      const now = new Date();
+      const end = new Date(now.getTime() + (days * 24 * 3600 * 1000));
+      const endStr = `${end.getFullYear()}년 ${end.getMonth()+1}월 ${end.getDate()}일`;
+
+      let grade = '';
+      let tip = '';
+      if (days >= 730) {
+        grade = '👑 [신선놀음 갓생러] 등급 (2년 이상)';
+        tip = '🎉 통장에 든든한 요새가 있군요! 2년 동안 아무 걱정 없이 세계 일주를 다녀오거나 하고 싶었던 새로운 분야를 완벽하게 공부할 수 있습니다.';
+      } else if (days >= 365) {
+        grade = '🏖️ [자유로운 백수왕] 등급 (1년 이상)';
+        tip = '👏 1년 동안 여유롭게 재충전하며 취미 생활과 자기계발을 마음껏 즐길 수 있는 황금 밸런스 잔고입니다!';
+      } else if (days >= 180) {
+        grade = '☕ [적당한 쉼표] 등급 (6개월~1년)';
+        tip = '🧘 6개월 정도 푹 쉬면서 이직 준비를 시작하기 딱 좋은 시기입니다. 3개월 차부터는 천천히 이력서를 다듬어보세요.';
+      } else if (days >= 90) {
+        grade = '⚡ [시한부 힐링] 등급 (3개월)';
+        tip = '⚠️ 3개월의 짧고 굵은 휴식입니다! 배달 음식을 조금 줄이고 가성비 높은 힐링 플랜을 짜야 잔고가 안전합니다.';
+      } else {
+        grade = '🚨 [초고속 재취업 필요] 등급 (1~2개월)';
+        tip = '😱 숨만 쉬어도 잔고가 위험합니다! 당장 내일부터 알바몬과 사람인을 켜고 이력서를 투척하세요!';
+      }
+
+      document.getElementById('ddayDisplay').textContent = `D-${days}일`;
+      document.getElementById('gradeDisplay').textContent = grade;
+      document.getElementById('monthDisplay').textContent = `약 ${months.toFixed(1)}개월`;
+      document.getElementById('monthlySpend').textContent = totalMonthly.toLocaleString() + '원';
+      document.getElementById('endDateDisplay').textContent = endStr;
+      document.getElementById('funnyTip').innerHTML = `💡 <b>생존 분석:</b> ${tip}`;
+    }
+
+    calcSurvive();
+  </script>
+</body>
+</html>

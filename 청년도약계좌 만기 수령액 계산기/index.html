@@ -1,0 +1,157 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 청년도약계좌 만기 수령액 & 정부기여금 계산기 | ToolMate</title>
+  <meta name="description" content="매달 납입액(최대 70만원)과 소득 구간을 입력하면 5년 만기 시 본인 원금, 은행 이자, 정부 기여금, 비과세 혜택을 합산한 최종 만기 수령액(최대 5,000만원)을 계산합니다.">
+  <meta name="keywords" content="청년도약계좌,청년도약계좌계산기,청년도약계좌만기수령액,정부기여금,청년적금,청년도약계좌이자">
+  <link rel="canonical" href="https://toolmate.kr/청년도약계좌%20만기%20수령액%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .youth-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .main-total { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #facc15; margin: 8px 0; }
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 18px; }
+    .stat-box { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 12px 8px; text-align: center; }
+    .stat-box .v { font-size: 1.15rem; font-weight: 800; color: #fff; font-family: var(--font-mono); }
+    .stat-box .l { font-size: 0.75rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .stat-row { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="youth-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🇰🇷 정부 청년 금융 정책 5년 만기</span>
+        <h1 class="page-title">청년도약계좌 만기 수령액 계산기</h1>
+        <p class="page-desc">매월 납입금액과 총급여 소득 구간을 선택하면 은행 이자 + 정부 기여금 + 이자소득 비과세 혜택이 합쳐진 최종 통장 입금액을 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">💰 월 납입 금액 (최대 70만원)</label>
+            <input type="number" id="monthlyPay" class="input-field" value="700000" min="10000" max="700000" step="10000" oninput="calcYouth()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">📊 개인 총급여 소득 구간 (정부기여금 결정)</label>
+            <select id="incomeBracket" class="select-field" onchange="calcYouth()">
+              <option value="24000">총급여 2,400만원 이하 (월 최대 2.4만원 매칭)</option>
+              <option value="23000">총급여 3,600만원 이하 (월 최대 2.3만원 매칭)</option>
+              <option value="22000">총급여 4,800만원 이하 (월 최대 2.2만원 매칭)</option>
+              <option value="21000" selected>총급여 6,000만원 이하 (월 최대 2.1만원 매칭)</option>
+              <option value="0">총급여 6,000만~7,500만원 (비과세만 적용)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">🏦 은행 적용 금리 (기본+우대, 연 %)</label>
+            <input type="number" id="bankRate" class="input-field" value="6.0" step="0.1" min="3.0" max="10.0" oninput="calcYouth()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">⏳ 적금 만기 기간</label>
+            <input type="text" class="input-field" value="5년 (60개월 만기)" readonly style="background:var(--surface-alt);">
+          </div>
+        </div>
+
+        <!-- 결과 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">5년 만기 시 최종 총 수령액 (비과세 100%)</div>
+          <div class="main-total" id="finalTotalDisplay">49,898,000원</div>
+          <div style="font-size:0.88rem; opacity:0.9;" id="profitRateText">총 수익률: +18.8% (원금 대비 +7,898,000원 이득)</div>
+
+          <div class="stat-row">
+            <div class="stat-box">
+              <div class="v" id="principalText">42,000,000원</div>
+              <div class="l">본인 납입 원금 (60회)</div>
+            </div>
+            <div class="stat-box">
+              <div class="v" id="bankInterestText">6,431,250원</div>
+              <div class="l">은행 이자 (연 6.0%)</div>
+            </div>
+            <div class="stat-box">
+              <div class="v" id="govContribText">1,260,000원</div>
+              <div class="l">정부 지원 기여금</div>
+            </div>
+            <div class="stat-box">
+              <div class="v" id="taxSavedText">990,412원</div>
+              <div class="l">이자소득세 면제 혜택</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>청년도약계좌 핵심 혜택 3가지</h2>
+        <ul>
+          <li><strong>정부 기여금 매칭:</strong> 소득 수준에 따라 매달 최대 2.1만~2.4만원의 정부 기여금이 추가 적립됩니다.</li>
+          <li><strong>이자소득세 15.4% 전액 비과세:</strong> 일반 적금과 달리 만기 이자에 대해 세금을 단 1원도 떼지 않습니다.</li>
+          <li><strong>연 6%대 고금리:</strong> 시중은행 기본 금리 4.5% + 우대금리 1.5% 적용 시 최대 연 6.0%의 고금리 혜택을 누릴 수 있습니다.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcYouth() {
+      const monthly = parseFloat(document.getElementById('monthlyPay').value) || 0;
+      const govPerMonth = parseFloat(document.getElementById('incomeBracket').value) || 0;
+      const rate = (parseFloat(document.getElementById('bankRate').value) || 6.0) / 100;
+
+      const months = 60;
+      const principal = monthly * months;
+
+      // 적금 단리 이자 = 월적립액 * n(n+1)/2 * (연이율/12)
+      const interest = monthly * (months * (months + 1) / 2) * (rate / 12);
+      const govTotal = govPerMonth * months;
+      // 정부기여금에 대한 이자도 일부 발생 (간이 계산)
+      const govInterest = govPerMonth * (months * (months + 1) / 2) * (rate / 12);
+
+      const totalGain = interest + govTotal + govInterest;
+      const finalTotal = Math.round(principal + totalGain);
+      const taxSaved = Math.round(interest * 0.154);
+      const profitRate = principal > 0 ? ((totalGain / principal) * 100).toFixed(1) : 0;
+
+      document.getElementById('finalTotalDisplay').textContent = finalTotal.toLocaleString() + '원';
+      document.getElementById('profitRateText').textContent = `총 수익률: +${profitRate}% (원금 대비 +${Math.round(totalGain).toLocaleString()}원 이득)`;
+      document.getElementById('principalText').textContent = principal.toLocaleString() + '원';
+      document.getElementById('bankInterestText').textContent = Math.round(interest).toLocaleString() + '원';
+      document.getElementById('govContribText').textContent = Math.round(govTotal + govInterest).toLocaleString() + '원';
+      document.getElementById('taxSavedText').textContent = taxSaved.toLocaleString() + '원';
+    }
+
+    calcYouth();
+  </script>
+</body>
+</html>

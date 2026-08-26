@@ -1,42 +1,55 @@
-// ==========================================================================
-// ToolMate Common Script v2 - 광고 자동 삽입 / 관련 도구 추천 / 테마 / 공유
+﻿// ==========================================================================
+// ToolMate Common Script v3 - 30종 올인원 도구 레지스트리 & 자동 광고 & 연관추천
 // ==========================================================================
 
 const ALL_TOOLS = [
-  // [1. 금융 & 세금 - 최고CPC 카테고리]
-  { name: "💰 실업급여 계산기", path: "실업급여 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","퇴직금 계산기","4대보험료 계산기"] },
-  { name: "💸 연봉 실수령액 계산기", path: "실 수령액 계산기/index.html", cat: "finance", related: ["실업급여 계산기","퇴직금 계산기","4대보험료 계산기"] },
-  { name: "📊 4대보험료 계산기", path: "4대보험료 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","실업급여 계산기","퇴직금 계산기"] },
-  { name: "💼 퇴직금 계산기", path: "퇴직금 계산기/index.html", cat: "finance", related: ["실업급여 계산기","실 수령액 계산기","연말정산 계산기"] },
-  { name: "📑 연말정산 환급금 계산기", path: "연말정산 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","퇴직금 계산기","부가세 및 원천징수 계산기"] },
-  { name: "🧾 부가세 & 3.3% 원천징수", path: "부가세 및 원천징수 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","퇴직금 계산기","연말정산 계산기"] },
-  // [2. 부동산 & 대출]
-  { name: "🏠 주택청약 가점 계산기", path: "주택청약 가점 계산기/index.html", cat: "realestate", related: ["부동산 복비 및 취득세 계산기","대출 이자 계산기","예적금 복리 계산기"] },
-  { name: "🏦 대출 이자 & 상환 계산기", path: "대출 이자 계산기/index.html", cat: "realestate", related: ["예적금 복리 계산기","주택청약 가점 계산기","부동산 복비 및 취득세 계산기"] },
-  { name: "🏡 부동산 복비 & 취득세", path: "부동산 복비 및 취득세 계산기/index.html", cat: "realestate", related: ["대출 이자 계산기","주택청약 가점 계산기","예적금 복리 계산기"] },
-  { name: "📈 예적금 복리이자 계산기", path: "예적금 복리 계산기/index.html", cat: "realestate", related: ["대출 이자 계산기","실 수령액 계산기","연말정산 계산기"] },
-  // [3. 생활 & 건강]
+  // [1. 💰 금융 & 세금 - 최고 CPC]
+  { name: "💰 실업급여 계산기", path: "실업급여 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","4대보험료 계산기","퇴직금 계산기"] },
+  { name: "💸 연봉 실수령액 계산기", path: "실 수령액 계산기/index.html", cat: "finance", related: ["실업급여 계산기","4대보험료 계산기","연말정산 계산기"] },
+  { name: "📊 4대보험료 계산기", path: "4대보험료 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","실업급여 계산기","연차 일수 및 연차수당 계산기"] },
+  { name: "💼 퇴직금 계산기", path: "퇴직금 계산기/index.html", cat: "finance", related: ["실업급여 계산기","연차 일수 및 연차수당 계산기","연말정산 계산기"] },
+  { name: "📋 연말정산 환급금 계산기", path: "연말정산 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","퇴직금 계산기","부가세 및 원천징수 계산기"] },
+  { name: "🧾 부가세 & 3.3% 계산기", path: "부가세 및 원천징수 계산기/index.html", cat: "finance", related: ["실 수령액 계산기","연말정산 계산기","간이 영수증 및 견적서"] },
+  { name: "👵 국민연금 예상 수령액", path: "국민연금 예상 수령액 계산기/index.html", cat: "finance", related: ["퇴직금 계산기","실 수령액 계산기","4대보험료 계산기"] },
+
+  // [2. 🏠 부동산 & 재테크 - 고단가]
+  { name: "🏡 주택청약 가점 계산기", path: "주택청약 가점 계산기/index.html", cat: "realestate", related: ["부동산 복비 및 취득세 계산기","대출 이자 계산기","아파트 평수 및 단위 환산기"] },
+  { name: "🏦 대출 이자 & 상환표", path: "대출 이자 계산기/index.html", cat: "realestate", related: ["예적금 복리 계산기","주택청약 가점 계산기","부동산 복비 및 취득세 계산기"] },
+  { name: "🏘️ 부동산 복비 & 취득세", path: "부동산 복비 및 취득세 계산기/index.html", cat: "realestate", related: ["대출 이자 계산기","주택청약 가점 계산기","아파트 평수 및 단위 환산기"] },
+  { name: "📈 예적금 복리이자 계산기", path: "예적금 복리 계산기/index.html", cat: "realestate", related: ["청년도약계좌 만기 수령액 계산기","대출 이자 계산기","주식 물타기 평단가 계산기"] },
+  { name: "🇰🇷 청년도약계좌 만기 계산기", path: "청년도약계좌 만기 수령액 계산기/index.html", cat: "realestate", related: ["예적금 복리 계산기","실 수령액 계산기","연말정산 계산기"] },
+  { name: "📉 주식 물타기 평단가 계산기", path: "주식 물타기 평단가 계산기/index.html", cat: "realestate", related: ["예적금 복리 계산기","대출 이자 계산기","로또 번호 생성기"] },
+  { name: "🚗 자동차세 & 취득세 계산기", path: "자동차세 및 차량 취득세 계산기/index.html", cat: "realestate", related: ["부동산 복비 및 취득세 계산기","대출 이자 계산기","부가세 및 원천징수 계산기"] },
+  { name: "📐 아파트 평수 & 단위 환산기", path: "아파트 평수 및 단위 환산기/index.html", cat: "realestate", related: ["부동산 복비 및 취득세 계산기","주택청약 가점 계산기","글자 수 세기"] },
+
+  // [3. 💼 직장 & 생활 & 건강]
+  { name: "🌴 연차 일수 & 수당 계산기", path: "연차 일수 및 연차수당 계산기/index.html", cat: "life", related: ["퇴직금 계산기","실업급여 계산기","실 수령액 계산기"] },
   { name: "🎂 만 나이 계산기", path: "만 나이 계산기/index.html", cat: "life", related: ["디데이 및 전역일 계산기","수면 사이클 계산기","기초대사량 및 칼로리 계산기"] },
   { name: "🥗 기초대사량(BMR) & 칼로리", path: "기초대사량 및 칼로리 계산기/index.html", cat: "life", related: ["만 나이 계산기","수면 사이클 계산기","디데이 및 전역일 계산기"] },
   { name: "💤 수면 사이클 & 기상시간", path: "수면 사이클 계산기/index.html", cat: "life", related: ["기초대사량 및 칼로리 계산기","만 나이 계산기","디데이 및 전역일 계산기"] },
-  { name: "⏳ D-Day & 군 전역일 계산기", path: "디데이 및 전역일 계산기/index.html", cat: "life", related: ["만 나이 계산기","수면 사이클 계산기","기초대사량 및 칼로리 계산기"] },
-  // [4. 생산성 & 미디어]
+  { name: "⏳ D-Day & 군 전역일 계산기", path: "디데이 및 전역일 계산기/index.html", cat: "life", related: ["퇴사 및 백수 생존일수 계산기","만 나이 계산기","수면 사이클 계산기"] },
+
+  // [4. 🛠️ 생산성 & 업무 도구]
   { name: "✍️ 글자수 & 맞춤법 검사기", path: "글자 수 세기/index.html", cat: "media", related: ["간이 영수증 및 견적서","QR코드 생성기","이미지 용량 줄이기"] },
   { name: "📑 PDF 병합 & 분할 툴킷", path: "PDF 도구 모음/index.html", cat: "media", related: ["이미지 용량 줄이기","QR코드 생성기","간이 영수증 및 견적서"] },
   { name: "🖼️ 이미지 압축 & WEBP 변환", path: "이미지 용량 줄이기/index.html", cat: "media", related: ["PDF 도구 모음","QR코드 생성기","글자 수 세기"] },
   { name: "📱 QR코드 & 바코드 생성기", path: "QR코드 생성기/index.html", cat: "media", related: ["이미지 용량 줄이기","PDF 도구 모음","간이 영수증 및 견적서"] },
-  { name: "🧾 간이영수증 & 견적서", path: "간이 영수증 및 견적서/index.html", cat: "media", related: ["QR코드 생성기","PDF 도구 모음","부가세 및 원천징수 계산기"] },
-  // [5. 바이럴]
-  { name: "🍗 배달비 n빵 & 정산 계산기", path: "배달비 n빵 및 정산 계산기/index.html", cat: "viral", related: ["글자 수 세기","QR코드 생성기","로또 번호 생성기"] },
-  { name: "🎱 로또 번호 생성기", path: "로또 번호 생성기/index.html", cat: "viral", related: ["배달비 n빵 및 정산 계산기","디데이 및 전역일 계산기","만 나이 계산기"] },
+  { name: "🧾 간이영수증 & 견적서 출력기", path: "간이 영수증 및 견적서/index.html", cat: "media", related: ["부가세 및 원천징수 계산기","QR코드 생성기","PDF 도구 모음"] },
+
+  // [5. 🎉 바이럴 & 꿀잼 SNS]
+  { name: "💬 카톡 대화 호감도 분석기", path: "카카오톡 대화 호감도 분석기/index.html", cat: "viral", related: ["배달비 n빵 및 정산 계산기","퇴사 및 백수 생존일수 계산기","로또 번호 생성기"] },
+  { name: "🏖️ 퇴사 & 백수 생존일수 계산기", path: "퇴사 및 백수 생존일수 계산기/index.html", cat: "viral", related: ["카카오톡 대화 호감도 분석기","실업급여 계산기","배달비 n빵 및 정산 계산기"] },
+  { name: "🍻 차수별 더치페이 복합 정산기", path: "차수별 더치페이 복합 정산기/index.html", cat: "viral", related: ["배달비 n빵 및 정산 계산기","카카오톡 대화 호감도 분석기","로또 번호 생성기"] },
+  { name: "🍗 n빵 & 더치페이 모임 정산기", path: "배달비 n빵 및 정산 계산기/index.html", cat: "viral", related: ["차수별 더치페이 복합 정산기","카카오톡 대화 호감도 분석기","로또 번호 생성기"] },
+  { name: "🎱 로또 번호 스마트 생성기", path: "로또 번호 생성기/index.html", cat: "viral", related: ["배달비 n빵 및 정산 계산기","디데이 및 전역일 계산기","만 나이 계산기"] }
 ];
 
-// ADSENSE_CLIENT_ID: 실제 발급된 애드센스 퍼블리셔 ID
+// ADSENSE_CLIENT_ID
 const ADSENSE_CLIENT = "ca-pub-8342530091491582";
 const ADSENSE_SLOTS = {
-  top:    "1111111111",  // 상단 리더보드
-  mid:    "2222222222",  // 인컨텐츠 (결과 직후)
-  bottom: "3333333333"   // 하단 아티클 사이
+  top:    "1111111111",
+  mid:    "2222222222",
+  bottom: "3333333333"
 };
 
 (function () {
@@ -85,13 +98,13 @@ const ADSENSE_SLOTS = {
     const brandEl = document.querySelector("a.gnb-brand");
     const prefix = (brandEl && brandEl.getAttribute("href").startsWith("../")) ? "../" : "";
     const cats = [
-      { key: "finance", label: "💰 금융 & 세금" },
-      { key: "realestate", label: "🏠 부동산 & 대출" },
-      { key: "life", label: "🌿 생활 & 건강" },
-      { key: "media", label: "🛠️ 생산성 & 미디어" },
-      { key: "viral", label: "🎉 바이럴 & 꿀잼" },
+      { key: "finance", label: "💰 금융 & 세금 (7)" },
+      { key: "realestate", label: "🏠 부동산 & 재테크 (8)" },
+      { key: "life", label: "💼 직장 & 생활 & 건강 (5)" },
+      { key: "media", label: "🛠️ 생산성 & 업무 (5)" },
+      { key: "viral", label: "🎉 바이럴 & 꿀잼 (5)" },
     ];
-    menu.innerHTML = `<a href="${prefix}index.html" style="border-bottom:1px solid var(--border);margin-bottom:4px;font-weight:800;color:var(--primary);">🏠 ToolMate 홈으로</a>`;
+    menu.innerHTML = `<a href="${prefix}index.html" style="border-bottom:1px solid var(--border);margin-bottom:4px;font-weight:800;color:var(--primary);">🏠 ToolMate 홈으로 (전체 30종)</a>`;
     cats.forEach(cat => {
       const filtered = ALL_TOOLS.filter(t => t.cat === cat.key);
       if (filtered.length === 0) return;
@@ -109,17 +122,15 @@ const ADSENSE_SLOTS = {
     });
   }
 
-  // 상단 광고 삽입
   function injectTopAd() {
     const isPolicy = /privacy|terms|contact|about/.test(window.location.pathname);
-    const isIndex = /index\.html$|\/\s*$/.test(window.location.pathname.split("/").pop() || "") && !document.querySelector(".page-header");
     if (isPolicy) return;
     const main = document.querySelector("main.container");
     if (!main) return;
+    if (document.querySelector(".adsense-top")) return;
     const adDiv = document.createElement("div");
     adDiv.className = "adsense-slot adsense-top";
     adDiv.innerHTML = `
-      <!-- AdSense Top -->
       <ins class="adsbygoogle"
            style="display:block"
            data-ad-client="${ADSENSE_CLIENT}"
@@ -131,12 +142,11 @@ const ADSENSE_SLOTS = {
     main.insertBefore(adDiv, main.firstChild);
   }
 
-  // 관련 도구 추천 (내부 링크 + 추가 체류)
   function injectRelatedTools() {
     const isPolicy = /privacy|terms|contact|about/.test(window.location.pathname);
     if (isPolicy) return;
     const seoArticle = document.querySelector(".seo-article");
-    if (!seoArticle) return;
+    if (!seoArticle || document.querySelector(".related-tools-section")) return;
 
     const currentPath = decodeURIComponent(window.location.pathname);
     const currentTool = ALL_TOOLS.find(t => currentPath.includes(t.path.split("/")[0]));
@@ -160,7 +170,6 @@ const ADSENSE_SLOTS = {
           </a>
         `).join("")}
       </div>
-      <!-- AdSense Mid -->
       <div class="adsense-slot adsense-mid">
         <ins class="adsbygoogle"
              style="display:block;text-align:center"
@@ -174,12 +183,11 @@ const ADSENSE_SLOTS = {
     seoArticle.before(relDiv);
   }
 
-  // 하단 광고 (아티클 끝)
   function injectBottomAd() {
     const isPolicy = /privacy|terms|contact|about/.test(window.location.pathname);
     if (isPolicy) return;
     const seoArticle = document.querySelector(".seo-article");
-    if (!seoArticle) return;
+    if (!seoArticle || document.querySelector(".adsense-bottom")) return;
     const adDiv = document.createElement("div");
     adDiv.className = "adsense-slot adsense-bottom";
     adDiv.innerHTML = `
@@ -194,7 +202,6 @@ const ADSENSE_SLOTS = {
     seoArticle.after(adDiv);
   }
 
-  // 공유 버튼 삽입
   function injectShareSection() {
     if (document.querySelector(".share-section")) return;
     const isPolicy = /privacy|terms|contact|about/.test(window.location.pathname);

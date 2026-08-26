@@ -1,0 +1,174 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 자동차세 & 차량 취득세 계산기 (연납할인 9.15%) | ToolMate</title>
+  <meta name="description" content="배기량(cc)과 차종, 연식에 따른 1년 자동차세(교육세 포함, 연납할인)와 신차·중고차 등록 시 발생하는 취득세를 즉시 계산합니다.">
+  <meta name="keywords" content="자동차세계산기,차량취득세,자동차세연납할인,중고차취득세,전기차자동차세,자동차세계산">
+  <link rel="canonical" href="https://toolmate.kr/자동차세%20및%20차량%20취득세%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .car-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; border: 1px solid var(--border); }
+    .main-tax { font-size: 3.2rem; font-weight: 900; font-family: var(--font-mono); color: #38bdf8; margin: 8px 0; }
+    .car-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .car-box { background: rgba(255,255,255,0.08); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .car-box .v { font-size: 1.25rem; font-weight: 800; color: #38bdf8; font-family: var(--font-mono); }
+    .car-box .l { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .car-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="car-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🚗 지방세법 최신 자동차세율</span>
+        <h1 class="page-title">자동차세 & 차량 취득세 계산기</h1>
+        <p class="page-desc">배기량(cc)과 연식에 따른 연간 자동차세와 1월 연납 할인액, 차량 구매 시 납부하는 취득세를 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">차종 분류</label>
+            <select id="carType" class="select-field" onchange="calcCar()">
+              <option value="sedan" selected>일반 승용차 (비영업용)</option>
+              <option value="ev">전기차 / 수소차 (정액 13만원)</option>
+              <option value="van">승합차 / 화물차</option>
+            </select>
+          </div>
+          <div class="form-group" id="ccGroup">
+            <label class="form-label">배기량 (cc)</label>
+            <input type="number" id="carCC" class="input-field" value="1998" step="100" placeholder="예: 1998" oninput="calcCar()">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">차량 연식 (차령 감면 3년차부터 5%씩 최대 50%)</label>
+            <select id="carAge" class="select-field" onchange="calcCar()">
+              <option value="1" selected>신차 ~ 2년 이하 (감면 0%)</option>
+              <option value="3">3년차 (감면 5%)</option>
+              <option value="5">5년차 (감면 15%)</option>
+              <option value="7">7년차 (감면 25%)</option>
+              <option value="10">10년차 (감면 40%)</option>
+              <option value="12">12년 이상 (최대 감면 50%)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">차량 매매/출고 가액 (취득세 계산용, 원)</label>
+            <input type="number" id="carPrice" class="input-field" value="35000000" step="1000000" oninput="calcCar()">
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">1년 총 자동차세 (지방교육세 30% 포함)</div>
+          <div class="main-tax" id="totalAnnualTax">519,480원</div>
+          <div style="font-size:0.9rem; opacity:0.9; color:#facc15;" id="prepayText">💡 1월 연납 신청 시 약 495,000원으로 할인!</div>
+
+          <div class="car-grid">
+            <div class="car-box">
+              <div class="v" id="halfTaxText">259,740원</div>
+              <div class="l">1기분/2기분 (각 6월, 12월)</div>
+            </div>
+            <div class="car-box">
+              <div class="v" id="acquisitionTaxText">2,450,000원</div>
+              <div class="l">차량 취득세 (승용 7%)</div>
+            </div>
+            <div class="car-box">
+              <div class="v" id="discountRateText">0%</div>
+              <div class="l">차령 경감률</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>자동차세 계산 방식 및 연납 할인 팁</h2>
+        <p>승용차 기준 배기량별 cc당 세액: <strong>1,000cc 이하 80원, 1,600cc 이하 140원, 1,600cc 초과 200원</strong>에 지방교육세 30%가 가산됩니다.</p>
+        <p>매년 1월에 1년 치 자동차세를 한 번에 선납하는 <strong>'연납 신청'</strong>을 이용하면 연세액의 일정 비율을 할인받을 수 있어 가장 현명한 절세 팁입니다.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcCar() {
+      const type = document.getElementById('carType').value;
+      const cc = parseFloat(document.getElementById('carCC').value) || 0;
+      const age = parseInt(document.getElementById('carAge').value);
+      const price = parseFloat(document.getElementById('carPrice').value) || 0;
+
+      let baseTax = 0;
+      if (type === 'ev') {
+        baseTax = 100000;
+        document.getElementById('ccGroup').style.display = 'none';
+      } else if (type === 'van') {
+        baseTax = 65000;
+        document.getElementById('ccGroup').style.display = 'none';
+      } else {
+        document.getElementById('ccGroup').style.display = 'block';
+        if (cc <= 1000) baseTax = cc * 80;
+        else if (cc <= 1600) baseTax = cc * 140;
+        else baseTax = cc * 200;
+      }
+
+      // 차령 경감률 (3년차부터 5%씩 최대 50%)
+      let discountRate = 0;
+      if (type === 'sedan') {
+        if (age >= 3) {
+          discountRate = Math.min(0.50, (age - 2) * 0.05);
+        }
+      }
+
+      const discountedBase = baseTax * (1 - discountRate);
+      const eduTax = discountedBase * 0.30;
+      const totalTax = Math.floor((discountedBase + eduTax) / 10) * 10;
+      const halfTax = Math.floor(totalTax / 2);
+      const prepayTax = Math.round(totalTax * 0.95); // 연납 할인 반영
+
+      // 취득세 (일반 승용 7%, 경차 면제/4%, 전기차 140만 감면 등)
+      let acqTax = price * 0.07;
+      if (type === 'ev') acqTax = Math.max(0, acqTax - 1400000);
+      else if (cc <= 1000 && type === 'sedan') acqTax = Math.max(0, acqTax - 750000);
+
+      document.getElementById('totalAnnualTax').textContent = `${totalTax.toLocaleString()}원`;
+      document.getElementById('prepayText').textContent = `💡 1월 연납 신청 시 약 ${prepayTax.toLocaleString()}원으로 할인 혜택!`;
+      document.getElementById('halfTaxText').textContent = `${halfTax.toLocaleString()}원`;
+      document.getElementById('acquisitionTaxText').textContent = `${Math.round(acqTax).toLocaleString()}원`;
+      document.getElementById('discountRateText').textContent = `${Math.round(discountRate * 100)}%`;
+    }
+
+    calcCar();
+  </script>
+</body>
+</html>
