@@ -1,0 +1,210 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>주택청약 가점 계산기 2026 - 1순위 자격 & 가점 즉시 계산 | ToolMate</title>
+  <meta name="description" content="2026년 주택청약 가점 항목(무주택기간·부양가족수·청약통장가입기간)을 입력하면 총 가점과 1순위 자격 여부를 즉시 계산합니다. 국민주택·민영주택 모두 지원.">
+  <meta name="keywords" content="주택청약가점계산기,청약가점,1순위자격,청약가점제,무주택기간,부양가족,청약통장">
+  <link rel="canonical" href="https://toolmate.kr/주택청약 가점 계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"주택청약 가점 계산기","description":"2026년 주택청약 1순위 자격 및 가점을 즉시 계산합니다","url":"https://toolmate.kr/주택청약 가점 계산기/index.html","applicationCategory":"FinanceApplication"}
+  </script>
+  <style>
+    .calc-wrap { max-width: 800px; margin: 0 auto; }
+    .score-section { margin-bottom: 20px; background: var(--surface-alt); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 20px; }
+    .score-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .score-header h3 { font-size: 1rem; font-weight: 800; color: var(--text-main); }
+    .score-badge { background: var(--primary); color: #fff; border-radius: var(--radius-full); padding: 4px 14px; font-size: 0.88rem; font-weight: 800; min-width: 60px; text-align: center; }
+    .result-hero { background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px; text-align: center; margin: 24px 0; }
+    .result-hero .total-score { font-size: 4.5rem; font-weight: 900; font-family: var(--font-mono); color: #93c5fd; line-height: 1; }
+    .result-hero .max-label { font-size: 1rem; opacity: 0.7; margin-top: 4px; }
+    .score-bar-wrap { margin-top: 12px; }
+    .score-bar { height: 12px; background: rgba(255,255,255,0.2); border-radius: var(--radius-full); overflow: hidden; }
+    .score-bar-fill { height: 100%; background: linear-gradient(90deg, #93c5fd, #3b82f6); border-radius: var(--radius-full); transition: width 0.5s ease; }
+    .rank-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+    .rank-card { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .rank-card .rv { font-size: 1.1rem; font-weight: 800; color: #93c5fd; }
+    .rank-card .rl { font-size: 0.78rem; opacity: 0.8; margin-top: 4px; }
+    .score-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px dashed var(--border); }
+    .score-row:last-child { border-bottom: none; }
+    .score-row label { font-size: 0.88rem; color: var(--text-muted); }
+    .score-row .pts { font-weight: 800; color: var(--primary); font-size: 0.95rem; }
+    @media(max-width:600px){ .rank-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="calc-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🏠 2026년 청약 가점제 기준</span>
+        <h1 class="page-title">주택청약 가점 계산기</h1>
+        <p class="page-desc">무주택기간(32점), 부양가족수(35점), 청약통장 가입기간(17점) 총 84점 만점 기준으로 내 가점을 즉시 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <!-- A. 무주택 기간 (최대 32점) -->
+        <div class="score-section">
+          <div class="score-header">
+            <h3>① 무주택 기간 (최대 32점)</h3>
+            <span class="score-badge" id="scoreA">0점</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">무주택 기간을 선택하세요</label>
+            <select id="noHomeYears" class="select-field" onchange="calculate()">
+              <option value="0">유주택자 (0점)</option>
+              <option value="2">1년 미만 (2점)</option>
+              <option value="4">1년 이상~2년 미만 (4점)</option>
+              <option value="6">2년 이상~3년 미만 (6점)</option>
+              <option value="8">3년 이상~4년 미만 (8점)</option>
+              <option value="10">4년 이상~5년 미만 (10점)</option>
+              <option value="12">5년 이상~6년 미만 (12점)</option>
+              <option value="14">6년 이상~7년 미만 (14점)</option>
+              <option value="16">7년 이상~8년 미만 (16점)</option>
+              <option value="18">8년 이상~9년 미만 (18점)</option>
+              <option value="20">9년 이상~10년 미만 (20점)</option>
+              <option value="22">10년 이상~11년 미만 (22점)</option>
+              <option value="24">11년 이상~12년 미만 (24점)</option>
+              <option value="26">12년 이상~13년 미만 (26점)</option>
+              <option value="28">13년 이상~14년 미만 (28점)</option>
+              <option value="30">14년 이상~15년 미만 (30점)</option>
+              <option value="32">15년 이상 (32점)</option>
+            </select>
+          </div>
+          <div class="score-row"><label>📌 만 30세 미만 미혼자는 성년이 된 날(만 30세)부터 산정</label><span class="pts" id="noHomePts">0점</span></div>
+        </div>
+
+        <!-- B. 부양가족 수 (최대 35점) -->
+        <div class="score-section">
+          <div class="score-header">
+            <h3>② 부양가족 수 (최대 35점)</h3>
+            <span class="score-badge" id="scoreB">0점</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">본인 포함 세대원 수 (배우자, 자녀, 부모 등 등본 상 구성원)</label>
+            <select id="familyCount" class="select-field" onchange="calculate()">
+              <option value="5">1인 (신청자 본인만, 5점)</option>
+              <option value="10">2인 (10점)</option>
+              <option value="15" selected>3인 (15점)</option>
+              <option value="20">4인 (20점)</option>
+              <option value="25">5인 (25점)</option>
+              <option value="30">6인 (30점)</option>
+              <option value="35">7인 이상 (35점)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- C. 청약통장 가입기간 (최대 17점) -->
+        <div class="score-section">
+          <div class="score-header">
+            <h3>③ 청약통장 가입기간 (최대 17점)</h3>
+            <span class="score-badge" id="scoreC">0점</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">청약저축/청약종합저축 가입 기간</label>
+            <select id="subscriptionYears" class="select-field" onchange="calculate()">
+              <option value="1">6개월 미만 (1점)</option>
+              <option value="2">6개월 이상~1년 미만 (2점)</option>
+              <option value="3">1년 이상~2년 미만 (3점)</option>
+              <option value="4">2년 이상~3년 미만 (4점)</option>
+              <option value="5">3년 이상~4년 미만 (5점)</option>
+              <option value="6">4년 이상~5년 미만 (6점)</option>
+              <option value="7">5년 이상~6년 미만 (7점)</option>
+              <option value="8">6년 이상~7년 미만 (8점)</option>
+              <option value="9">7년 이상~8년 미만 (9점)</option>
+              <option value="10">8년 이상~9년 미만 (10점)</option>
+              <option value="11">9년 이상~10년 미만 (11점)</option>
+              <option value="12">10년 이상~11년 미만 (12점)</option>
+              <option value="13">11년 이상~12년 미만 (13점)</option>
+              <option value="14">12년 이상~13년 미만 (14점)</option>
+              <option value="15" selected>13년 이상~14년 미만 (15점)</option>
+              <option value="16">14년 이상~15년 미만 (16점)</option>
+              <option value="17">15년 이상 (17점)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결과 -->
+        <div class="result-hero">
+          <div style="font-size:1rem;opacity:0.8;margin-bottom:8px;">내 청약 가점 총합</div>
+          <div class="total-score" id="totalScore">0</div>
+          <div class="max-label">/ 84점 만점</div>
+          <div class="score-bar-wrap">
+            <div class="score-bar"><div class="score-bar-fill" id="scoreBarFill" style="width:0%"></div></div>
+          </div>
+          <div class="rank-grid">
+            <div class="rank-card"><div class="rv" id="rankPercent">0%</div><div class="rl">만점 대비 달성률</div></div>
+            <div class="rank-card"><div class="rv" id="competitiveLevel">보통</div><div class="rl">경쟁력 분석</div></div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>주택청약 가점제 완벽 가이드</h2>
+        <p>주택청약 가점제는 전용면적 85㎡ 이하 민영주택과 국민주택 청약 시 당첨자를 결정하는 주요 기준입니다. 총 84점 만점으로 ①무주택기간(32점) ②부양가족수(35점) ③청약통장 가입기간(17점)의 합산 점수가 높은 순서대로 당첨됩니다.</p>
+        <h3>가점 높이는 실전 전략</h3>
+        <ul>
+          <li><strong>부양가족 점수</strong>가 가장 배점이 높으므로 결혼·자녀 계획과 연계하면 유리합니다.</li>
+          <li><strong>청약통장 가입기간</strong>은 빠를수록 좋으므로 미성년자 자녀 명의로 미리 가입해두면 성년이 되어 사용 시 가입기간이 인정됩니다.</li>
+          <li>수도권 인기 단지 당첨 가점은 보통 60~70점대 이상이며, 지방은 40~50점대도 당첨 사례가 있습니다.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. 본 계산기는 참고용이며 정확한 자격 여부는 청약홈(apply.lh.or.kr)에서 확인하세요.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calculate() {
+      const a = parseInt(document.getElementById('noHomeYears').value) || 0;
+      const b = parseInt(document.getElementById('familyCount').value) || 0;
+      const c = parseInt(document.getElementById('subscriptionYears').value) || 0;
+      const total = a + b + c;
+      const pct = Math.round((total / 84) * 100);
+
+      document.getElementById('scoreA').textContent = a + '점';
+      document.getElementById('scoreB').textContent = b + '점';
+      document.getElementById('scoreC').textContent = c + '점';
+      document.getElementById('noHomePts').textContent = a + '점';
+      document.getElementById('totalScore').textContent = total;
+      document.getElementById('scoreBarFill').style.width = pct + '%';
+      document.getElementById('rankPercent').textContent = pct + '%';
+
+      let level = '';
+      if (total >= 70) level = '🔥 최상위권 (당첨 유력)';
+      else if (total >= 60) level = '💪 상위권 (경쟁력 우수)';
+      else if (total >= 50) level = '👍 중상위 (지방 당첨 가능)';
+      else if (total >= 40) level = '📈 중위권 (가점 향상 필요)';
+      else level = '⬆️ 하위권 (장기 플랜 필요)';
+      document.getElementById('competitiveLevel').textContent = level;
+    }
+    calculate();
+  </script>
+</body>
+</html>

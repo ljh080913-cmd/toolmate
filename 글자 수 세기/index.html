@@ -1,0 +1,216 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>글자수 세기 & 맞춤법 검사기 | ToolMate</title>
+  <meta name="description" content="공백 포함/제외 실시간 글자수, 자소서용 EUC-KR 바이트 계산, 원고지 매수 및 실시간 맞춤법 오류 자동 교정 도구입니다.">
+  <link rel="stylesheet" href="../shared/design-system.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- GNB Header -->
+        <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container">
+    <div class="page-header">
+      <span class="pill-badge">✍️ 취준생 & 학생 필수 도구</span>
+      <h1 class="page-title">글자수 세기 & 실시간 맞춤법 검사기</h1>
+      <p class="page-desc">공백 포함/제외 글자수, 채용사이트 전용 EUC-KR 바이트 계산 및 맞춤법 오류를 실시간으로 자동 수정하세요.</p>
+    </div>
+
+    <!-- 통계 대시보드 -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">공백 포함</div>
+        <div class="stat-value" id="stat-with-space">0</div>
+        <div class="stat-sub">글자</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">공백 제외</div>
+        <div class="stat-value" id="stat-no-space">0</div>
+        <div class="stat-sub">글자</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">공백 수</div>
+        <div class="stat-value" id="stat-space">0</div>
+        <div class="stat-sub">개 (스페이스·줄바꿈)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">단어 수</div>
+        <div class="stat-value" id="stat-words">0</div>
+        <div class="stat-sub">개</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">문장 수</div>
+        <div class="stat-value" id="stat-sentences">0</div>
+        <div class="stat-sub">개</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">줄(행) 수</div>
+        <div class="stat-value" id="stat-lines">0</div>
+        <div class="stat-sub">줄</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">바이트</div>
+        <div class="stat-value" id="stat-bytes">0</div>
+        <div class="stat-sub" id="stat-bytes-sub">UTF-8 기준</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">원고지</div>
+        <div class="stat-value" id="stat-manuscript">0</div>
+        <div class="stat-sub">매 (200자 기준)</div>
+      </div>
+      <div class="stat-card" style="grid-column: span 2;">
+        <div class="stat-label">예상 읽기 시간</div>
+        <div class="stat-value" style="font-size:1.15rem;" id="stat-read-time">—</div>
+        <div class="stat-sub">300자/분(묵독) · 150자/분(낭독)</div>
+      </div>
+    </div>
+
+    <!-- 에디터 + 사이드바 레이아웃 -->
+    <div class="layout">
+
+      <!-- 왼쪽: 에디터 -->
+      <div>
+        <div class="card">
+          <!-- 툴바 -->
+          <div class="editor-toolbar">
+            <button id="btn-copy" class="btn btn-secondary btn-sm">📋 복사</button>
+            <button id="btn-sample" class="btn btn-secondary btn-sm">📄 예시 불러오기</button>
+            <button id="btn-clear" class="btn btn-secondary btn-sm" style="color:var(--danger)">🗑️ 지우기</button>
+            <button id="btn-check" class="btn btn-primary btn-sm">🔍 검사 실행</button>
+            <button id="btn-fix-all" class="btn btn-success btn-sm">⚡ 전체 자동수정</button>
+          </div>
+
+          <!-- 텍스트 입력 -->
+          <div class="editor-wrap">
+            <textarea
+              id="mainTextarea"
+              placeholder="여기에 텍스트를 입력하세요.&#10;글자 수 통계와 맞춤법·문장부호 오류를 실시간으로 확인할 수 있습니다."
+              spellcheck="false"
+            ></textarea>
+          </div>
+
+          <!-- 바이트 모드 선택 -->
+          <div class="byte-mode-row">
+            <strong>바이트 기준:</strong>
+            <label><input type="radio" name="byteMode" value="utf8" checked /> UTF-8 (한글 3B)</label>
+            <label><input type="radio" name="byteMode" value="euckr" /> EUC-KR / 자소서 채용사이트 (한글 2B, 엔터 2B)</label>
+          </div>
+
+          <!-- 목표 글자 수 -->
+          <div class="goal-section">
+            <div class="goal-row">
+              <label for="goalInput">🎯 목표 글자 수 (공백 제외)</label>
+              <input type="number" id="goalInput" placeholder="예: 1000" min="0" step="100" />
+            </div>
+            <div class="progress-wrap">
+              <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+              <div class="progress-label" id="progressLabel">목표 글자 수를 입력하세요</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 텍스트 유틸리티 -->
+        <div class="card" style="margin-top:16px;">
+          <div class="card-header">
+            <span class="card-title">🛠 텍스트 빠른 정리 도구</span>
+          </div>
+          <div class="card-body">
+            <div class="util-grid">
+              <button class="util-btn" id="btn-multi-space">➡️ 연속 공백 → 1칸 정리</button>
+              <button class="util-btn" id="btn-remove-blank">📄 불필요한 빈 줄 제거</button>
+              <button class="util-btn" id="btn-trim">✂️ 앞뒤 공백 제거 (Trim)</button>
+              <button class="util-btn" id="btn-upper">🔠 영문 대문자로 변환</button>
+              <button class="util-btn" id="btn-lower">🔡 영문 소문자로 변환</button>
+              <button class="util-btn" id="btn-remove-special">🚫 특수문자 제거</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 오른쪽: 검사 결과 -->
+      <div class="sidebar">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔍 맞춤법 & 문장부호 검사</span>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <span id="badge-errors" class="issue-count-badge zero">0</span>
+              <span style="font-size:0.75rem;color:var(--text-muted)">오류</span>
+              <span id="badge-warnings" class="issue-count-badge warning zero">0</span>
+              <span style="font-size:0.75rem;color:var(--text-muted)">주의</span>
+            </div>
+          </div>
+          <div class="card-body" style="padding:12px;">
+            <ul id="issueList">
+              <div class="empty-state">
+                <span class="icon">✏️</span>
+                텍스트를 입력하면<br>
+                <strong>실시간 검사 결과</strong>가 나타납니다.
+              </div>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 안내 -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">ℹ️ 주요 검사 규칙</span></div>
+          <div class="card-body" style="font-size:0.82rem;color:var(--text-muted);line-height:1.7;">
+            <p><strong>🔴 맞춤법 오류</strong>: 돼요/되요, 며칠/몇일, 역할/역활, 금세/금새, 어이없다, 뒤처지다 등 35+개 규칙</p>
+            <br>
+            <p><strong>✏️ 문장부호 오류</strong>: 짝 없는 괄호·따옴표 감지, 중복 문장부호(.., ??), 문장부호 앞 불필요한 공백</p>
+            <br>
+            <p><strong>🟡 중복 표현 주의</strong>: 가장 최~, 과반수 이상, 미리 예방 등 중복 어휘 알림</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SEO Information Article -->
+    <article class="seo-article">
+      <h2>글자수 계산 및 맞춤법 검사의 모든 것</h2>
+      <p>자기소개서, 대학교 레포트, 공공기관 제출 서류 작성 시 정확한 글자 수와 맞춤법 준수는 기본적이면서도 가장 중요한 평가 요소입니다.</p>
+      
+      <h3>자소서 바이트(Byte) 계산 시 주의사항</h3>
+      <p>일반 웹(UTF-8)에서는 한글 한 글자가 3바이트로 계산되지만, 대부분의 기업 채용 사이트(잡코리아, 사람인, 대기업 채용 포털)는 <strong>EUC-KR 기준(한글 2바이트, 엔터 2바이트)</strong>을 채택하고 있습니다. 상단의 'EUC-KR' 옵션을 선택하시면 채용 포털 기준과 오차 없는 정확한 바이트 수를 확인할 수 있습니다.</p>
+    </article>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="../shared/common.js"></script>
+  <script src="rules.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,437 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>부동산 중개보수(복비) & 취득세 정밀 계산기 | ToolMate</title>
+  <meta name="description" content="공인중개사법 개정 상한요율 기준 아파트·오피스텔·주택 매매, 전세, 월세 중개수수료(복비) 및 주택수별 취득세·지방교육세를 즉시 계산합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .realty-wrap { max-width: 800px; margin: 0 auto; }
+
+    .tab-bar {
+      display: flex; background: var(--surface-alt);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 4px; margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1; text-align: center; padding: 10px 14px;
+      font-size: 0.95rem; font-weight: 700; color: var(--text-muted);
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .input-unit-wrap {
+      display: flex; align-items: center; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); background: var(--surface); overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .input-unit-wrap:focus-within {
+      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .input-unit-wrap input[type=number] {
+      flex: 1; border: none; outline: none; padding: 12px 16px;
+      font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700;
+      color: var(--text-main); background: transparent;
+    }
+    .input-unit-wrap .unit-tag {
+      padding: 0 16px; font-size: 0.88rem; font-weight: 700;
+      color: var(--text-muted); background: var(--surface-alt);
+      height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .preset-chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .chip-btn {
+      font-size: 0.78rem; font-weight: 600; padding: 4px 10px;
+      border-radius: var(--radius-full); border: 1px solid var(--border);
+      background: var(--surface-alt); color: var(--text-main); cursor: pointer;
+    }
+    .chip-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Result Card */
+    .result-section {
+      margin-top: 24px; background: var(--surface-alt);
+      border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border);
+    }
+    .result-header-row {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    }
+    .result-heading { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0; }
+
+    .data-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 10px 0; border-bottom: 1px dotted var(--border); font-size: 0.95rem;
+    }
+    .data-row .lbl { color: var(--text-muted); font-weight: 600; }
+    .data-row .val { font-family: var(--font-mono); font-weight: 700; color: var(--text-main); font-size: 1.05rem; }
+    .data-row.plus .val { color: var(--success); }
+    .data-row.minus .val { color: var(--danger); }
+
+    .total-hero {
+      margin-top: 20px; padding: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff; border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .total-hero .th-label { font-size: 0.85rem; font-weight: 700; opacity: 0.9; }
+    .total-hero .th-value {
+      font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; margin-top: 6px; line-height: 1.1;
+    }
+    .total-hero .th-value span { font-size: 1.1rem; font-weight: 600; opacity: 0.85; margin-left: 6px; }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827; color: #fff; padding: 12px 24px;
+      border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 999; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .total-hero .th-value { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+    <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="realty-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">🏠 부동산 계약 & 세금 필수 도구</span>
+        <h1 class="page-title">부동산 중개보수(복비) & 취득세 계산기</h1>
+        <p class="page-desc">국토교통부 개정 상한요율 기준 매매·전세·월세 중개보수와 주택수별 취득세를 1초 만에 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <!-- Tab Bar -->
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabFee" onclick="switchCalc('fee')">🤝 중개보수(복비) 계산</button>
+          <button class="tab-btn" id="tabTax" onclick="switchCalc('tax')">📑 부동산 취득세 계산</button>
+        </div>
+
+        <!-- Section 1: Brokerage Fee -->
+        <div id="sectionFee">
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">부동산 매물 종류</label>
+              <select id="propertyType" class="select-field" onchange="calcFee()">
+                <option value="house" selected>주택 (아파트 / 빌라 / 단독)</option>
+                <option value="officetel_live">오피스텔 (주거용 - 전용 85㎡ 이하)</option>
+                <option value="other">기타 (상가 / 토지 / 업무용 오피스텔)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">거래 유형</label>
+              <select id="dealType" class="select-field" onchange="handleDealTypeChange()">
+                <option value="trade" selected>매매 / 교환</option>
+                <option value="charter">전세 (임대차)</option>
+                <option value="monthly">월세 (보증금 + 월차임)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group" id="mainAmountGroup">
+            <label class="form-label" id="amountLabel">거래 금액 (매매가 / 전세보증금)</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="dealAmount" value="500000000" inputmode="numeric" oninput="calcFee()">
+              <span class="unit-tag">원</span>
+            </div>
+            <div class="preset-chips">
+              <button class="chip-btn" onclick="setDealAmt(100000000)">1억</button>
+              <button class="chip-btn" onclick="setDealAmt(300000000)">3억</button>
+              <button class="chip-btn" onclick="setDealAmt(500000000)">5억</button>
+              <button class="chip-btn" onclick="setDealAmt(900000000)">9억</button>
+              <button class="chip-btn" onclick="setDealAmt(1200000000)">12억</button>
+            </div>
+          </div>
+
+          <!-- Monthly Rent Extra Input -->
+          <div class="form-group" id="monthlyGroup" style="display:none;">
+            <label class="form-label">월세 (월 차임)</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="monthlyRent" value="700000" inputmode="numeric" oninput="calcFee()">
+              <span class="unit-tag">원/월</span>
+            </div>
+          </div>
+
+          <!-- Result Fee -->
+          <div class="result-section">
+            <div class="result-header-row">
+              <h2 class="result-heading">📊 중개수수료 산출 내역</h2>
+              <button class="btn btn-secondary btn-sm" onclick="copyFeeSummary()">📋 복비 견적 복사</button>
+            </div>
+
+            <div class="data-row"><span class="lbl">적용 거래금액 (환산보증금)</span><span class="val" id="rAppliedAmount">-</span></div>
+            <div class="data-row"><span class="lbl">법정 상한요율</span><span class="val" id="rMaxRate">-</span></div>
+            <div class="data-row"><span class="lbl">중개보수 (부가세 별도)</span><span class="val" id="rPureFee">-</span></div>
+            <div class="data-row sub"><span class="lbl">부가가치세 (10% 일반과세 기준)</span><span class="val" id="rVat">-</span></div>
+
+            <div class="total-hero">
+              <div class="th-label">최대 법정 중개보수 (부가세 10% 포함 총액)</div>
+              <div class="th-value" id="rTotalFee">0<span>원</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Acquisition Tax -->
+        <div id="sectionTax" style="display:none;">
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">취득 매물 유형</label>
+              <select id="taxPropType" class="select-field" onchange="calcTax()">
+                <option value="house_1" selected>주택 (1주택 취득 / 일시적 2주택)</option>
+                <option value="house_2">주택 (조정지역 2주택 / 8%)</option>
+                <option value="house_3">주택 (3주택 이상 다주택 / 12%)</option>
+                <option value="non_house">비주택 (오피스텔 / 토지 / 상가 - 4%)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">전용 면적</label>
+              <select id="areaType" class="select-field" onchange="calcTax()">
+                <option value="under85" selected>85㎡ 이하 (국민주택규모 / 농특세 비과세)</option>
+                <option value="over85">85㎡ 초과 (농어촌특별세 부과 대상)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">취득 가액 (매매 취득금액)</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="taxAmount" value="600000000" inputmode="numeric" oninput="calcTax()">
+              <span class="unit-tag">원</span>
+            </div>
+          </div>
+
+          <div class="result-section">
+            <h2 class="result-heading">📑 부동산 취득세 납부 내역</h2>
+
+            <div class="data-row"><span class="lbl">기본 취득세</span><span class="val" id="rAcqTax">-</span></div>
+            <div class="data-row sub"><span class="lbl">지방교육세</span><span class="val" id="rEduTax">-</span></div>
+            <div class="data-row sub"><span class="lbl">농어촌특별세</span><span class="val" id="rRuralTax">-</span></div>
+
+            <div class="total-hero">
+              <div class="th-label">총 납부 세액 합계 (취득세 + 교육세 + 농특세)</div>
+              <div class="th-value" id="rTotalTax">0<span>원</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>부동산 복비 상한요율 및 취득세 총정리</h2>
+        <p>공인중개사법에 따라 중개보수는 법정 상한요율 이내에서 중개의뢰인과 개업공인중개사가 협의하여 결정하며, 상한을 초과하여 수수료를 수수하는 것은 불법입니다.</p>
+
+        <h3>주택 매매 상한요율 기준</h3>
+        <ul>
+          <li><strong>5천만원 미만:</strong> 0.6% (한도액 25만원)</li>
+          <li><strong>5천만 ~ 2억원 미만:</strong> 0.5% (한도액 80만원)</li>
+          <li><strong>2억 ~ 9억원 미만:</strong> 0.4%</li>
+          <li><strong>9억 ~ 12억원 미만:</strong> 0.5%</li>
+          <li><strong>12억 ~ 15억원 미만:</strong> 0.6%</li>
+          <li><strong>15억원 이상:</strong> 0.7%</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let calcMode = 'fee';
+
+    function switchCalc(m) {
+      calcMode = m;
+      document.getElementById('tabFee').classList.toggle('active', m === 'fee');
+      document.getElementById('tabTax').classList.toggle('active', m === 'tax');
+      document.getElementById('sectionFee').style.display = m === 'fee' ? 'block' : 'none';
+      document.getElementById('sectionTax').style.display = m === 'tax' ? 'block' : 'none';
+    }
+
+    function handleDealTypeChange() {
+      const type = document.getElementById('dealType').value;
+      if (type === 'monthly') {
+        document.getElementById('amountLabel').textContent = '월세 보증금';
+        document.getElementById('monthlyGroup').style.display = 'block';
+        document.getElementById('dealAmount').value = 50000000;
+      } else {
+        document.getElementById('amountLabel').textContent = type === 'trade' ? '매매가' : '전세 보증금';
+        document.getElementById('monthlyGroup').style.display = 'none';
+        document.getElementById('dealAmount').value = 500000000;
+      }
+      calcFee();
+    }
+
+    function setDealAmt(v) { document.getElementById('dealAmount').value = v; calcFee(); }
+    function won(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+
+    let feeSummary = "";
+
+    function calcFee() {
+      const pType = document.getElementById('propertyType').value;
+      const dType = document.getElementById('dealType').value;
+      const baseAmt = parseFloat(document.getElementById('dealAmount').value) || 0;
+      const monthly = parseFloat(document.getElementById('monthlyRent').value) || 0;
+
+      let appliedAmt = baseAmt;
+
+      // 월세 환산보증금 공식: 보증금 + (월세 * 100), 단 5천만원 미만 시 (월세 * 70)
+      if (dType === 'monthly') {
+        let calcVal = baseAmt + (monthly * 100);
+        if (calcVal < 50000000) {
+          calcVal = baseAmt + (monthly * 70);
+        }
+        appliedAmt = calcVal;
+      }
+
+      let rate = 0.004;
+      let maxLimit = 0;
+
+      if (pType === 'house') {
+        if (dType === 'trade') {
+          if (appliedAmt < 50000000) { rate = 0.006; maxLimit = 250000; }
+          else if (appliedAmt < 200000000) { rate = 0.005; maxLimit = 800000; }
+          else if (appliedAmt < 900000000) { rate = 0.004; }
+          else if (appliedAmt < 1200000000) { rate = 0.005; }
+          else if (appliedAmt < 1500000000) { rate = 0.006; }
+          else { rate = 0.007; }
+        } else { // 임대차
+          if (appliedAmt < 50000000) { rate = 0.005; maxLimit = 200000; }
+          else if (appliedAmt < 100000000) { rate = 0.004; maxLimit = 300000; }
+          else if (appliedAmt < 900000000) { rate = 0.003; }
+          else if (appliedAmt < 1200000000) { rate = 0.004; }
+          else if (appliedAmt < 1500000000) { rate = 0.005; }
+          else { rate = 0.006; }
+        }
+      } else if (pType === 'officetel_live') {
+        rate = dType === 'trade' ? 0.005 : 0.004;
+      } else {
+        rate = 0.009; // 상가 토지
+      }
+
+      let pureFee = appliedAmt * rate;
+      if (maxLimit > 0 && pureFee > maxLimit) {
+        pureFee = maxLimit;
+      }
+
+      const vat = pureFee * 0.10;
+      const totalFee = pureFee + vat;
+
+      document.getElementById('rAppliedAmount').textContent = won(appliedAmt);
+      document.getElementById('rMaxRate').textContent = `${(rate * 100).toFixed(2)}% ${maxLimit > 0 ? `(한도: ${won(maxLimit)})` : ''}`;
+      document.getElementById('rPureFee').textContent = won(pureFee);
+      document.getElementById('rVat').textContent = '+' + won(vat);
+      document.getElementById('rTotalFee').innerHTML = won(totalFee) + '<span>원</span>';
+
+      feeSummary = `[부동산 중개보수 견적서]\n• 적용 거래금액: ${won(appliedAmt)}\n• 상한요율: ${(rate * 100).toFixed(2)}%\n• 중개보수: ${won(pureFee)}\n• 부가세(10%): ${won(vat)}\n• 총 합계: ${won(totalFee)}`;
+    }
+
+    function calcTax() {
+      const propType = document.getElementById('taxPropType').value;
+      const area = document.getElementById('areaType').value;
+      const price = parseFloat(document.getElementById('taxAmount').value) || 0;
+
+      let acqRate = 0.01;
+      let eduRate = 0.001;
+      let ruralRate = 0.0;
+
+      if (propType === 'house_1') {
+        if (price <= 600000000) {
+          acqRate = 0.01;
+          eduRate = 0.001;
+        } else if (price <= 900000000) {
+          // 6억~9억 누진 (가격 * 2/3억 - 3)
+          acqRate = (price * (2 / 300000000) - 3) / 100;
+          eduRate = acqRate * 0.10;
+        } else {
+          acqRate = 0.03;
+          eduRate = 0.003;
+        }
+      } else if (propType === 'house_2') {
+        acqRate = 0.08;
+        eduRate = 0.004;
+      } else if (propType === 'house_3') {
+        acqRate = 0.12;
+        eduRate = 0.004;
+      } else {
+        acqRate = 0.04;
+        eduRate = 0.004;
+        ruralRate = 0.002;
+      }
+
+      if (area === 'over85' && propType.startsWith('house')) {
+        ruralRate = 0.002;
+      }
+
+      const acqTax = Math.round(price * acqRate);
+      const eduTax = Math.round(price * eduRate);
+      const ruralTax = Math.round(price * ruralRate);
+      const totalTax = acqTax + eduTax + ruralTax;
+
+      document.getElementById('rAcqTax').textContent = `${won(acqTax)} (${(acqRate * 100).toFixed(2)}%)`;
+      document.getElementById('rEduTax').textContent = won(eduTax);
+      document.getElementById('rRuralTax').textContent = ruralTax > 0 ? won(ruralTax) : '비과세 (85㎡ 이하)';
+      document.getElementById('rTotalTax').innerHTML = won(totalTax) + '<span>원</span>';
+    }
+
+    function copyFeeSummary() {
+      navigator.clipboard.writeText(feeSummary).then(() => showToast('📋 중개보수 견적이 복사되었습니다.'));
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toastEl = document.getElementById('toast');
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+    }
+
+    calcFee();
+    calcTax();
+  </script>
+</body>
+</html>

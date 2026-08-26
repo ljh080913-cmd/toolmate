@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사이트 소개 | ToolMate</title>
+  <meta name="description" content="ToolMate 서비스 소개 및 운영 철학 안내입니다.">
+  <link rel="stylesheet" href="shared/design-system.css">
+  <style>
+    .about-content { max-width: 800px; margin: 40px auto; line-height: 1.8; color: var(--text-main); }
+    .about-content h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 24px; color: var(--text-main); }
+    .about-content h2 { font-size: 1.25rem; font-weight: 700; margin: 32px 0 12px; color: var(--primary); }
+    .about-content p { font-size: 0.98rem; color: var(--text-muted); margin-bottom: 16px; }
+    .value-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    .val-card { background: var(--surface-alt); border: 1px solid var(--border); padding: 20px; border-radius: var(--radius-md); }
+    .val-card h3 { font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 8px; }
+    .val-card p { font-size: 0.88rem; color: var(--text-muted); margin: 0; }
+    @media (max-width: 600px) { .value-cards { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="about-content">
+      <h1>ToolMate 소개 (About Us)</h1>
+      <p><strong>ToolMate</strong>는 학생, 취업준비생, 직장인, 프리랜서, 1인 사업자가 일상과 업무 속에서 매일 마주하는 계산과 작업을 가장 빠르고 안전하게 해결할 수 있도록 돕는 <strong>올인원 웹 유틸리티 플랫폼</strong>입니다.</p>
+
+      <h2>우리의 핵심 가치</h2>
+      <div class="value-cards">
+        <div class="val-card">
+          <h3>⚡ 100% 무지연 속도</h3>
+          <p>서버 통신 딜레이 없이 사용자의 브라우저 내에서 최신 웹 기술로 즉시 연산하고 결과를 제공합니다.</p>
+        </div>
+        <div class="val-card">
+          <h3>🔒 완벽한 개인정보 보호</h3>
+          <p>사용자의 텍스트, 이미지, 재무 정보가 외부 서버로 절대 유출되지 않는 제로 서버 아키텍처를 지향합니다.</p>
+        </div>
+        <div class="val-card">
+          <h3>📐 정확한 최신 법령 반영</h3>
+          <p>최신 최저시급, 세법 개정안, 미플린-세인트 지어 BMR 공식 등 신뢰성 높은 최신 기준만을 적용합니다.</p>
+        </div>
+        <div class="val-card">
+          <h3>📱 누구나 쉬운 접근성</h3>
+          <p>회원가입, 로그인, 프로그램 설치 없이 모바일과 PC 어디서나 100% 무료로 사용할 수 있습니다.</p>
+        </div>
+      </div>
+
+      <h2>향후 운영 계획</h2>
+      <p>ToolMate는 앞으로도 사용자의 피드백을 적극 수렴하여 더 실용적이고 강력한 도구들을 지속적으로 개발·업데이트해 나갈 것입니다.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="about.html" style="color:var(--primary); font-weight:700;">사이트 소개</a>
+        <a href="privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="shared/common.js"></script>
+</body>
+</html>

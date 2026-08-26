@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>4대보험료 계산기 2026 - 근로자·사업주 부담금 즉시 계산 | ToolMate</title>
+  <meta name="description" content="2026년 최신 4대보험료(국민연금·건강보험·고용보험·산재보험)의 근로자 부담금과 사업주 부담금을 월급여 입력 한 번으로 즉시 계산합니다.">
+  <meta name="keywords" content="4대보험계산기,4대보험료,국민연금,건강보험,고용보험,산재보험,근로자부담금">
+  <link rel="canonical" href="https://toolmate.kr/4대보험료 계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"4대보험료 계산기","description":"2026년 기준 4대보험 근로자·사업주 부담금을 즉시 계산합니다","url":"https://toolmate.kr/4대보험료 계산기/index.html","applicationCategory":"FinanceApplication"}
+  </script>
+  <style>
+    .calc-wrap { max-width: 800px; margin: 0 auto; }
+    .insurance-table { width: 100%; border-collapse: collapse; margin-top: 20px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border); }
+    .insurance-table th { background: var(--primary); color: #fff; padding: 12px 16px; font-weight: 700; font-size: 0.88rem; text-align: center; }
+    .insurance-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; text-align: center; }
+    .insurance-table tr:last-child td { border-bottom: none; }
+    .insurance-table tr:nth-child(even) td { background: var(--surface-alt); }
+    .insurance-table td:first-child { text-align: left; font-weight: 700; }
+    .insurance-table .rate-col { color: var(--text-muted); font-size: 0.82rem; }
+    .insurance-table .worker-col { color: var(--primary); font-weight: 800; }
+    .insurance-table .employer-col { color: var(--success); font-weight: 800; }
+    .total-row td { background: var(--primary-light) !important; font-weight: 800; font-size: 1rem; }
+    .summary-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 20px; }
+    .sum-card { background: var(--surface-alt); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 18px; text-align: center; }
+    .sum-card.worker { border-color: var(--primary); }
+    .sum-card.employer { border-color: var(--success); }
+    .sum-card .sv { font-size: 1.5rem; font-weight: 800; font-family: var(--font-mono); margin: 6px 0; }
+    .sum-card.worker .sv { color: var(--primary); }
+    .sum-card.employer .sv { color: var(--success); }
+    .sum-card .sl { font-size: 0.8rem; color: var(--text-muted); }
+    @media(max-width:600px){ .summary-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="calc-wrap">
+      <div class="page-header">
+        <span class="pill-badge">📊 2026년 최신 요율 자동 적용</span>
+        <h1 class="page-title">4대보험료 계산기</h1>
+        <p class="page-desc">월 급여 입력만으로 국민연금·건강보험·고용보험·산재보험의 근로자 부담금과 사업주 부담금을 한눈에 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="form-group">
+            <label class="form-label">월 급여 (세전 기준)</label>
+            <input type="number" id="salary" class="input-field" value="3000000" step="10000" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">사업 유형 (산재보험 요율)</label>
+            <select id="bizType" class="select-field" onchange="calculate()">
+              <option value="0.7">일반 사무직 (0.7%)</option>
+              <option value="1.0">제조업 평균 (1.0%)</option>
+              <option value="3.5">건설업 (3.5%)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 요약 카드 -->
+        <div class="summary-grid">
+          <div class="sum-card">
+            <div class="sl">💰 월 급여 (세전)</div>
+            <div class="sv" id="totalSalary">3,000,000원</div>
+          </div>
+          <div class="sum-card worker">
+            <div class="sl">👤 근로자 부담 합계</div>
+            <div class="sv" id="workerTotal">0원</div>
+          </div>
+          <div class="sum-card employer">
+            <div class="sl">🏢 사업주 부담 합계</div>
+            <div class="sv" id="employerTotal">0원</div>
+          </div>
+        </div>
+
+        <!-- 상세 표 -->
+        <table class="insurance-table">
+          <thead>
+            <tr>
+              <th>보험 종목</th>
+              <th class="rate-col">근로자 요율</th>
+              <th class="rate-col">사업주 요율</th>
+              <th class="worker-col">근로자 부담</th>
+              <th class="employer-col">사업주 부담</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+
+      <article class="seo-article">
+        <h2>2026년 4대보험 요율 총정리</h2>
+        <p>4대보험(국민연금·건강보험·고용보험·산재보험)은 모든 근로자가 의무 가입해야 하는 사회보험입니다. 2026년 기준 요율은 다음과 같습니다.</p>
+        <ul>
+          <li><strong>국민연금</strong>: 총 9% (근로자 4.5% + 사업주 4.5%). 기준소득월액 상한 617만원 / 하한 37만원.</li>
+          <li><strong>건강보험</strong>: 총 7.09% (근로자 3.545% + 사업주 3.545%). 장기요양보험은 건강보험료의 12.95%를 별도 부과.</li>
+          <li><strong>고용보험</strong>: 근로자 0.9%, 사업주 0.9%~1.5% (150인 이상 사업장 차등).</li>
+          <li><strong>산재보험</strong>: 100% 사업주 부담. 업종별 0.7%~38% 차등 적용.</li>
+        </ul>
+        <h3>주의사항</h3>
+        <p>본 계산기는 참고용으로 실제 4대보험료는 공단 기준소득월액 결정, 보수월액 산정 방식에 따라 달라질 수 있습니다. 정확한 보험료는 국민건강보험공단 또는 근로복지공단에 문의하세요.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. 본 계산기는 참고용이며 정확한 금액은 각 공단에 문의하세요.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    const RATES = [
+      { name: '🔵 국민연금', workerRate: 0.045, employerRate: 0.045, workerLabel: '4.5%', employerLabel: '4.5%', cap: 6170000 },
+      { name: '🟢 건강보험', workerRate: 0.03545, employerRate: 0.03545, workerLabel: '3.545%', employerLabel: '3.545%' },
+      { name: '🟡 장기요양', isLtc: true, workerLabel: '건보료×12.95%×½', employerLabel: '건보료×12.95%×½' },
+      { name: '🟠 고용보험', workerRate: 0.009, employerRate: 0.009, workerLabel: '0.9%', employerLabel: '0.9%' },
+      { name: '🔴 산재보험', workerRate: 0, employerRate: null, workerLabel: '0% (면제)', employerLabel: '업종별' },
+    ];
+
+    function calculate() {
+      const salary = parseFloat(document.getElementById('salary').value) || 0;
+      const bizRate = parseFloat(document.getElementById('bizType').value) / 100;
+
+      const rows = [];
+      let workerSum = 0, employerSum = 0;
+
+      // 국민연금
+      const pensionBase = Math.min(salary, 6170000);
+      const pensionW = Math.floor(pensionBase * 0.045);
+      const pensionE = Math.floor(pensionBase * 0.045);
+      rows.push({ name: '🔵 국민연금', workerLabel: '4.5%', employerLabel: '4.5%', w: pensionW, e: pensionE, note: pensionBase < salary ? `(상한 617만 적용)` : '' });
+      workerSum += pensionW; employerSum += pensionE;
+
+      // 건강보험
+      const hiW = Math.floor(salary * 0.03545);
+      const hiE = Math.floor(salary * 0.03545);
+      rows.push({ name: '🟢 건강보험', workerLabel: '3.545%', employerLabel: '3.545%', w: hiW, e: hiE });
+      workerSum += hiW; employerSum += hiE;
+
+      // 장기요양
+      const ltcW = Math.floor(hiW * 0.1295);
+      const ltcE = Math.floor(hiE * 0.1295);
+      rows.push({ name: '🟡 장기요양', workerLabel: '건보×12.95%', employerLabel: '건보×12.95%', w: ltcW, e: ltcE });
+      workerSum += ltcW; employerSum += ltcE;
+
+      // 고용보험
+      const eiW = Math.floor(salary * 0.009);
+      const eiE = Math.floor(salary * 0.009);
+      rows.push({ name: '🟠 고용보험', workerLabel: '0.9%', employerLabel: '0.9%', w: eiW, e: eiE });
+      workerSum += eiW; employerSum += eiE;
+
+      // 산재보험
+      const wciE = Math.floor(salary * bizRate);
+      rows.push({ name: '🔴 산재보험', workerLabel: '면제 (0%)', employerLabel: (bizRate*100).toFixed(1)+'%', w: 0, e: wciE });
+      employerSum += wciE;
+
+      // 렌더
+      document.getElementById('totalSalary').textContent = salary.toLocaleString() + '원';
+      document.getElementById('workerTotal').textContent = workerSum.toLocaleString() + '원';
+      document.getElementById('employerTotal').textContent = employerSum.toLocaleString() + '원';
+
+      const tbody = document.getElementById('tableBody');
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.name}${r.note ? `<br><small style="color:var(--text-muted);font-size:0.75rem;">${r.note}</small>` : ''}</td>
+          <td class="rate-col">${r.workerLabel}</td>
+          <td class="rate-col">${r.employerLabel}</td>
+          <td class="worker-col">${r.w.toLocaleString()}원</td>
+          <td class="employer-col">${r.e.toLocaleString()}원</td>
+        </tr>
+      `).join('') + `
+        <tr class="total-row">
+          <td colspan="3">✅ 합계</td>
+          <td class="worker-col">${workerSum.toLocaleString()}원</td>
+          <td class="employer-col">${employerSum.toLocaleString()}원</td>
+        </tr>
+      `;
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

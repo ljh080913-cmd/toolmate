@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실업급여(구직급여) 계산기 2026 - 수급액 & 지급일수 즉시 계산 | ToolMate</title>
+  <meta name="description" content="2026년 최신 실업급여(구직급여) 수급액과 지급일수를 즉시 계산합니다. 하한액, 상한액 자동 적용, 퇴직 사유별 수급 조건 안내 포함.">
+  <meta name="keywords" content="실업급여계산기,구직급여,실업급여조건,실업급여지급액,실업급여신청,실업급여일수">
+  <link rel="canonical" href="https://toolmate.kr/실업급여 계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"실업급여(구직급여) 계산기","description":"2026년 실업급여 수급액과 지급일수를 즉시 계산합니다","url":"https://toolmate.kr/실업급여 계산기/index.html","applicationCategory":"FinanceApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"KRW"}}
+  </script>
+  <style>
+    .calc-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #064e3b 0%, #065f46 100%); color:#fff; border-radius: var(--radius-lg); padding: 28px; text-align: center; margin-top: 20px; }
+    .result-hero .r-label { font-size: 0.88rem; opacity: 0.85; font-weight: 600; margin-bottom: 4px; }
+    .result-hero .r-value { font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; color: #6ee7b7; margin: 6px 0; }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+    .result-sub-card { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .result-sub-card .sub-val { font-size: 1.25rem; font-weight: 800; color: #6ee7b7; }
+    .result-sub-card .sub-lbl { font-size: 0.78rem; opacity: 0.8; margin-top: 4px; }
+    .condition-box { background: var(--warning-light); border: 1px solid var(--warning); border-radius: var(--radius-md); padding: 16px; margin-top: 16px; }
+    .condition-box h4 { font-size: 0.95rem; font-weight: 800; color: var(--warning); margin-bottom: 8px; }
+    .condition-box ul { padding-left: 18px; font-size: 0.88rem; line-height: 1.9; color: var(--text-main); }
+    .faq-section { margin-top: 28px; }
+    .faq-item { border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 10px; overflow: hidden; }
+    .faq-q { padding: 14px 18px; font-weight: 700; cursor: pointer; background: var(--surface-alt); display: flex; justify-content: space-between; align-items: center; font-size: 0.93rem; }
+    .faq-a { padding: 0 18px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; font-size: 0.88rem; line-height: 1.8; color: var(--text-muted); }
+    .faq-a.open { max-height: 300px; padding: 14px 18px; }
+    @media(max-width:600px){ .grid-2{grid-template-columns:1fr;} .result-grid{grid-template-columns:1fr 1fr;} }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">&#x26A1;</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="calc-wrap">
+      <div class="page-header">
+        <span class="pill-badge">💰 2026년 최신 기준 적용</span>
+        <h1 class="page-title">실업급여(구직급여) 수급액 계산기</h1>
+        <p class="page-desc">퇴직 전 평균임금, 나이, 고용보험 가입 기간을 입력하면 구직급여(실업급여) 하루 지급액과 총 수급액을 즉시 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">퇴직 전 3개월 평균 월급여 (세전)</label>
+            <input type="number" id="salary" class="input-field" value="3000000" step="10000" placeholder="월 급여 (원)" oninput="calculate()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">퇴직 당시 만 나이</label>
+            <select id="age" class="select-field" onchange="calculate()">
+              <option value="30">만 50세 미만 (30~49세)</option>
+              <option value="50">만 50~59세</option>
+              <option value="60">만 60세 이상 &amp; 장애인</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">고용보험 총 가입 기간 (이직일 기준)</label>
+          <select id="insuredPeriod" class="select-field" onchange="calculate()">
+            <option value="120">1년 미만 (180일 이상~1년)</option>
+            <option value="150">1년 이상 ~ 3년 미만</option>
+            <option value="180" selected>3년 이상 ~ 5년 미만</option>
+            <option value="210">5년 이상 ~ 10년 미만</option>
+            <option value="240">10년 이상</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">퇴직/이직 사유</label>
+          <select id="reason" class="select-field" onchange="calculate()">
+            <option value="involuntary">비자발적 퇴직 (권고사직, 계약만료, 폐업 등) ← 수급 가능</option>
+            <option value="voluntary">자발적 퇴직 (개인 사정 사직) ← 원칙적 수급 불가</option>
+          </select>
+        </div>
+
+        <div class="result-hero" id="resultHero">
+          <div class="r-label">예상 총 수급액 (세전)</div>
+          <div class="r-value" id="totalAmount">0원</div>
+          <div class="result-grid">
+            <div class="result-sub-card">
+              <div class="sub-val" id="dailyAmount">-</div>
+              <div class="sub-lbl">하루 지급액 (일액)</div>
+            </div>
+            <div class="result-sub-card">
+              <div class="sub-val" id="payDays">-</div>
+              <div class="sub-lbl">지급일수</div>
+            </div>
+            <div class="result-sub-card">
+              <div class="sub-val" id="monthlyEst">-</div>
+              <div class="sub-lbl">월 수령액 환산</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="condition-box">
+          <h4>⚠️ 실업급여 수급 요건 체크</h4>
+          <ul>
+            <li>이직일 이전 18개월 중 <strong>피보험 단위기간 180일 이상</strong></li>
+            <li>비자발적 이직 (권고사직, 계약만료, 사업장 폐업 등)</li>
+            <li>근로 의사·능력이 있음에도 취업하지 못한 상태</li>
+            <li>적극적인 재취업 활동 (구직급여 수급 중 4주마다 실업인정)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="faq-section">
+        <h2 style="font-size:1.15rem;font-weight:800;margin-bottom:14px;">❓ 실업급여 자주 묻는 질문 (FAQ)</h2>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">실업급여 신청은 언제, 어디서 하나요? <span>▾</span></div><div class="faq-a">퇴직 후 지체 없이 주소지 관할 고용센터에 방문하거나 고용24(www.work24.go.kr) 온라인으로 신청합니다. 이직 후 12개월이 지나면 소정급여일수가 남아 있어도 수급 불가능하므로 빠르게 신청하는 것이 중요합니다.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">자발적 퇴사도 실업급여를 받을 수 있나요? <span>▾</span></div><div class="faq-a">원칙적으로는 불가하지만 ①직장 내 괴롭힘·성희롱 ②임금 체불 ③사업장 이전으로 출퇴근 왕복 3시간 초과 ④질병·부상으로 업무 불가 ⑤배우자 이직·육아 등의 사유가 있으면 자발적 퇴사도 수급 가능합니다. 해당 사유 증빙서류 준비가 필요합니다.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">2026년 실업급여 하한액·상한액은 얼마인가요? <span>▾</span></div><div class="faq-a">2026년 기준: 상한액 = 1일 66,000원 (월 환산 약 198만원), 하한액 = 최저시급의 80% × 1일 소정근로시간 기준 (최저시급 10,320원 기준 하한 약 61,152원/일 8시간). 본인 산정액이 하한액보다 낮으면 하한액으로 지급됩니다.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">실업급여 수급 중 아르바이트를 해도 되나요? <span>▾</span></div><div class="faq-a">신고 없이 취업 또는 근로 시 부정수급으로 전액 반환 및 추가징수(최대 5배) 처분이 내려집니다. 단, 주 15시간 미만 단기 아르바이트는 실업 신고 후 실업인정을 받으면 취업으로 간주되지 않는 경우도 있으므로 사전에 고용센터 확인이 필요합니다.</div></div>
+      </div>
+
+      <article class="seo-article">
+        <h2>2026년 실업급여(구직급여) 완벽 가이드</h2>
+        <p>실업급여(구직급여)는 고용보험에 가입된 근로자가 비자발적으로 이직한 경우 재취업 기간 동안 생활 안정과 구직활동 지원을 위해 지급되는 사회보험 급여입니다. 2026년 기준 하루 지급액은 <strong>퇴직 전 평균임금의 60%</strong>이며, 상한액 66,000원, 하한액은 최저시급의 80%가 적용됩니다.</p>
+        <h3>구직급여 지급일수 기준표 (2026년)</h3>
+        <p>고용보험 가입 기간과 연령에 따라 120~270일이 지급됩니다. 10년 이상 가입하고 만 50세 이상이면 최대 270일(약 9개월)을 받을 수 있습니다.</p>
+        <h3>실업급여 신청 절차</h3>
+        <p>①퇴직 → ②이직확인서 발급(전 직장) → ③수급자격 인정 신청(고용센터 방문 또는 고용24 온라인) → ④구직활동 신고(4주 단위 실업인정) → ⑤구직급여 지급</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. 본 계산기는 참고용이며 정확한 수급 여부는 고용센터에 문의하세요.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    const DAILY_UPPER = 66000;
+    const MIN_WAGE = 10320;
+    const DAILY_LOWER = Math.floor(MIN_WAGE * 0.8 * 8);
+
+    const PAY_DAYS_TABLE = {
+      30: { 120: 120, 150: 150, 180: 180, 210: 210, 240: 240 },
+      50: { 120: 120, 150: 180, 180: 210, 210: 240, 240: 270 },
+      60: { 120: 120, 150: 180, 180: 210, 210: 240, 240: 270 }
+    };
+
+    function calculate() {
+      const salaryVal = parseFloat(document.getElementById('salary').value) || 0;
+      const ageKey = parseInt(document.getElementById('age').value);
+      const periodKey = parseInt(document.getElementById('insuredPeriod').value);
+      const reason = document.getElementById('reason').value;
+
+      const dailyAvg = salaryVal / 30;
+      let dailyPay = dailyAvg * 0.60;
+      dailyPay = Math.min(DAILY_UPPER, Math.max(DAILY_LOWER, dailyPay));
+      dailyPay = Math.floor(dailyPay);
+
+      const payDays = PAY_DAYS_TABLE[ageKey][periodKey];
+      const total = dailyPay * payDays;
+      const monthly = dailyPay * 30;
+
+      document.getElementById('dailyAmount').textContent = dailyPay.toLocaleString() + '원';
+      document.getElementById('payDays').textContent = payDays + '일';
+      document.getElementById('monthlyEst').textContent = monthly.toLocaleString() + '원';
+      document.getElementById('totalAmount').textContent = total.toLocaleString() + '원';
+
+      const hero = document.getElementById('resultHero');
+      if (reason === 'voluntary') {
+        hero.style.background = 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)';
+      } else {
+        hero.style.background = 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)';
+      }
+    }
+
+    function toggleFaq(el) {
+      const ans = el.nextElementSibling;
+      ans.classList.toggle('open');
+      el.querySelector('span').textContent = ans.classList.contains('open') ? '▴' : '▾';
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

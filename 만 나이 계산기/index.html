@@ -1,0 +1,181 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>만 나이 계산기 2026 - 한국 나이 & 연 나이 동시 계산 | ToolMate</title>
+  <meta name="description" content="2023년 6월부터 법적으로 통일된 만 나이로 내 나이를 즉시 계산합니다. 한국 나이(세는 나이), 연 나이, 만 나이를 동시에 확인하세요.">
+  <meta name="keywords" content="만나이계산기,만나이,한국나이,세는나이,나이계산기,내나이계산">
+  <link rel="canonical" href="https://toolmate.kr/만 나이 계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebApplication","name":"만 나이 계산기","description":"한국 만 나이, 세는 나이, 연 나이를 동시에 계산합니다","url":"https://toolmate.kr/만 나이 계산기/index.html","applicationCategory":"UtilitiesApplication"}
+  </script>
+  <style>
+    .calc-wrap { max-width: 720px; margin: 0 auto; }
+    .big-result {
+      text-align: center; padding: 32px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+      border-radius: var(--radius-lg); color: #fff; margin-top: 20px;
+    }
+    .big-result .age-main { font-size: 4rem; font-weight: 900; line-height: 1; font-family: var(--font-mono); color: #fff; }
+    .big-result .age-unit { font-size: 1.5rem; font-weight: 700; margin-left: 4px; }
+    .big-result .age-sub { font-size: 0.95rem; opacity: 0.85; margin-top: 8px; }
+    .age-comparison-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+    .age-cmp-card { background: rgba(255,255,255,0.15); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .age-cmp-card .val { font-size: 1.6rem; font-weight: 800; }
+    .age-cmp-card .lbl { font-size: 0.78rem; opacity: 0.8; margin-top: 4px; }
+    .extra-info { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .extra-card { background: var(--surface-alt); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .extra-card .ev { font-size: 1.1rem; font-weight: 800; color: var(--primary); }
+    .extra-card .el { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+    @media(max-width:600px){ .age-comparison-grid{grid-template-columns:1fr 1fr;} .extra-info{grid-template-columns:1fr 1fr;} }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="calc-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🎂 2023년 만 나이 통일법 적용</span>
+        <h1 class="page-title">만 나이 계산기</h1>
+        <p class="page-desc">생년월일을 입력하면 법적 만 나이, 세는 나이(한국 나이), 연 나이를 동시에 계산합니다. 다음 생일까지 남은 날도 확인하세요.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="form-group">
+          <label class="form-label">생년월일 선택</label>
+          <input type="date" id="birthDate" class="input-field" oninput="calculate()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">기준 날짜 (오늘 자동 설정)</label>
+          <input type="date" id="baseDate" class="input-field" oninput="calculate()">
+        </div>
+
+        <div class="big-result" id="bigResult" style="display:none">
+          <div>만 <span class="age-main" id="ageMain">0</span><span class="age-unit">세</span></div>
+          <div class="age-sub" id="ageSub">생일이 지났습니다</div>
+          <div class="age-comparison-grid">
+            <div class="age-cmp-card"><div class="val" id="manAge">-</div><div class="lbl">만 나이 (법적)</div></div>
+            <div class="age-cmp-card"><div class="val" id="korAge">-</div><div class="lbl">세는 나이 (한국)</div></div>
+            <div class="age-cmp-card"><div class="val" id="yearAge">-</div><div class="lbl">연 나이</div></div>
+          </div>
+        </div>
+
+        <div class="extra-info" id="extraInfo" style="display:none">
+          <div class="extra-card"><div class="ev" id="nextBirthday">-</div><div class="el">다음 생일까지</div></div>
+          <div class="extra-card"><div class="ev" id="totalDays">-</div><div class="el">살아온 날 (일)</div></div>
+          <div class="extra-card"><div class="ev" id="birthWeekday">-</div><div class="el">태어난 요일</div></div>
+          <div class="extra-card"><div class="ev" id="zodiac">-</div><div class="el">띠 & 별자리</div></div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>만 나이 통일법이란? (2023년 6월 시행)</h2>
+        <p>2023년 6월 28일부터 대한민국의 법적·행정적 나이 기산 방식이 <strong>만 나이로 통일</strong>되었습니다. 과거 한국에서는 태어나는 순간 1살로 시작하는 '세는 나이(한국 나이)'와 생일이 지난 후 1살씩 더하는 '만 나이'가 혼용되어 혼란을 야기했습니다.</p>
+        <h3>세 가지 나이 계산법 비교</h3>
+        <ul>
+          <li><strong>만 나이 (법적·국제 기준)</strong>: 출생일부터 기산하여 생일이 지날 때마다 1세 증가. 생일 전이면 (현재연도 - 출생연도 - 1)세.</li>
+          <li><strong>세는 나이 (한국 나이)</strong>: 태어난 해를 1세로 시작, 매년 1월 1일에 +1세. 만 나이보다 1~2살 많음.</li>
+          <li><strong>연 나이</strong>: 현재연도 - 출생연도. 생일 무관. 병역법, 청소년보호법 등에서 사용.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    const WEEKDAYS = ['일','월','화','수','목','금','토'];
+    const ZODIACS_KR = ['쥐','소','범','토끼','용','뱀','말','양','원숭이','닭','개','돼지'];
+    const STARS = [
+      {name:'염소자리',end:[1,19]},{name:'물병자리',end:[2,18]},{name:'물고기자리',end:[3,20]},
+      {name:'양자리',end:[4,19]},{name:'황소자리',end:[5,20]},{name:'쌍둥이자리',end:[6,21]},
+      {name:'게자리',end:[7,22]},{name:'사자자리',end:[8,22]},{name:'처녀자리',end:[9,22]},
+      {name:'천칭자리',end:[10,22]},{name:'전갈자리',end:[11,21]},{name:'사수자리',end:[12,31]}
+    ];
+
+    function getStar(m, d) {
+      for (const s of STARS) { if (m < s.end[0] || (m === s.end[0] && d <= s.end[1])) return s.name; }
+      return '염소자리';
+    }
+
+    // 초기값 세팅
+    const today = new Date();
+    document.getElementById('birthDate').value = `${today.getFullYear()-25}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+    document.getElementById('baseDate').value = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+    function calculate() {
+      const birthStr = document.getElementById('birthDate').value;
+      const baseStr = document.getElementById('baseDate').value;
+      if (!birthStr || !baseStr) return;
+
+      const birth = new Date(birthStr);
+      const base = new Date(baseStr);
+      if (birth > base) { return; }
+
+      // 만 나이
+      let manAge = base.getFullYear() - birth.getFullYear();
+      const hadBirthday = (base.getMonth() > birth.getMonth()) || (base.getMonth() === birth.getMonth() && base.getDate() >= birth.getDate());
+      if (!hadBirthday) manAge--;
+
+      // 세는 나이
+      const korAge = base.getFullYear() - birth.getFullYear() + 1;
+      // 연 나이
+      const yearAge = base.getFullYear() - birth.getFullYear();
+
+      // 다음 생일
+      let nextBirth = new Date(base.getFullYear(), birth.getMonth(), birth.getDate());
+      if (nextBirth <= base) nextBirth = new Date(base.getFullYear() + 1, birth.getMonth(), birth.getDate());
+      const daysToNext = Math.ceil((nextBirth - base) / 86400000);
+
+      // 살아온 날
+      const totalDays = Math.floor((base - birth) / 86400000);
+
+      // 태어난 요일
+      const birthWeekday = WEEKDAYS[birth.getDay()] + '요일';
+
+      // 띠 & 별자리
+      const zodiac = ZODIACS_KR[(birth.getFullYear() - 4) % 12] + '띠';
+      const star = getStar(birth.getMonth() + 1, birth.getDate());
+
+      document.getElementById('bigResult').style.display = 'block';
+      document.getElementById('extraInfo').style.display = 'grid';
+      document.getElementById('ageMain').textContent = manAge;
+      document.getElementById('ageSub').textContent = hadBirthday ? '올해 생일이 지났습니다 🎂' : `생일까지 ${daysToNext}일 남았습니다`;
+      document.getElementById('manAge').textContent = manAge + '세';
+      document.getElementById('korAge').textContent = korAge + '세';
+      document.getElementById('yearAge').textContent = yearAge + '세';
+      document.getElementById('nextBirthday').textContent = 'D-' + daysToNext;
+      document.getElementById('totalDays').textContent = totalDays.toLocaleString() + '일';
+      document.getElementById('birthWeekday').textContent = birthWeekday;
+      document.getElementById('zodiac').textContent = zodiac + ' / ' + star;
+    }
+
+    calculate();
+  </script>
+</body>
+</html>

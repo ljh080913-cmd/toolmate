@@ -1,0 +1,82 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>개인정보처리방침 | ToolMate</title>
+  <meta name="description" content="ToolMate의 개인정보처리방침입니다. 이용자의 개인정보 및 프라이버시 보호를 위한 안내입니다.">
+  <link rel="stylesheet" href="shared/design-system.css">
+  <style>
+    .legal-content { max-width: 800px; margin: 40px auto; line-height: 1.8; color: var(--text-main); }
+    .legal-content h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 24px; color: var(--text-main); }
+    .legal-content h2 { font-size: 1.25rem; font-weight: 700; margin: 32px 0 12px; color: var(--primary); }
+    .legal-content p, .legal-content li { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px; }
+    .legal-content ul { padding-left: 20px; }
+    .highlight-box { background: var(--surface-alt); padding: 16px; border-radius: var(--radius-md); border: 1px solid var(--border); margin: 16px 0; }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="legal-content">
+      <h1>개인정보처리방침 (Privacy Policy)</h1>
+      <p>본 개인정보처리방침은 ToolMate(이하 "서비스")가 이용자의 개인정보를 어떻게 처리하고 보호하는지 설명합니다. 서비스는 이용자의 프라이버시를 매우 중요하게 생각하며, 관련 법령을 철저히 준수합니다.</p>
+
+      <div class="highlight-box">
+        <strong>🔒 핵심 요약:</strong> ToolMate의 계산기, 이미지 압축, PDF 처리, 글자수 세기 등 모든 유틸리티 도구는 <strong>100% 클라이언트(사용자 웹 브라우저) 내부에서만 연산</strong>됩니다. 사용자가 입력한 텍스트, 이미지 파일, 금융/건강 데이터는 본 서비스의 서버로 절대 전송되거나 저장되지 않습니다.
+      </div>
+
+      <h2>1. 수집하는 개인정보 항목 및 수집 방법</h2>
+      <p>서비스는 회원가입 없이 누구나 무료로 이용할 수 있으며, 서비스 이용 과정에서 별도의 개인 식별 정보를 수집하거나 저장하지 않습니다.</p>
+      <ul>
+        <li><strong>자동 수집 정보:</strong> 서비스 이용 통계 및 품질 개선을 위해 접속 IP, 브라우저 종류, 운영체제, 방문 일시, 쿠키(Cookie) 정보가 자동 생성되어 수집될 수 있습니다.</li>
+      </ul>
+
+      <h2>2. 구글 애드센스 및 타사 광고 쿠키 관련 안내</h2>
+      <p>서비스는 사이트 운영비 마련 및 지속적인 무료 도구 제공을 위해 제3자 광고 사업자(Google AdSense 등)의 광고를 게재할 수 있습니다.</p>
+      <ul>
+        <li>Google을 포함한 제3자 공급업체는 쿠키를 사용하여 사용자의 이전 웹사이트 방문 기록을 바탕으로 맞춤형 광고를 게재합니다.</li>
+        <li>사용자는 <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" style="color:var(--primary); text-decoration:underline;">Google 광고 설정</a>을 방문하여 맞춤설정 광고를 사용 중지할 수 있습니다.</li>
+      </ul>
+
+      <h2>3. 쿠키(Cookie)의 설치·운영 및 거부</h2>
+      <p>이용자는 쿠키 설치에 대한 선택권을 가지고 있습니다. 웹 브라우저의 옵션을 설정함으로써 모든 쿠키를 허용하거나, 쿠키가 저장될 때마다 확인을 거치거나, 모든 쿠키의 저장을 거부할 수 있습니다.</p>
+
+      <h2>4. 개인정보 보호 책임자 및 문의</h2>
+      <p>서비스 이용 중 발생하는 개인정보 보호 관련 문의나 건의사항은 <a href="contact.html" style="color:var(--primary); text-decoration:underline;">문의하기 페이지</a>를 통해 접수해 주시면 신속하게 답변해 드리겠습니다.</p>
+      
+      <p style="margin-top:40px; font-size:0.85rem; color:var(--text-subtle);">최종 개정일자: 2026년 8월 26일</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="privacy.html" style="color:var(--primary); font-weight:700;">개인정보처리방침</a>
+        <a href="terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="shared/common.js"></script>
+</body>
+</html>

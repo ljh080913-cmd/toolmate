@@ -1,0 +1,402 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D-Day & 군 전역일·시험일 실시간 계산기 | ToolMate</title>
+  <meta name="description" content="수능, 공무원 시험, 커플 기념일 D-Day 및 군별(육군, 해군, 공군, 해병대, 공익) 실시간 전역일·복무율·진급일 계산기입니다. 초 단위 실시간 카운트다운을 지원합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .dday-wrap { max-width: 760px; margin: 0 auto; }
+    
+    .tab-bar {
+      display: flex;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1; text-align: center; padding: 10px 14px;
+      font-size: 0.95rem; font-weight: 700; color: var(--text-muted);
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Hero Display */
+    .hero-counter {
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 10px 25px var(--primary-glow);
+      margin: 24px 0;
+    }
+    .hero-title { font-size: 1.1rem; font-weight: 700; opacity: 0.9; }
+    .hero-dday {
+      font-family: var(--font-mono);
+      font-size: 3.5rem;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      margin: 10px 0;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    .hero-sub {
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      opacity: 0.85;
+    }
+
+    /* Military Progress */
+    .mil-progress-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .mil-pct-text {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+    .mil-pct-val {
+      font-family: var(--font-mono);
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .progress-bar-bg {
+      width: 100%; height: 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), #10b981);
+      border-radius: var(--radius-full);
+      transition: width 0.3s;
+    }
+
+    /* Rank Timeline */
+    .rank-timeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+      text-align: center;
+    }
+    .rank-step {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 6px;
+    }
+    .rank-step.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+    .rank-name { font-size: 0.8rem; font-weight: 700; margin-bottom: 2px; }
+    .rank-date { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-muted); }
+
+    /* Quick Preset Chips */
+    .preset-chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .chip-btn {
+      font-size: 0.78rem; font-weight: 600; padding: 4px 10px;
+      border-radius: var(--radius-full); border: 1px solid var(--border);
+      background: var(--surface-alt); color: var(--text-main); cursor: pointer;
+    }
+    .chip-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .hero-dday { font-size: 2.8rem; }
+      .rank-timeline { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GNB -->
+        <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="dday-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">⏳ 실시간 초단위 카운트다운</span>
+        <h1 class="page-title">D-Day & 군 전역일 계산기</h1>
+        <p class="page-desc">시험, 수능, 기념일 D-Day 및 군별 복무율(%), 계급별 진급일, 남은 일수를 실시간으로 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <!-- Tab -->
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabMilitary" onclick="switchTab('military')">🪖 군 전역일 & 진급일</button>
+          <button class="tab-btn" id="tabGeneral" onclick="switchTab('general')">🎯 일반 D-Day & 기념일</button>
+        </div>
+
+        <!-- Military Section -->
+        <div id="sectionMilitary">
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">군별 복무 형태</label>
+              <select id="milBranch" class="select-field" onchange="calcMilitary()">
+                <option value="18_army">육군 / 카투사 (18개월)</option>
+                <option value="18_marine">해병대 (18개월)</option>
+                <option value="20_navy">해군 (20개월)</option>
+                <option value="21_air">공군 (21개월)</option>
+                <option value="21_social">사회복무요원 (21개월)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">입대일 (시작일)</label>
+              <input type="date" id="milEnlistDate" class="input-field" onchange="calcMilitary()">
+            </div>
+          </div>
+
+          <!-- Hero Display -->
+          <div class="hero-counter">
+            <div class="hero-title" id="milTargetTitle">전역까지 남은 시간</div>
+            <div class="hero-dday" id="milDday">D-0</div>
+            <div class="hero-sub" id="milCountdown">0일 00시간 00분 00초</div>
+          </div>
+
+          <!-- Progress -->
+          <div class="mil-progress-card">
+            <div class="mil-pct-text">
+              <span style="font-weight:700; font-size:0.9rem;">전체 복무 진행률</span>
+              <span class="mil-pct-val" id="milPercent">0.000000%</span>
+            </div>
+            <div class="progress-bar-bg">
+              <div class="progress-bar-fill" id="milBar" style="width:0%"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted); margin-top:8px;">
+              <span id="milStartLbl">입대: -</span>
+              <span id="milEndLbl">전역: -</span>
+            </div>
+          </div>
+
+          <!-- Rank Promotion Timeline -->
+          <div class="detail-card" style="margin-top:16px;">
+            <div style="font-size:0.88rem; font-weight:700; margin-bottom:10px;">🎖️ 계급별 진급일 안내</div>
+            <div class="rank-timeline" id="milRankGrid">
+              <div class="rank-step" id="rank1"><div class="rank-name">이등병</div><div class="rank-date" id="rd1">-</div></div>
+              <div class="rank-step" id="rank2"><div class="rank-name">일등병 (2개월)</div><div class="rank-date" id="rd2">-</div></div>
+              <div class="rank-step" id="rank3"><div class="rank-name">상등병 (6개월)</div><div class="rank-date" id="rd3">-</div></div>
+              <div class="rank-step" id="rank4"><div class="rank-name">병장 (6개월)</div><div class="rank-date" id="rd4">-</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- General D-Day Section -->
+        <div id="sectionGeneral" style="display:none;">
+          <div class="grid-2">
+            <div class="form-group">
+              <label class="form-label">목표 제목</label>
+              <input type="text" id="genTitle" class="input-field" value="2027 수능 시험일" placeholder="예: 중간고사, 결혼식, 자격증 시험">
+            </div>
+            <div class="form-group">
+              <label class="form-label">목표 날짜</label>
+              <input type="date" id="genDate" class="input-field" onchange="calcGeneral()">
+            </div>
+          </div>
+
+          <div class="preset-chips">
+            <button class="chip-btn" onclick="setPresetDate('2026-11-19', '2027학년도 수능')">2027 수능</button>
+            <button class="chip-btn" onclick="setPresetDate('2026-12-25', '크리스마스')">크리스마스</button>
+            <button class="chip-btn" onclick="setPresetDate('2027-01-01', '2027년 새해')">새해 1월 1일</button>
+          </div>
+
+          <div class="hero-counter">
+            <div class="hero-title" id="genHeroTitle">목표일까지 남은 시간</div>
+            <div class="hero-dday" id="genDday">D-0</div>
+            <div class="hero-sub" id="genCountdown">0일 00시간 00분 00초</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>군 전역일 및 D-Day 계산 안내</h2>
+        <p>대한민국 국방부 복무 단축 규정 기준 각 군별 복무 기간은 육군·해병대 18개월, 해군 20개월, 공군·사회복무요원 21개월입니다.</p>
+        
+        <h3>계급별 진급 기준</h3>
+        <ul>
+          <li><strong>이병 → 일병:</strong> 입대일로부터 2개월 복무 후 진급</li>
+          <li><strong>일병 → 상병:</strong> 일병 진급 후 6개월 복무 후 진급</li>
+          <li><strong>상병 → 병장:</strong> 상병 진급 후 6개월 복무 후 진급</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let mode = 'military';
+
+    function switchTab(m) {
+      mode = m;
+      document.getElementById('tabMilitary').classList.toggle('active', m === 'military');
+      document.getElementById('tabGeneral').classList.toggle('active', m === 'general');
+      document.getElementById('sectionMilitary').style.display = m === 'military' ? 'block' : 'none';
+      document.getElementById('sectionGeneral').style.display = m === 'general' ? 'block' : 'none';
+    }
+
+    // Default Dates
+    const today = new Date();
+    const defaultEnlist = new Date(today);
+    defaultEnlist.setMonth(defaultEnlist.getMonth() - 6);
+    document.getElementById('milEnlistDate').value = defaultEnlist.toISOString().split('T')[0];
+
+    const defaultTarget = new Date('2026-11-19');
+    document.getElementById('genDate').value = defaultTarget.toISOString().split('T')[0];
+
+    function setPresetDate(dateStr, title) {
+      document.getElementById('genDate').value = dateStr;
+      document.getElementById('genTitle').value = title;
+      calcGeneral();
+    }
+
+    let milEndDate = null;
+
+    function calcMilitary() {
+      const enlistVal = document.getElementById('milEnlistDate').value;
+      if (!enlistVal) return;
+
+      const branch = document.getElementById('milBranch').value;
+      const months = parseInt(branch.split('_')[0]);
+
+      const enlist = new Date(enlistVal + 'T00:00:00');
+      const discharge = new Date(enlist);
+      discharge.setMonth(discharge.getMonth() + months);
+      discharge.setDate(discharge.getDate() - 1);
+      milEndDate = discharge;
+
+      document.getElementById('milStartLbl').textContent = `입대: ${enlist.toLocaleDateString('ko-KR')}`;
+      document.getElementById('milEndLbl').textContent = `전역: ${discharge.toLocaleDateString('ko-KR')}`;
+
+      // 진급일 계산
+      const r2 = new Date(enlist); r2.setMonth(r2.getMonth() + 2); r2.setDate(1);
+      const r3 = new Date(r2); r3.setMonth(r3.getMonth() + 6); r3.setDate(1);
+      const r4 = new Date(r3); r4.setMonth(r4.getMonth() + 6); r4.setDate(1);
+
+      document.getElementById('rd1').textContent = enlist.toLocaleDateString('ko-KR');
+      document.getElementById('rd2').textContent = r2.toLocaleDateString('ko-KR');
+      document.getElementById('rd3').textContent = r3.toLocaleDateString('ko-KR');
+      document.getElementById('rd4').textContent = r4.toLocaleDateString('ko-KR');
+
+      const now = new Date();
+      ['rank1', 'rank2', 'rank3', 'rank4'].forEach(id => document.getElementById(id).classList.remove('active'));
+      if (now >= r4) document.getElementById('rank4').classList.add('active');
+      else if (now >= r3) document.getElementById('rank3').classList.add('active');
+      else if (now >= r2) document.getElementById('rank2').classList.add('active');
+      else document.getElementById('rank1').classList.add('active');
+
+      updateLive();
+    }
+
+    function calcGeneral() {
+      updateLive();
+    }
+
+    function updateLive() {
+      const now = new Date();
+
+      // Military Update
+      if (milEndDate) {
+        const enlist = new Date(document.getElementById('milEnlistDate').value + 'T00:00:00');
+        const totalMs = milEndDate - enlist;
+        const passedMs = Math.max(0, now - enlist);
+        const remainMs = milEndDate - now;
+
+        const pct = Math.min(100, Math.max(0, (passedMs / totalMs) * 100));
+        document.getElementById('milPercent').textContent = pct.toFixed(6) + '%';
+        document.getElementById('milBar').style.width = pct + '%';
+
+        if (remainMs > 0) {
+          const days = Math.floor(remainMs / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((remainMs / (1000 * 60 * 60)) % 24);
+          const mins = Math.floor((remainMs / (1000 * 60)) % 60);
+          const secs = Math.floor((remainMs / 1000) % 60);
+
+          document.getElementById('milDday').textContent = `D-${days}`;
+          document.getElementById('milCountdown').textContent = `${days}일 ${String(hours).padStart(2,'0')}시간 ${String(mins).padStart(2,'0')}분 ${String(secs).padStart(2,'0')}초`;
+        } else {
+          document.getElementById('milDday').textContent = '전역 완료! 🎉';
+          document.getElementById('milCountdown').textContent = '명예로운 전역을 축하합니다!';
+        }
+      }
+
+      // General Update
+      const genDateVal = document.getElementById('genDate').value;
+      const genTitle = document.getElementById('genTitle').value || '목표일';
+      document.getElementById('genHeroTitle').textContent = `${genTitle}까지 남은 시간`;
+
+      if (genDateVal) {
+        const target = new Date(genDateVal + 'T00:00:00');
+        const diffMs = target - now;
+
+        if (diffMs > 0) {
+          const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+          const mins = Math.floor((diffMs / (1000 * 60)) % 60);
+          const secs = Math.floor((diffMs / 1000) % 60);
+
+          document.getElementById('genDday').textContent = `D-${days}`;
+          document.getElementById('genCountdown').textContent = `${days}일 ${String(hours).padStart(2,'0')}시간 ${String(mins).padStart(2,'0')}분 ${String(secs).padStart(2,'0')}초`;
+        } else {
+          const daysPassed = Math.floor(Math.abs(diffMs) / (1000 * 60 * 60 * 24));
+          document.getElementById('genDday').textContent = `D+${daysPassed}`;
+          document.getElementById('genCountdown').textContent = '목표 날짜가 지났습니다.';
+        }
+      }
+    }
+
+    calcMilitary();
+    calcGeneral();
+    setInterval(updateLive, 1000);
+  </script>
+</body>
+</html>

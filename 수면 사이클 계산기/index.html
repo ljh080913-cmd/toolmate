@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>수면 사이클 & 최적의 기상·취침 시간 계산기 | ToolMate</title>
+  <meta name="description" content="90분 렘수면(REM) 주기를 기반으로 피로 없이 개운하게 일어날 수 있는 최적의 취침 시간과 기상 골든타임을 실시간으로 계산합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .sleep-wrap { max-width: 780px; margin: 0 auto; }
+
+    .tab-bar {
+      display: flex; background: var(--surface-alt);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 4px; margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1; text-align: center; padding: 10px 14px;
+      font-size: 0.95rem; font-weight: 700; color: var(--text-muted);
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    /* Sleep Time Cards Grid */
+    .sleep-time-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .time-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 14px;
+      text-align: center;
+      transition: all 0.15s;
+    }
+    .time-card.best {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+    .time-tag {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .time-val {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .time-card.best .time-val { color: var(--primary); }
+    .cycle-count {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text-subtle);
+    }
+
+    .hero-sleep {
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff;
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 600px) {
+      .sleep-time-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="sleep-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">💤 90분 렘수면(REM) 바이오리듬 계산</span>
+        <h1 class="page-title">수면 사이클 & 골든타임 계산기</h1>
+        <p class="page-desc">수면 주기가 끝나는 얕은 잠 단계에서 일어나면 적게 자도 하루 종일 피로 없이 개운합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabNow" onclick="switchMode('now')">🌙 지금 바로 잠들 경우</button>
+          <button class="tab-btn" id="tabWake" onclick="switchMode('wake')">⏰ 일어날 시간에 맞추기</button>
+        </div>
+
+        <!-- Mode 1: Sleep Now -->
+        <div id="sectionNow">
+          <div style="text-align:center; margin-bottom:16px;">
+            <p style="font-size:0.95rem; color:var(--text-muted);">
+              사람이 잠드는 데 걸리는 평균 시간(14분)을 포함한 <strong>최적의 기상 알람 시간</strong>입니다.
+            </p>
+          </div>
+
+          <div class="sleep-time-grid" id="nowResultsGrid"></div>
+        </div>
+
+        <!-- Mode 2: Target Wake Time -->
+        <div id="sectionWake" style="display:none;">
+          <div class="form-group" style="max-width:320px; margin:0 auto 20px;">
+            <label class="form-label" style="justify-content:center;">기상해야 할 목표 시간</label>
+            <input type="time" id="targetWakeInput" class="input-field" value="07:00" style="text-align:center; font-size:1.3rem; font-family:var(--font-mono); font-weight:700;" onchange="calcWakeTimes()">
+          </div>
+
+          <div style="text-align:center; margin-bottom:16px;">
+            <p style="font-size:0.95rem; color:var(--text-muted);">
+              개운하게 일어나기 위해 <strong>잠자리에 들어야 할 추천 취침 시간</strong>입니다.
+            </p>
+          </div>
+
+          <div class="sleep-time-grid" id="wakeResultsGrid"></div>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>90분 수면 사이클의 과학적 원리</h2>
+        <p>인간의 수면은 얕은 잠(NREM 1~2단계), 깊은 잠(서파수면 3단계), 그리고 꿈을 꾸는 렘수면(REM)이 <strong>약 90분(1시간 30분) 주기로 1사이클</strong>을 이룹니다.</p>
+
+        <h3>왜 수면 타이밍이 수면 시간보다 중요할까요?</h3>
+        <ul>
+          <li><strong>깊은 잠 단계에서 알람이 울릴 때:</strong> 8시간을 잤더라도 뇌가 깨어나지 못해 심한 피로감(수면 관성)과 두통을 느낍니다.</li>
+          <li><strong>사이클이 끝나는 얕은 잠 단계에서 깰 때:</strong> 4시간 30분이나 6시간만 자도 자연스럽게 눈이 떠지며 상쾌합니다.</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let mode = 'now';
+
+    function switchMode(m) {
+      mode = m;
+      document.getElementById('tabNow').classList.toggle('active', m === 'now');
+      document.getElementById('tabWake').classList.toggle('active', m === 'wake');
+      document.getElementById('sectionNow').style.display = m === 'now' ? 'block' : 'none';
+      document.getElementById('sectionWake').style.display = m === 'wake' ? 'block' : 'none';
+
+      if (m === 'now') calcNowTimes();
+      else calcWakeTimes();
+    }
+
+    function formatTime(d) {
+      let hours = d.getHours();
+      const mins = String(d.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? '오후' : '오전';
+      hours = hours % 12;
+      hours = hours ? hours : 12;
+      return `${ampm} ${hours}:${mins}`;
+    }
+
+    function calcNowTimes() {
+      const grid = document.getElementById('nowResultsGrid');
+      grid.innerHTML = '';
+
+      const now = new Date();
+      // 잠드는 데 걸리는 시간 14분 추가
+      now.setMinutes(now.getMinutes() + 14);
+
+      // 3~6사이클 (4.5h, 6h, 7.5h, 9h)
+      const cycles = [
+        { c: 3, h: 4.5, best: false, tag: "가벼운 수면" },
+        { c: 4, h: 6.0, best: false, tag: "직장인 추천" },
+        { c: 5, h: 7.5, best: true,  tag: "⭐ 가장 이상적" },
+        { c: 6, h: 9.0, best: false, tag: "충분한 휴식" }
+      ];
+
+      cycles.forEach(item => {
+        const wakeTime = new Date(now.getTime() + (item.c * 90 * 60 * 1000));
+        const card = document.createElement('div');
+        card.className = `time-card ${item.best ? 'best' : ''}`;
+        card.innerHTML = `
+          <div class="time-tag">${item.tag}</div>
+          <div class="time-val">${formatTime(wakeTime)}</div>
+          <div class="cycle-count">${item.c}사이클 (${item.h}시간 수면)</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function calcWakeTimes() {
+      const grid = document.getElementById('wakeResultsGrid');
+      grid.innerHTML = '';
+
+      const val = document.getElementById('targetWakeInput').value;
+      if (!val) return;
+
+      const [h, m] = val.split(':').map(Number);
+      const target = new Date();
+      target.setHours(h, m, 0, 0);
+
+      const cycles = [
+        { c: 6, h: 9.0, best: false, tag: "충분한 휴식" },
+        { c: 5, h: 7.5, best: true,  tag: "⭐ 가장 이상적" },
+        { c: 4, h: 6.0, best: false, tag: "직장인 추천" },
+        { c: 3, h: 4.5, best: false, tag: "최소 수면" }
+      ];
+
+      cycles.forEach(item => {
+        // (사이클 * 90분 + 입면 14분) 차감
+        const sleepTime = new Date(target.getTime() - (item.c * 90 * 60 * 1000) - (14 * 60 * 1000));
+        const card = document.createElement('div');
+        card.className = `time-card ${item.best ? 'best' : ''}`;
+        card.innerHTML = `
+          <div class="time-tag">${item.tag}</div>
+          <div class="time-val">${formatTime(sleepTime)}</div>
+          <div class="cycle-count">${item.c}사이클 (${item.h}시간)</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    calcNowTimes();
+  </script>
+</body>
+</html>

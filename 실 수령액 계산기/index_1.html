@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 주휴수당 & 실수령액 계산기 | 최저시급 10,320원 기준</title>
+<meta name="description" content="2026년 최저시급 10,320원 기준 주휴수당, 4대보험 공제, 세후 실수령액을 즉시 계산해보세요. 알바생, 프리랜서, 직장인 모두 사용 가능한 무료 계산기입니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@700;900&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#132242;
+    --navy:#1b3057;
+    --navy-light:#2c477a;
+    --gold:#c9a44e;
+    --paper:#faf8f2;
+    --paper-line:#e4ddc9;
+    --ink:#1c1c1c;
+    --ink-soft:#5a5a52;
+    --minus:#b5342f;
+    --good:#1f7a4d;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Noto Sans KR',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .wrap{
+    max-width:600px;
+    margin:0 auto;
+    padding:40px 20px 70px;
+  }
+
+  header{margin-bottom:26px;}
+  .eyebrow{
+    color:var(--navy);
+    font-size:12.5px;
+    letter-spacing:0.12em;
+    font-weight:700;
+    text-transform:uppercase;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    border:1px solid var(--navy);
+    padding:5px 12px;
+    border-radius:999px;
+  }
+  .eyebrow .dot{width:6px;height:6px;background:var(--gold);border-radius:50%;display:inline-block;}
+  h1{
+    font-family:'Noto Serif KR',serif;
+    color:var(--navy-deep);
+    font-weight:900;
+    font-size:30px;
+    line-height:1.32;
+    margin:16px 0 10px;
+    letter-spacing:-0.01em;
+  }
+  h1 em{
+    font-style:normal;
+    color:var(--minus);
+    text-decoration:underline;
+    text-decoration-color:var(--gold);
+    text-decoration-thickness:3px;
+    text-underline-offset:4px;
+  }
+  header p{
+    color:var(--ink-soft);
+    font-size:14.5px;
+    line-height:1.6;
+    margin:0;
+    max-width:48ch;
+  }
+
+  .card{
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:16px;
+    padding:24px 22px 8px;
+    box-shadow:0 14px 34px -22px rgba(19,34,66,0.3);
+  }
+  .tabs{
+    display:flex;
+    background:var(--paper);
+    border:1px solid var(--paper-line);
+    border-radius:10px;
+    padding:4px;
+    margin-bottom:22px;
+  }
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:10px 6px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--ink-soft);
+    border-radius:7px;
+    cursor:pointer;
+    transition:all .15s ease;
+    border:none;
+    background:transparent;
+    font-family:inherit;
+  }
+  .tab.active{
+    background:var(--navy);
+    color:#fff;
+  }
+
+  .field{margin-bottom:18px;}
+  .field label{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--navy);
+    margin-bottom:8px;
+  }
+  .field label .hint{
+    font-weight:400;
+    color:var(--ink-soft);
+    font-size:12px;
+  }
+  .input-row{
+    display:flex;
+    align-items:center;
+    border:1.5px solid var(--paper-line);
+    border-radius:10px;
+    overflow:hidden;
+    transition:border-color .15s ease;
+    background:#fff;
+  }
+  .input-row:focus-within{border-color:var(--navy-light);}
+  .input-row input[type=number]{
+    flex:1;
+    border:none;
+    outline:none;
+    padding:13px 12px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:17px;
+    font-weight:600;
+    color:var(--ink);
+    min-width:0;
+    background:transparent;
+  }
+  .input-row .unit{
+    padding:0 14px;
+    font-size:13px;
+    font-weight:700;
+    color:var(--ink-soft);
+    background:var(--paper);
+    height:100%;
+    display:flex;
+    align-items:center;
+    border-left:1px solid var(--paper-line);
+  }
+  .quickset{
+    display:flex;
+    gap:6px;
+    margin-top:8px;
+    flex-wrap:wrap;
+  }
+  .quickset button{
+    font-family:inherit;
+    font-size:12px;
+    font-weight:600;
+    padding:6px 11px;
+    border-radius:999px;
+    border:1px solid var(--paper-line);
+    background:var(--paper);
+    color:var(--navy);
+    cursor:pointer;
+  }
+  .quickset button:hover{border-color:var(--navy-light);}
+
+  .toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 0 6px;
+    border-top:1px dashed var(--paper-line);
+    margin-top:6px;
+  }
+  .toggle-row .t-label{font-size:13.5px;font-weight:700;color:var(--navy);}
+  .toggle-row .t-sub{font-size:11.5px;color:var(--ink-soft);font-weight:400;margin-top:2px;}
+  .switch{position:relative;width:44px;height:25px;flex-shrink:0;}
+  .switch input{opacity:0;width:0;height:0;}
+  .slider{position:absolute;inset:0;background:#d8d3c2;border-radius:999px;cursor:pointer;transition:.2s;}
+  .slider::before{
+    content:"";position:absolute;width:19px;height:19px;left:3px;top:3px;
+    background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,0.3);
+  }
+  .switch input:checked + .slider{background:var(--good);}
+  .switch input:checked + .slider::before{transform:translateX(19px);}
+
+  .calc-btn{
+    width:100%;
+    margin:22px 0 24px;
+    padding:15px;
+    border:none;
+    border-radius:11px;
+    background:var(--navy-deep);
+    color:#fff;
+    font-family:'Noto Sans KR',sans-serif;
+    font-weight:700;
+    font-size:15.5px;
+    letter-spacing:0.01em;
+    cursor:pointer;
+    transition:transform .1s ease, background .15s ease;
+  }
+  .calc-btn:hover{background:var(--navy);}
+  .calc-btn:active{transform:scale(0.98);}
+
+  .result{
+    display:none;
+    margin:0 -22px;
+    padding:24px 22px 28px;
+    background:var(--paper);
+    border-top:1px solid var(--paper-line);
+  }
+  .result.show{display:block;}
+  .result h2{
+    font-family:'Noto Serif KR',serif;
+    font-size:15.5px;
+    color:var(--navy);
+    margin:0 0 14px;
+  }
+  .row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    padding:9px 0;
+    border-bottom:1px dotted var(--paper-line);
+    font-size:13.5px;
+  }
+  .row .rl{color:var(--ink-soft);font-weight:500;}
+  .row .rv{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--ink);}
+  .row.plus .rv{color:var(--good);}
+  .row.minus .rv{color:var(--minus);}
+  .row.sub{padding-left:14px;font-size:12.5px;}
+  .row.sub .rl::before{content:"– ";color:var(--paper-line);}
+
+  .total-block{
+    margin-top:16px;
+    padding:20px 18px;
+    background:var(--navy-deep);
+    border-radius:12px;
+  }
+  .total-block .tl{
+    color:var(--gold);
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+  }
+  .total-block .tv{
+    font-family:'IBM Plex Mono',monospace;
+    color:#fff;
+    font-size:29px;
+    font-weight:600;
+    margin-top:6px;
+    letter-spacing:-0.01em;
+  }
+  .total-block .tv span{font-size:15px;font-weight:500;color:#c7cfe0;margin-left:4px;}
+
+  .note{
+    margin-top:14px;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    line-height:1.6;
+    padding:10px 12px;
+    background:#fff;
+    border:1px solid var(--paper-line);
+    border-radius:8px;
+  }
+
+  .info-strip{display:flex;gap:10px;margin-top:24px;}
+  .info-strip .chip{
+    flex:1;background:#fff;border:1px solid var(--paper-line);
+    border-radius:10px;padding:12px 10px;text-align:center;
+  }
+  .info-strip .chip .big{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14.5px;color:var(--navy);}
+  .info-strip .chip .small{font-size:10.5px;color:var(--ink-soft);margin-top:3px;}
+
+  footer{text-align:center;margin-top:30px;font-size:11px;color:var(--ink-soft);line-height:1.7;}
+
+  @media (max-width:420px){
+    h1{font-size:24px;}
+    .total-block .tv{font-size:24px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <span class="eyebrow"><span class="dot"></span>2026년 최저시급 10,320원 확정 반영</span>
+    <h1>주휴수당 & <em>실수령액</em><br>계산기</h1>
+    <p>시급 또는 월급을 입력하면 주휴수당과 4대보험 공제까지 반영한 세후 실수령액을 바로 계산해줍니다.</p>
+  </header>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" id="tabHourly" onclick="switchTab('hourly')">시급으로 계산</button>
+      <button class="tab" id="tabMonthly" onclick="switchTab('monthly')">월급으로 계산</button>
+    </div>
+
+    <div id="modeHourly">
+      <div class="field">
+        <label>시급 <span class="hint">2026년 최저시급 10,320원</span></label>
+        <div class="input-row">
+          <input type="number" id="hourly" value="10320" inputmode="numeric">
+          <span class="unit">원</span>
+        </div>
+        <div class="quickset">
+          <button onclick="setHourly(10320)">2026 최저시급</button>
+          <button onclick="setHourly(12000)">12,000원</button>
+          <button onclick="setHourly(15000)">15,000원</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>주 근무시간 <span class="hint">일주일 총 근무 시간</span></label>
+        <div class="input-row">
+          <input type="number" id="weeklyHours" value="40" inputmode="numeric">
+          <span class="unit">시간</span>
+        </div>
+        <div class="quickset">
+          <button onclick="setWeekly(15)">주 15시간</button>
+          <button onclick="setWeekly(20)">주 20시간</button>
+          <button onclick="setWeekly(40)">주 40시간(풀타임)</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modeMonthly" style="display:none;">
+      <div class="field">
+        <label>세전 월급 <span class="hint">근로계약서 상 월 급여</span></label>
+        <div class="input-row">
+          <input type="number" id="monthlyGross" value="2156880" inputmode="numeric">
+          <span class="unit">원</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="t-label">4대보험 가입 대상</div>
+        <div class="t-sub">월 60시간 이상 근무 시 일반적으로 해당</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="insToggle" checked onchange="calc()">
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <button class="calc-btn" onclick="calc(true)">계산하기</button>
+
+    <div class="result" id="result">
+      <h2>계산 결과</h2>
+
+      <div class="row"><span class="rl">기본급</span><span class="rv" id="rBase">-</span></div>
+      <div class="row plus"><span class="rl">주휴수당</span><span class="rv" id="rHoliday">-</span></div>
+      <div class="row" style="border-bottom:1.5px solid var(--paper-line);font-weight:700;">
+        <span class="rl" style="color:var(--navy);">세전 월급 합계</span>
+        <span class="rv" id="rGross">-</span>
+      </div>
+
+      <div id="insBlock">
+        <div class="row minus sub"><span class="rl">국민연금 (4.75%)</span><span class="rv" id="rPension">-</span></div>
+        <div class="row minus sub"><span class="rl">건강보험 (3.595%)</span><span class="rv" id="rHealth">-</span></div>
+        <div class="row minus sub"><span class="rl">장기요양보험</span><span class="rv" id="rCare">-</span></div>
+        <div class="row minus sub"><span class="rl">고용보험 (0.9%)</span><span class="rv" id="rEmploy">-</span></div>
+        <div class="row minus sub"><span class="rl">근로소득세+지방소득세(추정)</span><span class="rv" id="rTax">-</span></div>
+      </div>
+
+      <div class="total-block">
+        <div class="tl">세후 실수령액 (예상)</div>
+        <div class="tv" id="rNet">0<span>원 / 월</span></div>
+      </div>
+
+      <div class="note" id="insNote">
+        4대보험 및 근로소득세 공제를 반영한 예상 실수령액입니다. 실제 공제액은 부양가족 수, 회사 정책, 비과세 항목에 따라 달라질 수 있으니 정확한 금액은 국세청 홈택스 간이세액표를 확인하세요.
+      </div>
+    </div>
+  </div>
+
+  <div class="info-strip">
+    <div class="chip">
+      <div class="big">10,320원</div>
+      <div class="small">2026 최저시급</div>
+    </div>
+    <div class="chip">
+      <div class="big">2,156,880원</div>
+      <div class="small">주 40시간 최저월급</div>
+    </div>
+    <div class="chip">
+      <div class="big">15시간↑</div>
+      <div class="small">주휴수당 발생 기준</div>
+    </div>
+  </div>
+
+  <footer>
+    본 계산기는 참고용이며 법적 효력이 없습니다 · 2026년 1월 고용노동부 고시 기준<br>
+    정확한 임금 분쟁 상담은 고용노동부 고객상담센터(국번없이 1350)로 문의하세요
+  </footer>
+</div>
+
+<script>
+let mode = 'hourly';
+
+function switchTab(m){
+  mode = m;
+  document.getElementById('tabHourly').classList.toggle('active', m==='hourly');
+  document.getElementById('tabMonthly').classList.toggle('active', m==='monthly');
+  document.getElementById('modeHourly').style.display = m==='hourly' ? 'block' : 'none';
+  document.getElementById('modeMonthly').style.display = m==='monthly' ? 'block' : 'none';
+}
+
+function setHourly(v){ document.getElementById('hourly').value = v; }
+function setWeekly(v){ document.getElementById('weeklyHours').value = v; }
+
+function won(n){
+  return Math.round(n).toLocaleString('ko-KR') + '원';
+}
+
+function estimateTax(monthlyTaxableIncome){
+  let base = monthlyTaxableIncome;
+  let tax = 0;
+  if(base <= 1500000){
+    tax = 0;
+  } else if(base <= 3000000){
+    tax = (base - 1500000) * 0.03;
+  } else if(base <= 4500000){
+    tax = 1500000*0.03 + (base - 3000000) * 0.06;
+  } else if(base <= 7000000){
+    tax = 1500000*0.03 + 1500000*0.06 + (base - 4500000) * 0.10;
+  } else {
+    tax = 1500000*0.03 + 1500000*0.06 + 2500000*0.10 + (base - 7000000) * 0.15;
+  }
+  let local = tax * 0.10;
+  return tax + local;
+}
+
+function calc(userTriggered){
+  let grossMonthly;
+
+  if(mode === 'hourly'){
+    let hourly = parseFloat(document.getElementById('hourly').value) || 0;
+    let weekly = parseFloat(document.getElementById('weeklyHours').value) || 0;
+
+    let holidayHours = 0;
+    if(weekly >= 15){
+      holidayHours = Math.min(weekly, 40) / 5;
+    }
+    let baseMonthly = hourly * weekly * 4.345;
+    let holidayMonthly = hourly * holidayHours * 4.345;
+    grossMonthly = baseMonthly + holidayMonthly;
+
+    document.getElementById('rBase').textContent = won(baseMonthly);
+    document.getElementById('rHoliday').textContent = holidayHours > 0 ? '+' + won(holidayMonthly) : '해당없음(주 15h 미만)';
+  } else {
+    grossMonthly = parseFloat(document.getElementById('monthlyGross').value) || 0;
+    document.getElementById('rBase').textContent = won(grossMonthly);
+    document.getElementById('rHoliday').textContent = '월급에 포함';
+  }
+
+  document.getElementById('rGross').textContent = won(grossMonthly);
+
+  let insOn = document.getElementById('insToggle').checked;
+  let net = grossMonthly;
+  document.getElementById('insBlock').style.display = insOn ? 'block' : 'none';
+
+  if(insOn){
+    let pensionBase = Math.max(400000, Math.min(grossMonthly, 6370000));
+    let pension = pensionBase * 0.0475;
+    let health = grossMonthly * 0.03595;
+    let care = health * 0.1295;
+    let employ = grossMonthly * 0.009;
+    let taxable = grossMonthly - pension - health - care - employ;
+    let tax = estimateTax(taxable);
+
+    net = grossMonthly - pension - health - care - employ - tax;
+
+    document.getElementById('rPension').textContent = '-' + won(pension);
+    document.getElementById('rHealth').textContent = '-' + won(health);
+    document.getElementById('rCare').textContent = '-' + won(care);
+    document.getElementById('rEmploy').textContent = '-' + won(employ);
+    document.getElementById('rTax').textContent = '-' + won(tax);
+    document.getElementById('insNote').textContent = '4대보험 및 근로소득세 공제를 반영한 예상 실수령액입니다. 실제 공제액은 부양가족 수, 회사 정책, 비과세 항목에 따라 달라질 수 있으니 정확한 금액은 국세청 홈택스 간이세액표를 확인하세요.';
+  } else {
+    document.getElementById('insNote').textContent = '4대보험 미가입 기준으로, 공제 없이 세전 금액이 그대로 지급된다고 가정한 예상치입니다. (단, 3.3% 사업소득세가 발생하는 프리랜서/단기 알바는 실수령액이 달라질 수 있습니다)';
+  }
+
+  document.getElementById('rNet').innerHTML = won(net) + '<span>/ 월</span>';
+
+  let result = document.getElementById('result');
+  result.classList.add('show');
+
+  if(userTriggered){
+    result.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+}
+</script>
+
+</body>
+</html>

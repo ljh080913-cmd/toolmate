@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이용약관 | ToolMate</title>
+  <meta name="description" content="ToolMate의 서비스 이용약관 및 면책조항 안내입니다.">
+  <link rel="stylesheet" href="shared/design-system.css">
+  <style>
+    .legal-content { max-width: 800px; margin: 40px auto; line-height: 1.8; color: var(--text-main); }
+    .legal-content h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 24px; color: var(--text-main); }
+    .legal-content h2 { font-size: 1.25rem; font-weight: 700; margin: 32px 0 12px; color: var(--primary); }
+    .legal-content p, .legal-content li { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 12px; }
+    .legal-content ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="legal-content">
+      <h1>서비스 이용약관 (Terms of Service)</h1>
+
+      <h2>제1조 (목적)</h2>
+      <p>본 약관은 ToolMate(이하 "서비스")가 제공하는 온라인 웹 유틸리티 도구(계산기, 미디어 변환기, 생산성 도구 등)의 이용 조건 및 절차에 관한 기본적인 사항을 규정함을 목적으로 합니다.</p>
+
+      <h2>제2조 (서비스의 제공 및 변경)</h2>
+      <p>서비스는 회원가입 없이 무료로 제공되며, 최신 세법 및 공식 알고리즘을 반영하여 지속적으로 업데이트됩니다. 서비스의 내용이나 도구 기능은 사전 통지 없이 수정되거나 보완될 수 있습니다.</p>
+
+      <h2>제3조 (면책 조항 및 책임의 한계)</h2>
+      <p>서비스에서 제공하는 세금, 수당, 금융이자, 건강 계산 결과는 관계 법령 및 표준 산식을 바탕으로 시뮬레이션된 <strong>참고용 정보</strong>입니다.</p>
+      <ul>
+        <li>실제 세액, 퇴직금, 대출 이자 및 건강 처방은 개인의 구체적인 상황이나 기관의 기준에 따라 달라질 수 있으므로, 중대한 결정 시 관련 전문가(세무사, 노무사, 의사 등)의 공식 자문을 받으시기 바랍니다.</li>
+        <li>서비스의 계산 결과를 신뢰하여 발생한 직·간접적인 손해에 대해 서비스는 법적 책임을 지지 않습니다.</li>
+      </ul>
+
+      <h2>제4조 (지적재산권)</h2>
+      <p>ToolMate에 게재된 UI 디자인, 로고, 소스코드 및 콘텐츠의 지적재산권은 ToolMate에 귀속되며, 무단 복제 및 상업적 도용을 금합니다.</p>
+
+      <p style="margin-top:40px; font-size:0.85rem; color:var(--text-subtle);">최종 개정일자: 2026년 8월 26일</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="terms.html" style="color:var(--primary); font-weight:700;">이용약관</a>
+        <a href="contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="shared/common.js"></script>
+</body>
+</html>

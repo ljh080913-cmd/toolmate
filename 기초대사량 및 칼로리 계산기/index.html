@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>기초대사량(BMR) & 다이어트 TDEE 탄단지 계산기 | ToolMate</title>
+  <meta name="description" content="미플린-세인트 지어 공식 기반 기초대사량(BMR), 활동대사량(TDEE), 다이어트 목표별 하루 권장 칼로리 및 탄수화물·단백질·지방(g)을 즉시 계산합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .bmr-wrap { max-width: 800px; margin: 0 auto; }
+
+    .input-unit-wrap {
+      display: flex; align-items: center; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); background: var(--surface); overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .input-unit-wrap:focus-within {
+      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .input-unit-wrap input[type=number] {
+      flex: 1; border: none; outline: none; padding: 12px 16px;
+      font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700;
+      color: var(--text-main); background: transparent;
+    }
+    .input-unit-wrap .unit-tag {
+      padding: 0 16px; font-size: 0.88rem; font-weight: 700;
+      color: var(--text-muted); background: var(--surface-alt);
+      height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Result Card */
+    .result-section {
+      margin-top: 24px; background: var(--surface-alt);
+      border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border);
+    }
+    .result-heading { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 16px; }
+
+    .data-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 10px 0; border-bottom: 1px dotted var(--border); font-size: 0.95rem;
+    }
+    .data-row .lbl { color: var(--text-muted); font-weight: 600; }
+    .data-row .val { font-family: var(--font-mono); font-weight: 700; color: var(--text-main); font-size: 1.05rem; }
+
+    .total-hero {
+      margin-top: 20px; padding: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff; border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .total-hero .th-label { font-size: 0.85rem; font-weight: 700; opacity: 0.9; }
+    .total-hero .th-value {
+      font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; margin-top: 6px; line-height: 1.1;
+    }
+    .total-hero .th-value span { font-size: 1.1rem; font-weight: 600; opacity: 0.85; margin-left: 6px; }
+
+    /* Macro Nutrition Grid */
+    .macro-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .macro-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      text-align: center;
+    }
+    .macro-name { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .macro-val { font-family: var(--font-mono); font-size: 1.25rem; font-weight: 800; color: var(--primary); }
+    .macro-sub { font-size: 0.72rem; color: var(--text-subtle); margin-top: 2px; }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .macro-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="bmr-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">🥗 헬스 & 다이어트 영양 밸런스</span>
+        <h1 class="page-title">기초대사량(BMR) & 다이어트 칼로리 계산기</h1>
+        <p class="page-desc">정확한 기초대사량, 일일 유지 칼로리(TDEE) 및 목표에 따른 탄수화물·단백질·지방 맞춤 식단을 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">성별</label>
+            <select id="gender" class="select-field" onchange="calcBmr()">
+              <option value="m" selected>남성 (Male)</option>
+              <option value="f">여성 (Female)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">나이 (만 나이)</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="age" value="25" min="10" max="100" oninput="calcBmr()">
+              <span class="unit-tag">세</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">키 (신장)</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="height" value="175" min="100" max="230" oninput="calcBmr()">
+              <span class="unit-tag">cm</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">현재 몸무게 (체중)</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="weight" value="70" min="30" max="200" oninput="calcBmr()">
+              <span class="unit-tag">kg</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">평소 일상 활동량</label>
+          <select id="activity" class="select-field" onchange="calcBmr()">
+            <option value="1.2">거의 운동 안 함 (좌식 생활, 사무직)</option>
+            <option value="1.375" selected>가벼운 활동 (주 1~3회 가벼운 운동)</option>
+            <option value="1.55">보통 활동 (주 3~5회 적당한 운동)</option>
+            <option value="1.725">적극적인 활동 (주 6~7회 강한 운동)</option>
+            <option value="1.9">매우 많은 활동 (운동선수 / 육체 노동)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">다이어트 목표</label>
+          <select id="goal" class="select-field" onchange="calcBmr()">
+            <option value="-500" selected>체중 감량 (다이어트 / 하루 -500 kcal)</option>
+            <option value="-300">완만한 감량 (하루 -300 kcal)</option>
+            <option value="0">현재 체중 유지 (유지어터 / 0 kcal)</option>
+            <option value="300">근육 증가 / 린매스업 (하루 +300 kcal)</option>
+            <option value="500">벌크업 / 체중 증량 (하루 +500 kcal)</option>
+          </select>
+        </div>
+
+        <!-- Results Card -->
+        <div class="result-section">
+          <h2 class="result-heading">📊 칼로리 & 대사량 분석 결과</h2>
+
+          <div class="data-row"><span class="lbl">내 기초대사량 (BMR - 숨만 쉬어도 소비)</span><span class="val" id="rBmr">-</span></div>
+          <div class="data-row"><span class="lbl">하루 총 소비 칼로리 (TDEE - 유지 칼로리)</span><span class="val" id="rTdee">-</span></div>
+
+          <div class="total-hero">
+            <div class="th-label">목표 달성을 위한 하루 권장 섭취 칼로리</div>
+            <div class="th-value" id="rTargetKcal">0<span>kcal / 일</span></div>
+          </div>
+
+          <!-- Macro Nutrients (탄단지) -->
+          <div style="font-size:0.88rem; font-weight:700; color:var(--text-main); margin:20px 0 6px;">
+            🥗 추천 하루 탄·단·지 영양소 배분 (탄수화물 5 : 단백질 3 : 지방 2)
+          </div>
+          <div class="macro-grid">
+            <div class="macro-card">
+              <div class="macro-name">🍚 탄수화물 (50%)</div>
+              <div class="macro-val" id="rCarb">-</div>
+              <div class="macro-sub">밥, 고구마, 오트밀 등</div>
+            </div>
+            <div class="macro-card">
+              <div class="macro-name">🍗 단백질 (30%)</div>
+              <div class="macro-val" id="rProtein">-</div>
+              <div class="macro-sub">닭가슴살, 계란, 소고기 등</div>
+            </div>
+            <div class="macro-card">
+              <div class="macro-name">🥑 지방 (20%)</div>
+              <div class="macro-val" id="rFat">-</div>
+              <div class="macro-sub">아보카도, 견과류, 올리브유</div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>기초대사량(BMR)과 활동대사량(TDEE)이란?</h2>
+        <p><strong>기초대사량(BMR)</strong>은 생명 유지에 필요한 최소한의 에너지이며, <strong>TDEE(Total Daily Energy Expenditure)</strong>는 기초대사량에 일상생활과 운동 소모량을 더한 총 에너지 소비량입니다.</p>
+
+        <h3>성공적인 다이어트 공식</h3>
+        <ul>
+          <li><strong>섭취 칼로리 < TDEE:</strong> 체중 감량 (지방 연소). 단, 건강을 위해 기초대사량(BMR) 밑으로 극단적으로 굶는 것은 금물입니다.</li>
+          <li><strong>단백질 섭취:</strong> 체중 1kg당 1.5g~2.0g의 단백질을 섭취하면 근손실 없이 체지방만 효과적으로 감량할 수 있습니다.</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcBmr() {
+      const gender = document.getElementById('gender').value;
+      const age = parseFloat(document.getElementById('age').value) || 25;
+      const height = parseFloat(document.getElementById('height').value) || 175;
+      const weight = parseFloat(document.getElementById('weight').value) || 70;
+      const act = parseFloat(document.getElementById('activity').value) || 1.375;
+      
+      // 버그 수정: parseFloat("0")은 0(falsy)이므로 || 연산자를 쓰면 -500으로 덮어씌워지는 문제 해결
+      const goalVal = parseFloat(document.getElementById('goal').value);
+      const goalKcal = isNaN(goalVal) ? 0 : goalVal;
+
+      // Mifflin-St Jeor Formula
+      let bmr = (10 * weight) + (6.25 * height) - (5 * age);
+      if (gender === 'm') bmr += 5;
+      else bmr -= 161;
+
+      const tdee = bmr * act;
+      const targetKcal = Math.max(1200, Math.round(tdee + goalKcal));
+
+      // 탄단지 배분 (탄수화물 50%, 단백질 30%, 지방 20%)
+      const carbG = Math.round((targetKcal * 0.50) / 4);
+      const proteinG = Math.round((targetKcal * 0.30) / 4);
+      const fatG = Math.round((targetKcal * 0.20) / 9);
+
+      document.getElementById('rBmr').textContent = `${Math.round(bmr).toLocaleString()} kcal`;
+      document.getElementById('rTdee').textContent = `${Math.round(tdee).toLocaleString()} kcal`;
+      document.getElementById('rTargetKcal').innerHTML = `${targetKcal.toLocaleString()}<span>kcal / 일</span>`;
+
+      document.getElementById('rCarb').textContent = `${carbG}g`;
+      document.getElementById('rProtein').textContent = `${proteinG}g`;
+      document.getElementById('rFat').textContent = `${fatG}g`;
+    }
+
+    calcBmr();
+  </script>
+</body>
+</html>
+

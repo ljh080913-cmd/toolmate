@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>알코올 해독 시간 & 음주 숙취 계산기 (위드마크) | ToolMate</title>
+  <meta name="description" content="위드마크 공식 기반으로 체중과 마신 술의 양(소주/맥주/와인)에 따른 혈중알코올농도와 술 깨는 예상 시간(운전 가능 시각)을 계산합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .alc-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Drink Counter Grid */
+    .drinks-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px; margin-top: 10px;
+    }
+    .drink-card {
+      background: var(--surface-alt); border: 1px solid var(--border);
+      border-radius: var(--radius-md); padding: 14px; text-align: center;
+    }
+    .drink-icon { font-size: 1.8rem; margin-bottom: 4px; }
+    .drink-name { font-weight: 800; font-size: 0.95rem; color: var(--text-main); }
+    .drink-sub { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; }
+    
+    .counter-ctrl {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .counter-btn {
+      width: 32px; height: 32px; border-radius: var(--radius-sm); border: 1px solid var(--border);
+      background: var(--surface); color: var(--text-main); font-size: 1.1rem; font-weight: bold;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+    }
+    .counter-btn:hover { background: var(--primary-light); color: var(--primary); }
+    .counter-val {
+      width: 50px; text-align: center; font-family: var(--font-mono); font-weight: 800;
+      font-size: 1.1rem; border: none; background: transparent; color: var(--text-main); outline: none;
+    }
+
+    /* Result Box */
+    .result-hero {
+      background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+      color: #ffffff; border-radius: var(--radius-lg); padding: 28px;
+      text-align: center; margin-top: 24px; box-shadow: 0 4px 20px rgba(49, 46, 129, 0.3);
+    }
+    .result-hero .sub-lbl { font-size: 0.88rem; opacity: 0.85; font-weight: 600; }
+    .result-hero .main-time {
+      font-family: var(--font-mono); font-size: 2.4rem; font-weight: 800; margin: 8px 0;
+      color: #facc15; letter-spacing: -0.5px;
+    }
+    .result-hero .bac-info { font-size: 0.95rem; opacity: 0.95; }
+
+    .danger-warning {
+      margin-top: 16px; padding: 14px; background: var(--danger-light);
+      border: 1px solid var(--danger); border-radius: var(--radius-md);
+      color: var(--danger); font-size: 0.88rem; font-weight: 700; text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .drinks-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="alc-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">🍺 숙취 & 안전운전 시뮬레이터</span>
+        <h1 class="page-title">알코올 해독 시간 & 숙취 계산기</h1>
+        <p class="page-desc">경찰청 위드마크(Widmark) 공식 기반으로 혈중알코올농도와 술 깨는 예상 시각을 정밀 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">성별</label>
+            <select id="gender" class="select-field" onchange="calcAlcohol()">
+              <option value="male" selected>남성 (알코올 분해 계수 0.86)</option>
+              <option value="female">여성 (알코올 분해 계수 0.71)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">체중 (몸무게)</label>
+            <input type="number" id="weight" class="input-field" value="70" min="30" max="200" oninput="calcAlcohol()">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">마신 주류 및 음주량 선택</label>
+          <div class="drinks-grid">
+            
+            <!-- 소주 -->
+            <div class="drink-card">
+              <div class="drink-icon">🍶</div>
+              <div class="drink-name">소주 (16도)</div>
+              <div class="drink-sub">1잔 = 50ml (1병 7잔)</div>
+              <div class="counter-ctrl">
+                <button type="button" class="counter-btn" onclick="adjustDrink('soju', -1)">-</button>
+                <input type="number" id="soju" class="counter-val" value="3" min="0" oninput="calcAlcohol()">
+                <button type="button" class="counter-btn" onclick="adjustDrink('soju', 1)">+</button>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">잔 (소주잔)</div>
+            </div>
+
+            <!-- 맥주 -->
+            <div class="drink-card">
+              <div class="drink-icon">🍺</div>
+              <div class="drink-name">맥주 (4.5도)</div>
+              <div class="drink-sub">1캔/병 = 500ml</div>
+              <div class="counter-ctrl">
+                <button type="button" class="counter-btn" onclick="adjustDrink('beer', -1)">-</button>
+                <input type="number" id="beer" class="counter-val" value="1" min="0" oninput="calcAlcohol()">
+                <button type="button" class="counter-btn" onclick="adjustDrink('beer', 1)">+</button>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">캔 (500ml)</div>
+            </div>
+
+            <!-- 막걸리 -->
+            <div class="drink-card">
+              <div class="drink-icon">🥣</div>
+              <div class="drink-name">막걸리 (6도)</div>
+              <div class="drink-sub">1사발 = 250ml</div>
+              <div class="counter-ctrl">
+                <button type="button" class="counter-btn" onclick="adjustDrink('makgeolli', -1)">-</button>
+                <input type="number" id="makgeolli" class="counter-val" value="0" min="0" oninput="calcAlcohol()">
+                <button type="button" class="counter-btn" onclick="adjustDrink('makgeolli', 1)">+</button>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">사발</div>
+            </div>
+
+            <!-- 와인/양주 -->
+            <div class="drink-card">
+              <div class="drink-icon">🍷</div>
+              <div class="drink-name">와인/양주 (12~40도)</div>
+              <div class="drink-sub">와인 1잔(150ml) / 위스키 1잔(30ml)</div>
+              <div class="counter-ctrl">
+                <button type="button" class="counter-btn" onclick="adjustDrink('wine', -1)">-</button>
+                <input type="number" id="wine" class="counter-val" value="0" min="0" oninput="calcAlcohol()">
+                <button type="button" class="counter-btn" onclick="adjustDrink('wine', 1)">+</button>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px;">잔</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Result Box -->
+        <div class="result-hero">
+          <div class="sub-lbl">완전 알코올 분해까지 예상 소요 시간</div>
+          <div class="main-time" id="clearTimeDisplay">약 4시간 15분</div>
+          <div class="bac-info" id="bacDisplay">최고 예상 혈중알코올농도: 0.052% (면허정지 수치)</div>
+          <div style="font-size:0.85rem; opacity:0.85; margin-top:8px;" id="readyTimeDisplay">운전 가능 예상 시각: 오늘 오후 11시 30분 이후</div>
+        </div>
+
+        <div class="danger-warning" id="dangerWarning">
+          ⚠️ 대한민국 도로교통법상 혈중알코올농도 0.03% 이상은 면허정지, 0.08% 이상은 면허취소 처벌 대상입니다. 숙취 운전도 음주운전에 해당하므로 충분한 휴식을 취하세요!
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>위드마크(Widmark) 공식과 알코올 분해 원리</h2>
+        <p><strong>위드마크 공식</strong>은 음주 후 경과 시간에 따른 체내 알코올 분해 속도를 역추산하는 과학적 수식으로, 수사기관 및 법원에서 표준 지표로 활용됩니다.</p>
+        
+        <h3>체질 및 숙취 관리 핵심 팁</h3>
+        <ul>
+          <li><strong>음주 중 수분 섭취:</strong> 알코올은 이뇨 작용을 촉진하므로 물을 자주 마시면 혈중 알코올 농도 상승을 완화하고 분해를 돕습니다.</li>
+          <li><strong>숙취 운전 주의:</strong> 잠을 자고 일어났더라도 아침 출근길에 체내에 알코올이 잔류해 면허정지 수치가 나올 수 있습니다.</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function adjustDrink(id, delta) {
+      const input = document.getElementById(id);
+      let val = (parseInt(input.value) || 0) + delta;
+      if (val < 0) val = 0;
+      input.value = val;
+      calcAlcohol();
+    }
+
+    function calcAlcohol() {
+      const gender = document.getElementById("gender").value;
+      const weight = parseFloat(document.getElementById("weight").value) || 70;
+
+      const soju = parseInt(document.getElementById("soju").value) || 0;
+      const beer = parseInt(document.getElementById("beer").value) || 0;
+      const makgeolli = parseInt(document.getElementById("makgeolli").value) || 0;
+      const wine = parseInt(document.getElementById("wine").value) || 0;
+
+      // 순수 알코올 섭취량 (g) = 음주량(ml) * (도수/100) * 0.8
+      // 소주 1잔 = 50ml, 16.5도 => 50 * 0.165 * 0.8 = 6.6g
+      // 맥주 1캔 = 500ml, 4.5도 => 500 * 0.045 * 0.8 = 18g
+      // 막걸리 1사발 = 250ml, 6도 => 250 * 0.06 * 0.8 = 12g
+      // 와인/양주 1잔 = 100ml, 13도 => 100 * 0.13 * 0.8 = 10.4g
+      const totalAlcoholG = (soju * 6.6) + (beer * 18.0) + (makgeolli * 12.0) + (wine * 10.4);
+
+      if (totalAlcoholG <= 0) {
+        document.getElementById("clearTimeDisplay").textContent = "음주량 없음 (0시간)";
+        document.getElementById("bacDisplay").textContent = "혈중알코올농도: 0.000% (완전 분해 상태)";
+        document.getElementById("readyTimeDisplay").textContent = "현재 바로 운전 가능합니다.";
+        document.getElementById("dangerWarning").style.display = "none";
+        return;
+      }
+
+      document.getElementById("dangerWarning").style.display = "block";
+
+      // 성별 계수 (R) : 남 0.86, 여 0.71
+      const r = gender === "male" ? 0.86 : 0.71;
+
+      // 최고 혈중알코올농도 (%) = 섭취량(g) * 0.7(체내흡수율) / (체중(kg) * r * 10)
+      const bac = (totalAlcoholG * 0.7) / (weight * r * 10);
+
+      // 시간당 분해량: 평균 0.015% / 시간
+      const hoursNeeded = bac / 0.015;
+
+      const hrs = Math.floor(hoursNeeded);
+      const mins = Math.round((hoursNeeded - hrs) * 60);
+
+      // 운전 가능 시각 (현재 시각 + 분해 시간)
+      const now = new Date();
+      const readyTime = new Date(now.getTime() + (hoursNeeded * 3600 * 1000));
+      const hoursStr = readyTime.getHours().toString().padStart(2, '0');
+      const minsStr = readyTime.getMinutes().toString().padStart(2, '0');
+
+      document.getElementById("clearTimeDisplay").textContent = `약 ${hrs}시간 ${mins}분`;
+      document.getElementById("bacDisplay").textContent = `최고 예상 혈중알코올농도: ${bac.toFixed(3)}%`;
+      document.getElementById("readyTimeDisplay").textContent = `운전 가능 예상 시각: ${readyTime.getMonth()+1}월 ${readyTime.getDate()}일 ${hoursStr}시 ${minsStr}분 이후`;
+    }
+
+    calcAlcohol();
+  </script>
+</body>
+</html>

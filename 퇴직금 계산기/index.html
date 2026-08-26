@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>법정 퇴직금 & 퇴직소득세 실수령액 정밀 계산기 | ToolMate</title>
+  <meta name="description" content="고용노동부 기준 1일 평균임금 및 법정 퇴직금 산정 공식 적용. 입사일·퇴사일 재직기간 계산, 상여금/연차수당 반영, 퇴직소득세 공제 후 실제 수령액을 즉시 계산합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .severance-wrap { max-width: 780px; margin: 0 auto; }
+
+    .input-unit-wrap {
+      display: flex; align-items: center; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); background: var(--surface); overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .input-unit-wrap:focus-within {
+      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .input-unit-wrap input[type=number] {
+      flex: 1; border: none; outline: none; padding: 12px 16px;
+      font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700;
+      color: var(--text-main); background: transparent;
+    }
+    .input-unit-wrap .unit-tag {
+      padding: 0 16px; font-size: 0.88rem; font-weight: 700;
+      color: var(--text-muted); background: var(--surface-alt);
+      height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Result Card */
+    .result-section {
+      margin-top: 24px; background: var(--surface-alt);
+      border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border);
+    }
+    .result-header-row {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    }
+    .result-heading { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0; }
+
+    .data-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 10px 0; border-bottom: 1px dotted var(--border); font-size: 0.95rem;
+    }
+    .data-row .lbl { color: var(--text-muted); font-weight: 600; }
+    .data-row .val { font-family: var(--font-mono); font-weight: 700; color: var(--text-main); font-size: 1.05rem; }
+    .data-row.plus .val { color: var(--success); }
+    .data-row.minus .val { color: var(--danger); }
+
+    .total-hero {
+      margin-top: 20px; padding: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff; border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .total-hero .th-label { font-size: 0.85rem; font-weight: 700; opacity: 0.9; }
+    .total-hero .th-value {
+      font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; margin-top: 6px; line-height: 1.1;
+    }
+    .total-hero .th-value span { font-size: 1.1rem; font-weight: 600; opacity: 0.85; margin-left: 6px; }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827; color: #fff; padding: 12px 24px;
+      border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 999; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .total-hero .th-value { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+      <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="severance-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">💼 근로기준법 제34조 법정 퇴직금 산정</span>
+        <h1 class="page-title">퇴직금 & 퇴직소득세 실수령액 계산기</h1>
+        <p class="page-desc">입사일과 퇴사일 기준 정확한 재직일수, 3개월 평균임금 및 퇴직소득세 공제 후 실제 통장 입금액을 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <!-- Dates Grid -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">입사일 (근무 시작일)</label>
+            <input type="date" id="joinDate" class="input-field" value="2023-03-01" onchange="calcSeverance()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">퇴사일 (마지막 근무일 다음날)</label>
+            <input type="date" id="leaveDate" class="input-field" value="2026-02-28" onchange="calcSeverance()">
+          </div>
+        </div>
+
+        <div style="background:var(--surface-alt); padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:20px; font-size:0.85rem; display:flex; justify-content:space-between;">
+          <span>총 재직 기간: <strong id="tenureText" style="color:var(--primary);">3년 0개월</strong></span>
+          <span>총 재직일수: <strong id="tenureDays" style="color:var(--primary); font-family:var(--font-mono);">1,095일</strong></span>
+        </div>
+
+        <!-- Wages Grid -->
+        <div class="form-group">
+          <label class="form-label">퇴직 전 3개월 기본급 총액 <span class="hint">월급 × 3개월</span></label>
+          <div class="input-unit-wrap">
+            <input type="number" id="baseSalary3M" value="9000000" inputmode="numeric" oninput="calcSeverance()">
+            <span class="unit-tag">원</span>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">퇴직 전 3개월 기타수당 총액 <span class="hint">식대, 직책수당 등</span></label>
+            <div class="input-unit-wrap">
+              <input type="number" id="allowance3M" value="600000" inputmode="numeric" oninput="calcSeverance()">
+              <span class="unit-tag">원</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">연간 상여금 총액 <span class="hint">최근 1년 상여금</span></label>
+            <div class="input-unit-wrap">
+              <input type="number" id="bonusAnnual" value="3000000" inputmode="numeric" oninput="calcSeverance()">
+              <span class="unit-tag">원</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="result-section">
+          <div class="result-header-row">
+            <h2 class="result-heading">📊 법정 퇴직금 정산 내역</h2>
+            <button class="btn btn-secondary btn-sm" onclick="copySeveranceSummary()">📋 명세서 복사</button>
+          </div>
+
+          <div class="data-row"><span class="lbl">1일 평균임금 (Average Daily Wage)</span><span class="val" id="rDailyWage">-</span></div>
+          <div class="data-row plus" style="font-weight:700;"><span class="lbl" style="color:var(--text-main);">세전 법정 퇴직금 합계</span><span class="val" id="rGrossSeverance">-</span></div>
+          <div class="data-row minus sub"><span class="lbl">퇴직소득세 + 지방소득세(추정)</span><span class="val" id="rTaxDeduct">-</span></div>
+
+          <div class="total-hero">
+            <div class="th-label">세후 통장 입금 실수령액 (Net Pay)</div>
+            <div class="th-value" id="rNetSeverance">0<span>원</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>퇴직금 지급 요건 및 계산 공식</h2>
+        <p>퇴직금은 근로기준법상 <strong>1주 15시간 이상 근무하며, 1년 이상 계속 근로한 근로자</strong>에게 의무적으로 지급되어야 합니다 (정규직, 계약직, 아르바이트 무관).</p>
+
+        <h3>법정 퇴직금 산정 공식</h3>
+        <ul>
+          <li><strong>1일 평균임금 = </strong> (퇴직 전 3개월간 지급된 임금 총액 + 연간 상여금의 3/12) ÷ 퇴직 전 3개월간의 총 일수(보통 89~92일)</li>
+          <li><strong>법정 퇴직금 = </strong> 1일 평균임금 × 30일 × (재직일수 ÷ 365)</li>
+          <li><strong>IRP(개인형 퇴직연금) 이전 시 혜택:</strong> 퇴직금을 IRP 계좌로 수령 시 퇴직소득세 납부가 연금 수령 시점까지 이연되어 절세 효과가 발생합니다.</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let summaryText = "";
+
+    function won(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+
+    function calcSeverance() {
+      const joinStr = document.getElementById('joinDate').value;
+      const leaveStr = document.getElementById('leaveDate').value;
+
+      if (!joinStr || !leaveStr) return;
+
+      const join = new Date(joinStr + 'T00:00:00');
+      const leave = new Date(leaveStr + 'T00:00:00');
+
+      const diffMs = leave - join;
+      const days = Math.max(1, Math.round(diffMs / (1000 * 60 * 60 * 24)));
+
+      const years = Math.floor(days / 365);
+      const remMonths = Math.floor((days % 365) / 30);
+
+      document.getElementById('tenureText').textContent = `${years}년 ${remMonths}개월`;
+      document.getElementById('tenureDays').textContent = `${days.toLocaleString()}일`;
+
+      if (days < 365) {
+        document.getElementById('tenureText').innerHTML += ' <span style="color:var(--danger); font-size:0.75rem;">(1년 미만은 법정퇴직금 미발생)</span>';
+      }
+
+      const base3M = parseFloat(document.getElementById('baseSalary3M').value) || 0;
+      const allow3M = parseFloat(document.getElementById('allowance3M').value) || 0;
+      const bonusAnnual = parseFloat(document.getElementById('bonusAnnual').value) || 0;
+
+      // 3개월 일수 91일 기준
+      const days3M = 91;
+      const dailyWage = (base3M + allow3M + (bonusAnnual * (3 / 12))) / days3M;
+
+      const grossSeverance = dailyWage * 30 * (days / 365);
+
+      // 근속연수공제 퇴직소득세 추정
+      const serviceYears = Math.max(1, Math.ceil(days / 365));
+      let serviceDeduction = 0;
+      if (serviceYears <= 5) serviceDeduction = serviceYears * 1000000;
+      else if (serviceYears <= 10) serviceDeduction = 5000000 + (serviceYears - 5) * 2000000;
+      else if (serviceYears <= 20) serviceDeduction = 15000000 + (serviceYears - 10) * 2500000;
+      else serviceDeduction = 40000000 + (serviceYears - 20) * 3000000;
+
+      const taxBase = Math.max(0, grossSeverance - serviceDeduction);
+      const convertedTaxBase = (taxBase / serviceYears) * 12;
+
+      let convertedTax = 0;
+      if (convertedTaxBase <= 14000000) convertedTax = convertedTaxBase * 0.06;
+      else if (convertedTaxBase <= 50000000) convertedTax = 840000 + (convertedTaxBase - 14000000) * 0.15;
+      else convertedTax = 6240000 + (convertedTaxBase - 50000000) * 0.24;
+
+      const totalTax = Math.round(((convertedTax / 12) * serviceYears) * 1.1); // 지방세 포함
+      const netSeverance = Math.max(0, grossSeverance - totalTax);
+
+      document.getElementById('rDailyWage').textContent = won(dailyWage);
+      document.getElementById('rGrossSeverance').textContent = won(grossSeverance);
+      document.getElementById('rTaxDeduct').textContent = '-' + won(totalTax);
+      document.getElementById('rNetSeverance').innerHTML = won(netSeverance) + '<span>원</span>';
+
+      summaryText = `[ToolMate 퇴직금 정산서]\n• 총 재직기간: ${years}년 ${remMonths}개월 (${days}일)\n• 1일 평균임금: ${won(dailyWage)}\n• 세전 법정 퇴직금: ${won(grossSeverance)}\n• 퇴직소득세 공제: -${won(totalTax)}\n• 세후 실수령액: ${won(netSeverance)}`;
+    }
+
+    function copySeveranceSummary() {
+      navigator.clipboard.writeText(summaryText).then(() => showToast('📋 퇴직금 정산 명세가 복사되었습니다.'));
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toastEl = document.getElementById('toast');
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+    }
+
+    calcSeverance();
+  </script>
+</body>
+</html>

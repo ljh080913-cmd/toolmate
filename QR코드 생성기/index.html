@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>고해상도 QR 코드 & 바코드 즉시 생성기 | ToolMate</title>
+  <meta name="description" content="웹사이트 링크, 텍스트, 와이파이 자동연결, 전자명함(vCard) QR 코드를 서버 전송 없이 1초만에 무료 생성하고 고화질 PNG로 다운로드하세요.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    .qr-wrap { max-width: 840px; margin: 0 auto; }
+    
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .tab-bar {
+      display: flex; background: var(--surface-alt);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 4px; margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1; text-align: center; padding: 8px 10px;
+      font-size: 0.85rem; font-weight: 700; color: var(--text-muted);
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    /* QR Preview Card */
+    .qr-preview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      text-align: center;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .qr-box-inner {
+      padding: 16px;
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      display: inline-block;
+      margin: 16px 0;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827; color: #fff; padding: 12px 24px;
+      border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 999; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 800px) {
+      .grid-layout { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+        <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="qr-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">📱 무료 고해상도 QR 스튜디오</span>
+        <h1 class="page-title">고화질 QR 코드 즉시 생성기</h1>
+        <p class="page-desc">링크, 와이파이 자동접속, 텍스트, 명함 QR 코드를 실시간으로 만들고 PNG 이미지로 다운로드하세요.</p>
+      </div>
+
+      <div class="grid-layout">
+        
+        <!-- Controls Left -->
+        <div class="card card-padded">
+          <div class="tab-bar">
+            <button class="tab-btn active" onclick="switchMode('url')">🔗 웹 링크</button>
+            <button class="tab-btn" onclick="switchMode('text')">📝 텍스트</button>
+            <button class="tab-btn" onclick="switchMode('wifi')">📶 와이파이</button>
+          </div>
+
+          <!-- URL Mode -->
+          <div id="modeUrl">
+            <div class="form-group">
+              <label class="form-label">연결할 웹사이트 URL</label>
+              <input type="url" id="inputUrl" class="input-field" value="https://google.com" placeholder="https://..." oninput="generateQR()">
+            </div>
+          </div>
+
+          <!-- Text Mode -->
+          <div id="modeText" style="display:none;">
+            <div class="form-group">
+              <label class="form-label">표시할 텍스트</label>
+              <textarea id="inputText" class="input-field" rows="4" placeholder="메모나 전달할 내용을 입력하세요." oninput="generateQR()">ToolMate를 이용해주셔서 감사합니다!</textarea>
+            </div>
+          </div>
+
+          <!-- Wi-Fi Mode -->
+          <div id="modeWifi" style="display:none;">
+            <div class="form-group">
+              <label class="form-label">와이파이 이름 (SSID)</label>
+              <input type="text" id="wifiSsid" class="input-field" placeholder="예: MyHome_5G" oninput="generateQR()">
+            </div>
+            <div class="form-group">
+              <label class="form-label">와이파이 비밀번호</label>
+              <input type="text" id="wifiPw" class="input-field" placeholder="비밀번호" oninput="generateQR()">
+            </div>
+          </div>
+
+          <!-- Style Customization -->
+          <div class="detail-card" style="margin-top:16px;">
+            <div style="font-size:0.88rem; font-weight:700; margin-bottom:12px;">🎨 색상 및 해상도 설정</div>
+            <div class="grid-2">
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" style="font-size:0.8rem;">QR 패턴 색상</label>
+                <input type="color" id="qrColor" value="#0f172a" class="input-field" style="height:42px; padding:2px;" onchange="generateQR()">
+              </div>
+              <div class="form-group" style="margin-bottom:0;">
+                <label class="form-label" style="font-size:0.8rem;">배경 색상</label>
+                <input type="color" id="qrBg" value="#ffffff" class="input-field" style="height:42px; padding:2px;" onchange="generateQR()">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Right -->
+        <div class="qr-preview-card">
+          <span style="font-size:0.88rem; font-weight:700; color:var(--text-main);">QR 코드 실시간 미리보기</span>
+          <div class="qr-box-inner" id="qrcode"></div>
+          <span style="font-size:0.78rem; color:var(--text-muted); margin-bottom:16px;">카메라 앱으로 스캔 테스트해보세요</span>
+
+          <button class="btn btn-primary btn-block" onclick="downloadQR()">PNG 다운로드</button>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>QR 코드 활용 꿀팁 & 안내</h2>
+        <p>QR(Quick Response) 코드는 2차원 바코드 형태로 종이 인쇄물, 명함, 식당 메뉴판, 안내문 등에서 스마트폰 카메라로 간편하게 정보를 전달할 수 있습니다.</p>
+
+        <h3>와이파이 QR 코드 기능</h3>
+        <p>카페나 매장, 가정에서 복잡한 와이파이 비밀번호를 일일이 알려줄 필요 없이, 생성된 QR 코드를 스캔하는 즉시 와이파이에 자동 연결됩니다.</p>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let mode = 'url';
+    let qrcodeObj = null;
+
+    function switchMode(m) {
+      mode = m;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+
+      document.getElementById('modeUrl').style.display = m === 'url' ? 'block' : 'none';
+      document.getElementById('modeText').style.display = m === 'text' ? 'block' : 'none';
+      document.getElementById('modeWifi').style.display = m === 'wifi' ? 'block' : 'none';
+
+      generateQR();
+    }
+
+    function getContent() {
+      if (mode === 'url') {
+        return document.getElementById('inputUrl').value.trim() || 'https://google.com';
+      } else if (mode === 'text') {
+        return document.getElementById('inputText').value.trim() || 'ToolMate';
+      } else {
+        const ssid = document.getElementById('wifiSsid').value.trim();
+        const pw = document.getElementById('wifiPw').value.trim();
+        return `WIFI:S:${ssid};T:WPA;P:${pw};;`;
+      }
+    }
+
+    function generateQR() {
+      const container = document.getElementById('qrcode');
+      container.innerHTML = '';
+
+      const text = getContent();
+      const colorDark = document.getElementById('qrColor').value;
+      const colorLight = document.getElementById('qrBg').value;
+
+      qrcodeObj = new QRCode(container, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: colorDark,
+        colorLight: colorLight,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    function downloadQR() {
+      const img = document.querySelector('#qrcode img');
+      if (!img || !img.src) return;
+
+      const a = document.createElement('a');
+      a.href = img.src;
+      a.download = `qrcode_${Date.now()}.png`;
+      a.click();
+      showToast('✅ QR 코드가 PNG 파일로 저장되었습니다.');
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toastEl = document.getElementById('toast');
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+    }
+
+    generateQR();
+  </script>
+</body>
+</html>

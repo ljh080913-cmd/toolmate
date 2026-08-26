@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>간이 영수증 & 표준 견적서 무료 양식 출력기 | ToolMate</title>
+  <meta name="description" content="서버 저장 없이 브라우저에서 직접 작성하고 A4 용지 규격으로 즉시 인쇄 및 PDF 저장할 수 있는 무료 간이영수증·견적서 양식 생성기.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .doc-wrap { max-width: 840px; margin: 0 auto; }
+    
+    .no-print { display: block; }
+    
+    .tab-bar {
+      display: flex; background: var(--surface-alt);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 4px; margin-bottom: 20px;
+    }
+    .tab-btn {
+      flex: 1; text-align: center; padding: 10px 14px;
+      font-size: 0.95rem; font-weight: 700; color: var(--text-muted);
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    /* Document Sheet (Paper Style for preview & print) */
+    .paper-sheet {
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid #d1d5db;
+      border-radius: var(--radius-md);
+      padding: 36px 32px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      margin: 20px 0;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    .doc-header-title {
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: 0.2em;
+      border-bottom: 2px solid #111827;
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+
+    .meta-table, .item-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+    }
+    .meta-table th, .meta-table td, .item-table th, .item-table td {
+      border: 1px solid #9ca3af;
+      padding: 8px 10px;
+    }
+    .item-table th {
+      background: #f3f4f6;
+      font-weight: 700;
+      text-align: center;
+    }
+    .item-table td input {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: inherit;
+      background: transparent;
+    }
+
+    .total-korean-row {
+      background: #f9fafb;
+      font-weight: 700;
+      padding: 10px;
+      border: 1px solid #9ca3af;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .doc-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    /* Print CSS */
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .gnb, .page-header, .tab-bar, .no-print, .site-footer, .seo-article { display: none !important; }
+      .container { padding: 0 !important; max-width: 100% !important; }
+      .paper-sheet {
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+        <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="doc-wrap">
+      
+      <div class="page-header no-print">
+        <span class="pill-badge">📄 A4 출력 & PDF 저장 지원</span>
+        <h1 class="page-title">간이 영수증 & 견적서 인쇄 생성기</h1>
+        <p class="page-desc">공급자 정보와 품목을 입력하면 자동으로 합계가 산출되며, 브라우저에서 바로 깔끔하게 A4 인쇄할 수 있습니다.</p>
+      </div>
+
+      <div class="tab-bar no-print">
+        <button class="tab-btn active" id="tabReceipt" onclick="switchDoc('receipt')">🧾 간이 영수증</button>
+        <button class="tab-btn" id="tabEstimate" onclick="switchDoc('estimate')">📋 표준 견적서</button>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="doc-actions no-print">
+        <button class="btn btn-primary btn-lg" onclick="window.print()">🖨️ A4 규격 바로 인쇄 / PDF 저장</button>
+        <button class="btn btn-secondary btn-lg" onclick="addRow()">➕ 품목 행 추가</button>
+      </div>
+
+      <!-- Printable Paper Sheet -->
+      <div class="paper-sheet" id="printSheet">
+        
+        <div class="doc-header-title" id="docTitle">간 이 영 수 증</div>
+
+        <!-- Meta Table -->
+        <table class="meta-table">
+          <tr>
+            <th style="width:18%; background:#f9fafb;">작성 일자</th>
+            <td style="width:32%;"><input type="date" id="docDate" style="border:none; outline:none; font-family:inherit;" value="2026-08-25"></td>
+            <th style="width:18%; background:#f9fafb;">등록 번호</th>
+            <td style="width:32%;"><input type="text" placeholder="사업자등록번호" style="width:100%; border:none; outline:none;" value="123-45-67890"></td>
+          </tr>
+          <tr>
+            <th style="background:#f9fafb;">상 호(법인명)</th>
+            <td><input type="text" placeholder="상호명" style="width:100%; border:none; outline:none;" value="ToolMate 스튜디오"></td>
+            <th style="background:#f9fafb;">성 명(대표자)</th>
+            <td><input type="text" placeholder="대표자명 (인)" style="width:100%; border:none; outline:none;" value="홍길동 (인)"></td>
+          </tr>
+          <tr>
+            <th style="background:#f9fafb;">사업장 소재지</th>
+            <td colspan="3"><input type="text" placeholder="사업장 주소" style="width:100%; border:none; outline:none;" value="서울특별시 강남구 테헤란로 123"></td>
+          </tr>
+        </table>
+
+        <!-- Total Sum Bar -->
+        <div class="total-korean-row">
+          <span>합계 금액 (금액 한글 표기): <strong id="koreanWon" style="color:#2563eb; margin-left:8px;">일금 십일만원정</strong></span>
+          <span style="font-family:var(--font-mono); font-size:1.15rem; font-weight:800;" id="numericWon">₩ 110,000</span>
+        </div>
+
+        <!-- Item Table -->
+        <table class="item-table" id="itemTable">
+          <thead>
+            <tr>
+              <th style="width:38%;">품목 / 규격</th>
+              <th style="width:12%;">수량</th>
+              <th style="width:20%;">단가 (원)</th>
+              <th style="width:20%;">금액 (원)</th>
+              <th style="width:10%;" class="no-print">삭제</th>
+            </tr>
+          </thead>
+          <tbody id="itemTbody">
+            <tr>
+              <td><input type="text" value="웹사이트 디자인 및 개발 용역" oninput="calcSheet()"></td>
+              <td><input type="number" value="1" style="text-align:center;" oninput="calcSheet()"></td>
+              <td><input type="number" value="100000" style="text-align:right;" oninput="calcSheet()"></td>
+              <td style="text-align:right; font-family:var(--font-mono); font-weight:700;" class="row-sum">100,000</td>
+              <td class="no-print" style="text-align:center;"><button onclick="removeRow(this)" style="background:#fef2f2;border:1px solid #fca5a5;color:#ef4444;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.8rem;font-weight:700;">✕</button></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="도메인 및 호스팅 세팅" oninput="calcSheet()"></td>
+              <td><input type="number" value="1" style="text-align:center;" oninput="calcSheet()"></td>
+              <td><input type="number" value="10000" style="text-align:right;" oninput="calcSheet()"></td>
+              <td style="text-align:right; font-family:var(--font-mono); font-weight:700;" class="row-sum">10,000</td>
+              <td class="no-print" style="text-align:center;"><button onclick="removeRow(this)" style="background:#fef2f2;border:1px solid #fca5a5;color:#ef4444;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.8rem;font-weight:700;">✕</button></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="text-align:right; font-size:0.8rem; color:#6b7280; margin-top:20px;">
+          위 금액을 정히 영수(청구)합니다.
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article no-print">
+        <h2>간이영수증 및 견적서 발행 기준</h2>
+        <p>간이영수증은 세금계산서의 필요적 기재사항 중 부가가치세를 별도로 구분하지 않고 총액을 기재하여 발행하는 영수증입니다.</p>
+
+        <h3>지출증빙 한도 주의사항</h3>
+        <ul>
+          <li><strong>간이영수증 한도:</strong> 건당 거래금액 3만원 이하(접대비 1만원)에 대해 법격 적격증빙으로 인정받습니다.</li>
+          <li><strong>3만원 초과 시:</strong> 세금계산서, 신용카드 매출전표, 현금영수증을 수취해야 가산세를 피할 수 있습니다.</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="../index.html">홈</a>
+        <a href="../글자 수 세기/index.html">글자수 세기</a>
+        <a href="../실 수령액 계산기/index.html">실수령액 계산기</a>
+        <a href="../이미지 용량 줄이기/index.html">이미지 압축</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let docMode = 'receipt';
+
+    function switchDoc(m) {
+      docMode = m;
+      document.getElementById('tabReceipt').classList.toggle('active', m === 'receipt');
+      document.getElementById('tabEstimate').classList.toggle('active', m === 'estimate');
+      document.getElementById('docTitle').textContent = m === 'receipt' ? '간 이 영 수 증' : '견  적  서';
+    }
+
+    function addRow() {
+      const tbody = document.getElementById('itemTbody');
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" placeholder="품목명 입력" oninput="calcSheet()"></td>
+        <td><input type="number" value="1" style="text-align:center;" oninput="calcSheet()"></td>
+        <td><input type="number" value="0" style="text-align:right;" oninput="calcSheet()"></td>
+        <td style="text-align:right; font-family:var(--font-mono); font-weight:700;" class="row-sum">0</td>
+        <td class="no-print" style="text-align:center;"><button onclick="removeRow(this)" style="background:#fef2f2;border:1px solid #fca5a5;color:#ef4444;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:0.8rem;font-weight:700;">✕</button></td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    function removeRow(btn) {
+      const tbody = document.getElementById('itemTbody');
+      if (tbody.rows.length <= 1) {
+        showToast('⚠️ 최소 1개 행은 남겨야 합니다.');
+        return;
+      }
+      btn.closest('tr').remove();
+      calcSheet();
+    }
+
+    function numberToKorean(num) {
+      if (num === 0) return '영';
+      const units = ['', '만', '억', '조'];
+      const digits = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+      const subUnits = ['', '십', '백', '천'];
+
+      let result = '';
+      let unitIdx = 0;
+
+      while (num > 0) {
+        let chunk = num % 10000;
+        if (chunk > 0) {
+          let chunkStr = '';
+          for (let i = 0; i < 4; i++) {
+            let d = chunk % 10;
+            if (d > 0) {
+              chunkStr = digits[d] + subUnits[i] + chunkStr;
+            }
+            chunk = Math.floor(chunk / 10);
+          }
+          result = chunkStr + units[unitIdx] + ' ' + result;
+        }
+        num = Math.floor(num / 10000);
+        unitIdx++;
+      }
+      return '일금 ' + result.trim() + '원정';
+    }
+
+    function calcSheet() {
+      const rows = document.querySelectorAll('#itemTbody tr');
+      let grandTotal = 0;
+
+      rows.forEach(r => {
+        const qty = parseFloat(r.children[1].querySelector('input').value) || 0;
+        const price = parseFloat(r.children[2].querySelector('input').value) || 0;
+        const sum = qty * price;
+        grandTotal += sum;
+        r.children[3].textContent = sum.toLocaleString('ko-KR');
+      });
+
+      document.getElementById('numericWon').textContent = '₩ ' + grandTotal.toLocaleString('ko-KR');
+      document.getElementById('koreanWon').textContent = numberToKorean(grandTotal);
+    }
+
+    calcSheet();
+  </script>
+</body>
+</html>

@@ -1,0 +1,641 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>초고속 이미지 압축 & WEBP 일괄 변환 스튜디오 | ToolMate</title>
+  <meta name="description" content="서버 전송 없이 100% 브라우저 GPU로 구동되는 무손실 이미지 압축기. 다중 파일 일괄 압축, WEBP/JPG/PNG 포맷 변환, 픽셀 리사이즈 및 ZIP 다운로드를 지원합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+    .studio-wrap {
+      max-width: 880px;
+      margin: 0 auto;
+    }
+
+    /* Dropzone */
+    .dropzone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 44px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--surface-alt);
+      transition: all 0.2s ease;
+    }
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+    .dropzone .icon { font-size: 42px; margin-bottom: 10px; display: block; }
+    .dropzone p { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+    .dropzone span { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; display: block; }
+    #fileInput { display: none; }
+
+    /* Control Panel */
+    .studio-panel {
+      display: none;
+      margin-top: 24px;
+      gap: 20px;
+      flex-direction: column;
+    }
+    .studio-panel.show { display: flex; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .control-box {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+    }
+    .control-box label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.86rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-main);
+    }
+    .control-box label span.val {
+      font-family: var(--font-mono);
+      color: var(--primary);
+    }
+
+    input[type=range] {
+      width: 100%;
+      accent-color: var(--primary);
+      cursor: pointer;
+    }
+
+    /* Resize Presets */
+    .preset-chips {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .chip-btn {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-main);
+      cursor: pointer;
+    }
+    .chip-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Before/After Single Image Preview */
+    .comparison-wrapper {
+      position: relative;
+      width: 100%;
+      height: 380px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: #090d16;
+      border: 1px solid var(--border);
+    }
+    .comparison-wrapper img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+    }
+    .img-before-box {
+      position: absolute;
+      top: 0; left: 0;
+      width: 50%; height: 100%;
+      overflow: hidden;
+      border-right: 2px solid #ffffff;
+      box-shadow: 4px 0 12px rgba(0,0,0,0.6);
+    }
+    .img-before-box img {
+      width: 100%; height: 100%;
+      max-width: none;
+    }
+    .slider-tag {
+      position: absolute;
+      top: 12px;
+      padding: 4px 10px;
+      background: rgba(0, 0, 0, 0.75);
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 6px;
+      backdrop-filter: blur(4px);
+      z-index: 2;
+    }
+    .tag-b { left: 12px; }
+    .tag-a { right: 12px; }
+
+    .comp-range {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      cursor: ew-resize;
+      z-index: 3;
+    }
+
+    /* Batch File List */
+    .batch-list-card {
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .batch-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .file-item-list {
+      max-height: 240px;
+      overflow-y: auto;
+      list-style: none;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .file-item:last-child { border-bottom: none; }
+    .file-name {
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .file-stats {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+    }
+    .save-tag {
+      color: var(--success);
+      font-weight: 700;
+      background: var(--success-light);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Metric Grid */
+    .metrics-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+    .metric-item .lbl { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+    .metric-item .val { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 800; color: var(--text-main); }
+    .metric-item .save-val { color: var(--success); }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827; color: #fff; padding: 12px 24px;
+      border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 999; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 768px) {
+      .grid-3 { grid-template-columns: 1fr; }
+      .metrics-bar { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .btn-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GNB Header -->
+        <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    <div class="studio-wrap">
+
+      <div class="page-header">
+        <span class="pill-badge">🖼️ 100% 무손실 로컬 GPU 가속 엔진</span>
+        <h1 class="page-title">이미지 압축 & WEBP 일괄 변환 스튜디오</h1>
+        <p class="page-desc">사진을 한 번에 여러 장 끌어다 놓으세요. 외부 서버 업로드 없이 브라우저에서 즉시 용량을 50~85% 줄이고 ZIP으로 다운로드합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <!-- Dropzone -->
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('fileInput').click()">
+          <span class="icon">🚀</span>
+          <p>이미지 파일들을 여기에 끌어다 놓거나 클릭하세요</p>
+          <span>JPG, PNG, WEBP, GIF, BMP 여러 장 다중 선택 지원 (최대 100MB)</span>
+          <input type="file" id="fileInput" accept="image/*" multiple>
+        </div>
+
+        <!-- Studio Control Panel -->
+        <div class="studio-panel" id="studioPanel">
+          
+          <!-- Controls Grid -->
+          <div class="grid-3">
+            <div class="control-box">
+              <label>변환 포맷 <span>Format</span></label>
+              <select id="formatSelect" class="select-field">
+                <option value="image/webp" selected>WEBP (최고 압축율 권장)</option>
+                <option value="image/jpeg">JPG / JPEG (호환성 최고)</option>
+                <option value="image/png">PNG (투명도 유지)</option>
+              </select>
+            </div>
+
+            <div class="control-box">
+              <label>해상도 리사이즈 <span>Scale</span></label>
+              <select id="scaleSelect" class="select-field">
+                <option value="1">100% (원본 크기 유지)</option>
+                <option value="0.8">80% 축소</option>
+                <option value="0.5">50% 축소 (용량 대폭 절감)</option>
+                <option value="0.3">30% 축소</option>
+              </select>
+              <div class="preset-chips">
+                <button class="chip-btn" onclick="setScale(1)">100%</button>
+                <button class="chip-btn" onclick="setScale(0.8)">80%</button>
+                <button class="chip-btn" onclick="setScale(0.5)">50%</button>
+              </div>
+            </div>
+
+            <div class="control-box">
+              <label>압축 화질 (Quality) <span class="val" id="qVal">80%</span></label>
+              <input type="range" id="qRange" min="10" max="100" value="80" style="margin-top:12px;">
+            </div>
+          </div>
+
+          <!-- Single Image Before/After Comparison Box -->
+          <div id="singleCompSection">
+            <div class="comparison-wrapper" id="compBox">
+              <span class="slider-tag tag-b">Before (원본)</span>
+              <span class="slider-tag tag-a">After (압축본)</span>
+              <img id="imgAfter" alt="압축 후">
+              <div class="img-before-box" id="beforeBox">
+                <img id="imgBefore" alt="압축 전">
+              </div>
+              <input type="range" min="0" max="100" value="50" class="comp-range" id="compSlider">
+            </div>
+          </div>
+
+          <!-- Batch List (다중 파일 리스트) -->
+          <div class="batch-list-card" id="batchSection" style="display:none;">
+            <div class="batch-list-header">
+              <span id="batchCountText">압축된 파일 목록 (0개)</span>
+              <button class="btn btn-secondary btn-sm" onclick="clearAllFiles()" style="color:var(--danger)">전체 지우기</button>
+            </div>
+            <ul class="file-item-list" id="fileItemList"></ul>
+          </div>
+
+          <!-- Total Metrics Bar -->
+          <div class="metrics-bar">
+            <div class="metric-item">
+              <div class="lbl">처리 파일 수</div>
+              <div class="val" id="mCount">1개</div>
+            </div>
+            <div class="metric-item">
+              <div class="lbl">총 원본 용량</div>
+              <div class="val" id="mOrig">-</div>
+            </div>
+            <div class="metric-item">
+              <div class="lbl">총 최적화 용량</div>
+              <div class="val" id="mComp">-</div>
+            </div>
+            <div class="metric-item">
+              <div class="lbl">총 용량 절감률</div>
+              <div class="val save-val" id="mRatio">-</div>
+            </div>
+          </div>
+
+          <!-- Download Action Buttons -->
+          <div class="btn-group">
+            <button class="btn btn-primary btn-block btn-lg" id="downloadBtn">최적화된 이미지 다운로드</button>
+            <button class="btn btn-secondary btn-lg" id="zipDownloadBtn" style="display:none;" onclick="downloadAllAsZip()">📦 전체 ZIP 압축 다운로드</button>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- SEO Section -->
+      <article class="seo-article">
+        <h2>웹 이미지 최적화 및 WEBP 포맷 변환 완벽 가이드</h2>
+        <p>웹사이트에 고용량 이미지를 그대로 게시하면 페이지 로딩 속도가 느려져 검색엔진 최적화(SEO) 점수가 하락하고 사용자 이탈률이 급증합니다. ToolMate 스튜디오를 활용해 시각적 품질 저하 없이 이미지 파일 용량을 최대 85%까지 절감하세요.</p>
+        
+        <h3>WEBP 포맷이 필수인 이유</h3>
+        <ul>
+          <li><strong>압도적인 압축 효율:</strong> WEBP는 동일 화질 대비 JPEG보다 약 30%, PNG보다 최대 50% 용량이 작습니다.</li>
+          <li><strong>투명도 & 애니메이션 지원:</strong> PNG의 투명 채널(Alpha)과 GIF의 움직이는 이미지를 모두 지원합니다.</li>
+          <li><strong>구글 Core Web Vitals 점수 향상:</strong> LCP(Largest Contentful Paint) 속도를 획기적으로 개선합니다.</li>
+        </ul>
+
+        <h3>100% 개인정보 안전성 보장</h3>
+        <p>모든 이미지 변환 및 리사이징 연산은 사용자의 웹 브라우저 메모리(HTML5 Canvas GPU 가속) 내부에서만 수행됩니다. 사진이나 그래픽 데이터가 외부 서버로 절대 전송되지 않아 매우 안전합니다.</p>
+      </article>
+
+    </div>
+  </main>
+
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const dropzone = document.getElementById('dropzone');
+    const studioPanel = document.getElementById('studioPanel');
+
+    const qRange = document.getElementById('qRange');
+    const qVal = document.getElementById('qVal');
+    const formatSelect = document.getElementById('formatSelect');
+    const scaleSelect = document.getElementById('scaleSelect');
+
+    const imgBefore = document.getElementById('imgBefore');
+    const imgAfter = document.getElementById('imgAfter');
+    const beforeBox = document.getElementById('beforeBox');
+    const compSlider = document.getElementById('compSlider');
+    const compBox = document.getElementById('compBox');
+
+    const singleCompSection = document.getElementById('singleCompSection');
+    const batchSection = document.getElementById('batchSection');
+    const fileItemList = document.getElementById('fileItemList');
+    const batchCountText = document.getElementById('batchCountText');
+    const zipDownloadBtn = document.getElementById('zipDownloadBtn');
+
+    let loadedFiles = [];
+    let processedResults = [];
+
+    compSlider.addEventListener('input', (e) => {
+      beforeBox.style.width = e.target.value + '%';
+    });
+
+    function setScale(v) {
+      scaleSelect.value = v;
+      processAll();
+    }
+
+    [qRange, formatSelect, scaleSelect].forEach(el => {
+      el.addEventListener('change', () => {
+        qVal.textContent = qRange.value + '%';
+        processAll();
+      });
+    });
+    qRange.addEventListener('input', (e) => qVal.textContent = e.target.value + '%');
+
+    // Drag & Drop
+    dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('dragover'); });
+    dropzone.addEventListener('dragleave', () => dropzone.classList.remove('dragover'));
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault(); dropzone.classList.remove('dragover');
+      if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files.length) handleFiles(e.target.files);
+    });
+
+    function handleFiles(fileList) {
+      const validFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+      if (validFiles.length === 0) return alert('이미지 파일만 업로드 가능합니다.');
+
+      loadedFiles = validFiles;
+      processAll();
+    }
+
+    function formatSize(bytes) {
+      if (!bytes) return '0 B';
+      const k = 1024, sizes = ['B', 'KB', 'MB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    async function processAll() {
+      if (loadedFiles.length === 0) return;
+
+      processedResults = [];
+      const quality = parseInt(qRange.value) / 100;
+      const mime = formatSelect.value;
+      const scale = parseFloat(scaleSelect.value);
+
+      let totalOrig = 0;
+      let totalComp = 0;
+
+      for (let i = 0; i < loadedFiles.length; i++) {
+        const file = loadedFiles[i];
+        totalOrig += file.size;
+        const res = await processSingleFile(file, mime, quality, scale);
+        totalComp += res.blob.size;
+        processedResults.push(res);
+      }
+
+      // UI 렌더링
+      document.getElementById('mCount').textContent = `${loadedFiles.length}개`;
+      document.getElementById('mOrig').textContent = formatSize(totalOrig);
+      document.getElementById('mComp').textContent = formatSize(totalComp);
+
+      const diff = ((totalOrig - totalComp) / totalOrig) * 100;
+      document.getElementById('mRatio').textContent = diff > 0 ? `-${diff.toFixed(1)}%` : `+${Math.abs(diff).toFixed(1)}%`;
+
+      if (loadedFiles.length === 1) {
+        singleCompSection.style.display = 'block';
+        batchSection.style.display = 'none';
+        zipDownloadBtn.style.display = 'none';
+        document.getElementById('downloadBtn').textContent = '최적화된 이미지 다운로드';
+
+        const r = processedResults[0];
+        imgBefore.src = r.originalUrl;
+        imgAfter.src = URL.createObjectURL(r.blob);
+
+        const img = new Image();
+        img.src = r.originalUrl;
+        img.onload = () => {
+          const aspect = img.height / img.width;
+          const w = compBox.clientWidth;
+          compBox.style.height = Math.min(Math.max(w * aspect, 220), 480) + 'px';
+          imgBefore.style.width = w + 'px';
+        };
+      } else {
+        singleCompSection.style.display = 'none';
+        batchSection.style.display = 'block';
+        zipDownloadBtn.style.display = 'inline-flex';
+        document.getElementById('downloadBtn').textContent = '개별 파일 순차 다운로드';
+
+        batchCountText.textContent = `압축 완료 목록 (총 ${loadedFiles.length}개)`;
+        renderBatchList();
+      }
+
+      studioPanel.classList.add('show');
+    }
+
+    function processSingleFile(file, mime, quality, scale) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (e) => {
+          const originalUrl = e.target.result;
+          const img = new Image();
+          img.src = originalUrl;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.max(1, Math.round(img.width * scale));
+            canvas.height = Math.max(1, Math.round(img.height * scale));
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob((blob) => {
+              resolve({
+                file,
+                originalUrl,
+                blob,
+                origSize: file.size,
+                compSize: blob.size,
+                width: canvas.width,
+                height: canvas.height
+              });
+            }, mime, quality);
+          };
+        };
+      });
+    }
+
+    function renderBatchList() {
+      fileItemList.innerHTML = '';
+      processedResults.forEach((item, idx) => {
+        const li = document.createElement('li');
+        li.className = 'file-item';
+
+        const savePct = (((item.origSize - item.compSize) / item.origSize) * 100).toFixed(1);
+        const ext = getExtension(formatSelect.value);
+
+        li.innerHTML = `
+          <span class="file-name">📄 ${item.file.name}</span>
+          <div class="file-stats">
+            <span style="color:var(--text-muted)">${formatSize(item.origSize)} → ${formatSize(item.compSize)}</span>
+            <span class="save-tag">-${savePct}%</span>
+            <button class="chip-btn" onclick="downloadItem(${idx})">저장</button>
+          </div>
+        `;
+        fileItemList.appendChild(li);
+      });
+    }
+
+    function getExtension(mime) {
+      const extMap = { 'image/webp': 'webp', 'image/jpeg': 'jpg', 'image/png': 'png' };
+      return extMap[mime] || 'webp';
+    }
+
+    function downloadItem(idx) {
+      const r = processedResults[idx];
+      if (!r) return;
+      const ext = getExtension(formatSelect.value);
+      const name = r.file.name.replace(/\.[^/.]+$/, "");
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(r.blob);
+      a.download = `optimized_${name}.${ext}`;
+      a.click();
+      showToast(`✅ "${name}.${ext}" 저장 완료`);
+    }
+
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      if (processedResults.length === 1) {
+        downloadItem(0);
+      } else {
+        processedResults.forEach((_, idx) => downloadItem(idx));
+      }
+    });
+
+    async function downloadAllAsZip() {
+      if (processedResults.length === 0) return;
+      showToast('📦 ZIP 압축 파일 생성 중...');
+
+      const zip = new JSZip();
+      const ext = getExtension(formatSelect.value);
+
+      processedResults.forEach((r, idx) => {
+        const name = r.file.name.replace(/\.[^/.]+$/, "");
+        zip.file(`optimized_${name}_${idx + 1}.${ext}`, r.blob);
+      });
+
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(zipBlob);
+      a.download = `toolnest_images_${Date.now()}.zip`;
+      a.click();
+      showToast('🎉 전체 이미지 ZIP 다운로드 완료!');
+    }
+
+    function clearAllFiles() {
+      loadedFiles = [];
+      processedResults = [];
+      studioPanel.classList.remove('show');
+      fileInput.value = '';
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toastEl = document.getElementById('toast');
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+    }
+  </script>
+</body>
+</html>

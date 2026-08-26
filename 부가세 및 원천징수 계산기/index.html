@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>부가세(VAT) & 프리랜서 3.3% 역산 세금 계산기 | ToolMate</title>
+  <meta name="description" content="공급가액 ↔ 부가세(10%) 상호 역산 분리 및 프리랜서·외주 3.3% 원천징수 실수령액 계산기. 세금계산서 발행액 및 견적서 작성용 원클릭 텍스트 복사 지원.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .vat-wrap { max-width: 760px; margin: 0 auto; }
+    
+    .tab-bar {
+      display: flex; background: var(--surface-alt);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 4px; margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1; text-align: center; padding: 10px 14px;
+      font-size: 0.95rem; font-weight: 700; color: var(--text-muted);
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .input-unit-wrap {
+      display: flex; align-items: center; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); background: var(--surface); overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .input-unit-wrap:focus-within {
+      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .input-unit-wrap input[type=number] {
+      flex: 1; border: none; outline: none; padding: 12px 16px;
+      font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700;
+      color: var(--text-main); background: transparent;
+    }
+    .input-unit-wrap .unit-tag {
+      padding: 0 16px; font-size: 0.88rem; font-weight: 700;
+      color: var(--text-muted); background: var(--surface-alt);
+      height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .preset-chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .chip-btn {
+      font-size: 0.78rem; font-weight: 600; padding: 4px 10px;
+      border-radius: var(--radius-full); border: 1px solid var(--border);
+      background: var(--surface-alt); color: var(--text-main); cursor: pointer;
+    }
+    .chip-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Result Card */
+    .result-section {
+      margin-top: 24px; background: var(--surface-alt);
+      border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border);
+    }
+    .result-header-row {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+    }
+    .result-heading { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin: 0; }
+
+    .data-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 10px 0; border-bottom: 1px dotted var(--border); font-size: 0.95rem;
+    }
+    .data-row .lbl { color: var(--text-muted); font-weight: 600; }
+    .data-row .val { font-family: var(--font-mono); font-weight: 700; color: var(--text-main); font-size: 1.05rem; }
+    .data-row.highlight .val { color: var(--primary); font-size: 1.25rem; font-weight: 800; }
+    .data-row.minus .val { color: var(--danger); }
+
+    .total-hero {
+      margin-top: 20px; padding: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff; border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .total-hero .th-label { font-size: 0.85rem; font-weight: 700; opacity: 0.9; }
+    .total-hero .th-value {
+      font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; margin-top: 6px; line-height: 1.1;
+    }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827; color: #fff; padding: 12px 24px;
+      border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 999; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .total-hero .th-value { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- GNB -->
+        <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="vat-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">📊 사업자 & 프리랜서 필수 세무 도구</span>
+        <h1 class="page-title">부가세(VAT) & 프리랜서 3.3% 계산기</h1>
+        <p class="page-desc">공급가액과 부가세(10%) 양방향 역산 및 프리랜서 사업소득세 3.3% 원천징수 실수령액을 즉시 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabVat" onclick="switchTab('vat')">🧾 부가세(VAT 10%) 계산기</button>
+          <button class="tab-btn" id="tab33" onclick="switchTab('33')">💼 프리랜서 3.3% 원천징수</button>
+        </div>
+
+        <!-- Section VAT -->
+        <div id="sectionVat">
+          <div class="form-group">
+            <label class="form-label">계산 기준 선택</label>
+            <div class="grid-2">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:0.9rem;">
+                <input type="radio" name="vatType" value="supply" checked onchange="calcVat()"> 공급가액 기준 (부가세 별도)
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:0.9rem;">
+                <input type="radio" name="vatType" value="total" onchange="calcVat()"> 합계금액 기준 (부가세 포함 역산)
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="vatInputLabel">금액 입력</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="vatAmount" value="1000000" inputmode="numeric" oninput="calcVat()">
+              <span class="unit-tag">원</span>
+            </div>
+            <div class="preset-chips">
+              <button class="chip-btn" onclick="setVat(100000)">10만</button>
+              <button class="chip-btn" onclick="setVat(500000)">50만</button>
+              <button class="chip-btn" onclick="setVat(1000000)">100만</button>
+              <button class="chip-btn" onclick="setVat(3000000)">300만</button>
+              <button class="chip-btn" onclick="setVat(5000000)">500만</button>
+            </div>
+          </div>
+
+          <div class="result-section">
+            <div class="result-header-row">
+              <h2 class="result-heading">📊 세금계산서 발행 내역</h2>
+              <button class="btn btn-secondary btn-sm" onclick="copyVatSummary()">📋 내역 복사</button>
+            </div>
+
+            <div class="data-row"><span class="lbl">공급가액 (순수 금액)</span><span class="val" id="rVatSupply">-</span></div>
+            <div class="data-row"><span class="lbl">부가가치세 (VAT 10%)</span><span class="val" id="rVatTax">-</span></div>
+            
+            <div class="total-hero">
+              <div class="th-label">최종 합계 금액 (결제 청구액)</div>
+              <div class="th-value" id="rVatTotal">0<span>원</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3.3% -->
+        <div id="section33" style="display:none;">
+          <div class="form-group">
+            <label class="form-label">계약 형태 선택</label>
+            <div class="grid-2">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:0.9rem;">
+                <input type="radio" name="tax33Type" value="gross" checked onchange="calc33()"> 세전 계약금액 기준
+              </label>
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:0.9rem;">
+                <input type="radio" name="tax33Type" value="net" onchange="calc33()"> 세후 실수령액 역산 기준
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" id="tax33Label">세전 계약 금액</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="tax33Amount" value="1000000" inputmode="numeric" oninput="calc33()">
+              <span class="unit-tag">원</span>
+            </div>
+            <div class="preset-chips">
+              <button class="chip-btn" onclick="set33(500000)">50만</button>
+              <button class="chip-btn" onclick="set33(1000000)">100만</button>
+              <button class="chip-btn" onclick="set33(2000000)">200만</button>
+              <button class="chip-btn" onclick="set33(3000000)">300만</button>
+            </div>
+          </div>
+
+          <div class="result-section">
+            <div class="result-header-row">
+              <h2 class="result-heading">💼 3.3% 원천징수 명세</h2>
+              <button class="btn btn-secondary btn-sm" onclick="copy33Summary()">📋 내역 복사</button>
+            </div>
+
+            <div class="data-row"><span class="lbl">세전 총 계약금액</span><span class="val" id="r33Gross">-</span></div>
+            <div class="data-row minus"><span class="lbl">사업소득세 (국세 3.0%)</span><span class="val" id="r33Income">-</span></div>
+            <div class="data-row minus"><span class="lbl">지방소득세 (지방세 0.3%)</span><span class="val" id="r33Local">-</span></div>
+            <div class="data-row minus" style="font-weight:700;"><span class="lbl" style="color:var(--danger);">총 원천징수 세액 (3.3%)</span><span class="val" id="r33TotalTax">-</span></div>
+
+            <div class="total-hero">
+              <div class="th-label">통장 최종 입금액 (세후 실수령액)</div>
+              <div class="th-value" id="r33Net">0<span>원</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>부가가치세 및 3.3% 원천징수 완벽 가이드</h2>
+        <p>사업자등록을 한 일반과세자는 상품 또는 용역을 제공할 때 10%의 부가가치세를 포함하여 세금계산서를 발행해야 합니다.</p>
+
+        <h3>부가세 역산 계산 공식</h3>
+        <ul>
+          <li><strong>공급가액 = 합계금액 ÷ 1.1</strong></li>
+          <li><strong>부가가치세 = 공급가액 × 0.1 (또는 합계금액 - 공급가액)</strong></li>
+        </ul>
+
+        <h3>프리랜서 3.3% 원천징수란?</h3>
+        <p>외주 용역비 지급 시 원천징수의무자(발주처)가 국세 3%와 지방소득세 0.3%(소득세의 10%) 총 3.3%를 미리 공제하고 잔액을 지급하는 제도입니다. 매년 5월 종합소득세 신고 시 기납부세액으로 공제받아 환급받을 수 있습니다.</p>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let mode = 'vat';
+
+    function switchTab(m) {
+      mode = m;
+      document.getElementById('tabVat').classList.toggle('active', m === 'vat');
+      document.getElementById('tab33').classList.toggle('active', m === '33');
+      document.getElementById('sectionVat').style.display = m === 'vat' ? 'block' : 'none';
+      document.getElementById('section33').style.display = m === '33' ? 'block' : 'none';
+    }
+
+    function setVat(v) { document.getElementById('vatAmount').value = v; calcVat(); }
+    function set33(v) { document.getElementById('tax33Amount').value = v; calc33(); }
+    function won(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+
+    let vatSummary = "";
+    let tax33Summary = "";
+
+    function calcVat() {
+      const type = document.querySelector('input[name="vatType"]:checked').value;
+      const amt = parseFloat(document.getElementById('vatAmount').value) || 0;
+
+      let supply = 0;
+      let tax = 0;
+      let total = 0;
+
+      if (type === 'supply') {
+        document.getElementById('vatInputLabel').textContent = '공급가액 (부가세 제외)';
+        supply = amt;
+        tax = Math.round(supply * 0.10);
+        total = supply + tax;
+      } else {
+        document.getElementById('vatInputLabel').textContent = '합계금액 (부가세 포함)';
+        total = amt;
+        supply = Math.round(total / 1.1);
+        tax = total - supply;
+      }
+
+      document.getElementById('rVatSupply').textContent = won(supply);
+      document.getElementById('rVatTax').textContent = won(tax);
+      document.getElementById('rVatTotal').innerHTML = won(total) + '<span>원</span>';
+
+      vatSummary = `[세금계산서 청구 내역]\n• 공급가액: ${won(supply)}\n• 부가가치세(10%): ${won(tax)}\n• 합계금액: ${won(total)}`;
+    }
+
+    function calc33() {
+      const type = document.querySelector('input[name="tax33Type"]:checked').value;
+      const amt = parseFloat(document.getElementById('tax33Amount').value) || 0;
+
+      let gross = 0;
+      let incomeTax = 0;
+      let localTax = 0;
+      let totalTax = 0;
+      let net = 0;
+
+      if (type === 'gross') {
+        document.getElementById('tax33Label').textContent = '세전 계약 금액';
+        gross = amt;
+        incomeTax = Math.floor((gross * 0.03) / 10) * 10;
+        localTax = Math.floor((incomeTax * 0.10) / 10) * 10;
+        totalTax = incomeTax + localTax;
+        net = gross - totalTax;
+      } else {
+        document.getElementById('tax33Label').textContent = '세후 목표 실수령액 (역산)';
+        net = amt;
+        gross = Math.round(net / 0.967);
+        incomeTax = Math.floor((gross * 0.03) / 10) * 10;
+        localTax = Math.floor((incomeTax * 0.10) / 10) * 10;
+        totalTax = incomeTax + localTax;
+      }
+
+      document.getElementById('r33Gross').textContent = won(gross);
+      document.getElementById('r33Income').textContent = '-' + won(incomeTax);
+      document.getElementById('r33Local').textContent = '-' + won(localTax);
+      document.getElementById('r33TotalTax').textContent = '-' + won(totalTax);
+      document.getElementById('r33Net').innerHTML = won(net) + '<span>원</span>';
+
+      tax33Summary = `[프리랜서 3.3% 정산서]\n• 세전 계약액: ${won(gross)}\n• 소득세(3.0%): -${won(incomeTax)}\n• 지방세(0.3%): -${won(localTax)}\n• 세후 실수령액: ${won(net)}`;
+    }
+
+    function copyVatSummary() {
+      navigator.clipboard.writeText(vatSummary).then(() => showToast('📋 세금계산서 청구 내역이 복사되었습니다.'));
+    }
+    function copy33Summary() {
+      navigator.clipboard.writeText(tax33Summary).then(() => showToast('📋 3.3% 정산 내역이 복사되었습니다.'));
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toastEl = document.getElementById('toast');
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+    }
+
+    calcVat();
+    calc33();
+  </script>
+</body>
+</html>

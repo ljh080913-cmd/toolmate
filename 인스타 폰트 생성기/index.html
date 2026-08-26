@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인스타 폰트 & 예쁜 글씨체 특수문자 생성기 | ToolMate</title>
+  <meta name="description" content="인스타그램 프로필, 바이오, 카카오톡 상태메시지용 예쁜 영어 폰트 및 감성 특수문자 이모티콘 즉시 변환. 원클릭 클립보드 복사 지원.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .font-wrap { max-width: 820px; margin: 0 auto; }
+
+    .font-input-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .main-font-input {
+      width: 100%;
+      padding: 16px 20px;
+      font-size: 1.2rem;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--border);
+      background: var(--surface-alt);
+      color: var(--text-main);
+      outline: none;
+      transition: all 0.2s;
+    }
+    .main-font-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+
+    /* Font List Grid */
+    .font-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .font-item-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.15s ease;
+    }
+    .font-item-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+    .font-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      margin-right: 16px;
+      min-width: 0;
+    }
+    .font-style-name {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .font-preview-text {
+      font-size: 1.25rem;
+      color: var(--text-main);
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 2px;
+    }
+
+    /* Emoji Tag Cloud */
+    .deco-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .deco-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-full);
+      padding: 6px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+    }
+    .deco-chip:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      transform: scale(1.05);
+    }
+
+    #toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827; color: #fff; padding: 12px 24px;
+      border-radius: var(--radius-full); font-size: 0.9rem; font-weight: 600;
+      box-shadow: var(--shadow-lg); border: 1px solid var(--border);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 999; white-space: nowrap;
+    }
+    #toast.show { transform: translateX(-50%) translateY(0); }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="font-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">✨ 인스타그램 프로필 & 카톡 상태메시지 필수</span>
+        <h1 class="page-title">인스타 폰트 & 예쁜 글씨 변환기</h1>
+        <p class="page-desc">영문 텍스트를 입력하면 필기체, 고딕, 특수 유니코드 폰트로 즉시 변환되어 원클릭으로 복사할 수 있습니다.</p>
+      </div>
+
+      <div class="font-input-card">
+        <label style="font-size:0.88rem; font-weight:700; color:var(--text-main); margin-bottom:8px; display:block;">
+          변환할 영문 텍스트 입력:
+        </label>
+        <input type="text" id="mainInput" class="main-font-input" value="Love Yourself" placeholder="영어로 입력하세요 (예: Hello, My Dream)">
+        
+        <div style="font-size:0.88rem; font-weight:700; color:var(--text-main); margin-top:20px; margin-bottom:6px;">
+          🎀 클릭해서 즉시 복사하는 감성 특수 이모지:
+        </div>
+        <div class="deco-cloud" id="decoCloud"></div>
+      </div>
+
+      <!-- Generated Fonts List -->
+      <div class="font-grid" id="fontList"></div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>인스타 폰트(Fancy Text)의 작동 원리</h2>
+        <p>인스타그램이나 카카오톡에는 별도의 폰트 변경 기능이 없지만, 전 세계 표준 유니코드(Unicode)에 등록된 다양한 수학 기호(Mathematical Alphanumeric Symbols)와 고대 문자 체계를 활용하여 <strong>모든 스마트폰에서 깨짐 없이 렌더링</strong>되도록 변환합니다.</p>
+
+        <h3>인기 있는 글씨 스타일 팁</h3>
+        <ul>
+          <li><strong>필기체(Script / Cursive):</strong> 𝓕𝓪𝓷𝓬𝔂 𝓢𝓽𝔂𝓵𝓮 — 감성 카페, 브이로그 프로필에 가장 인기.</li>
+          <li><strong>중세 고딕(Gothic / Fraktur):</strong> 𝕲𝖔𝖙𝖍𝖎𝖈 — 힙하고 개성 있는 분위기 연출.</li>
+          <li><strong>네모/동그라미(Box / Circle):</strong> 🅂🅀🅄🄰🅁🄴 / ⒸⒾⓇⒸⓁⒺ — 깔끔하고 정돈된 카테고리 강조용.</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <div id="toast"></div>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    // Unicode Font Mapping Tables
+    const FONT_STYLES = [
+      { name: "필기체 (Bold Script)", map: (t) => convertMap(t, 0x1D4D0, 0x1D4EA) },
+      { name: "부드러운 필기체 (Cursive)", map: (t) => convertMap(t, 0x1D49C, 0x1D4B6) },
+      { name: "중세 고딕 (Gothic Fraktur)", map: (t) => convertMap(t, 0x1D56C, 0x1D586) },
+      { name: "두꺼운 중세 고딕 (Bold Fraktur)", map: (t) => convertMap(t, 0x1D5A0, 0x1D5BA) },
+      { name: "더블 스트로크 (Double Struck)", map: (t) => convertMap(t, 0x1D538, 0x1D552) },
+      { name: "동글이 문자 (Circled)", map: (t) => convertMap(t, 0x24B6, 0x24D0) },
+      { name: "블랙 네모 박스 (Filled Square)", map: (t) => convertMap(t, 0x1F170, 0x1F170, true) },
+      { name: "화이트 네모 박스 (Square)", map: (t) => convertMap(t, 0x1F130, 0x1F130, true) },
+      { name: "세련된 산세리프 (Bold Sans)", map: (t) => convertMap(t, 0x1D5D4, 0x1D5EE) },
+      { name: "이탤릭 산세리프 (Sans Italic)", map: (t) => convertMap(t, 0x1D608, 0x1D622) },
+      { name: "타자기 폰트 (Monospace)", map: (t) => convertMap(t, 0x1D670, 0x1D68A) },
+      { name: "밑줄 효과 (Underline)", map: (t) => t.split('').join('\u0332') + '\u0332' },
+      { name: "취소선 효과 (Strikethrough)", map: (t) => t.split('').join('\u0336') + '\u0336' },
+      { name: "뒤집힌 텍스트 (Upside Down)", map: (t) => flipText(t) },
+    ];
+
+    const DECO_LIST = [
+      "˚ ༘♡ ⋆｡˚", "𓆝 𓆟 𓆞", "✦ ˚ 　· 　 .", "ੈ✩‧₊˚", "ʕ•ᴥ•ʔ",
+      "(˶ᵔ ᵕ ᵔ˶)", "⋆ ˚｡⋆୨୧˚", "✧.*ೃ༄", "˗ˏˋ ★ ˎˊ˗", "₊˚⊹♡",
+      "ﮩ٨ـﮩﮩ٨ـ♡ﮩ٨ـﮩﮩ٨ـ", "𓍢ִ໋🌷͙֒", "⋆⭒˚｡⋆", "🫧⋆｡˚𓆝"
+    ];
+
+    function convertMap(text, upperStart, lowerStart, isUpperOnly = false) {
+      let res = '';
+      for (const ch of text) {
+        const code = ch.charCodeAt(0);
+        if (code >= 65 && code <= 90) { // A-Z
+          res += String.fromCodePoint(upperStart + (code - 65));
+        } else if (code >= 97 && code <= 122) { // a-z
+          if (isUpperOnly) {
+            res += String.fromCodePoint(upperStart + (code - 97));
+          } else {
+            res += String.fromCodePoint(lowerStart + (code - 97));
+          }
+        } else {
+          res += ch;
+        }
+      }
+      return res;
+    }
+
+    function flipText(text) {
+      const normal = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!?.";
+      const flipped = "ɐqɔpǝɟƃɥıɾʞlɯuodbɹsʇnʌʍxʎz∀qƆpƎℲפHIſʞ˥WNOԀQɹS┴∩ΛMX⅄ZƖᄅƐㄣϛ9ㄥ860¡¿˙";
+      return text.split('').reverse().map(c => {
+        const idx = normal.indexOf(c);
+        return idx !== -1 ? flipped[idx] : c;
+      }).join('');
+    }
+
+    function renderDeco() {
+      const container = document.getElementById('decoCloud');
+      container.innerHTML = '';
+      DECO_LIST.forEach(d => {
+        const chip = document.createElement('button');
+        chip.className = 'deco-chip';
+        chip.textContent = d;
+        chip.onclick = () => {
+          navigator.clipboard.writeText(d).then(() => showToast(`📋 "${d}" 복사 완료!`));
+        };
+        container.appendChild(chip);
+      });
+    }
+
+    function renderFonts() {
+      const input = document.getElementById('mainInput').value || 'Hello';
+      const container = document.getElementById('fontList');
+      container.innerHTML = '';
+
+      FONT_STYLES.forEach(style => {
+        const converted = style.map(input);
+        const card = document.createElement('div');
+        card.className = 'font-item-card';
+        card.innerHTML = `
+          <div class="font-meta">
+            <span class="font-style-name">${style.name}</span>
+            <div class="font-preview-text">${converted}</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="copyText('${converted.replace(/'/g, "\\'")}')">복사</button>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function copyText(txt) {
+      navigator.clipboard.writeText(txt).then(() => showToast('📋 클립보드에 복사되었습니다.'));
+    }
+
+    let toastTimer = null;
+    function showToast(msg) {
+      const toastEl = document.getElementById('toast');
+      toastEl.textContent = msg;
+      toastEl.classList.add('show');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2400);
+    }
+
+    document.getElementById('mainInput').addEventListener('input', renderFonts);
+    renderDeco();
+    renderFonts();
+  </script>
+</body>
+</html>

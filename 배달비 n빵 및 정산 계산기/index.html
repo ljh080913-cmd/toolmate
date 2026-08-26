@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>배달비 n빵 & 정산 계산기 | 단톡방 공유 영수증 | ToolMate</title>
+  <meta name="description" content="배달음식 각자 먹은 메뉴 금액 + 공통 배달비/할인쿠폰을 공평하게 분할 정산하고 카카오톡 단톡방 전송용 정산 메시지를 1초 만에 생성합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .split-wrap { max-width: 800px; margin: 0 auto; }
+
+    .member-item {
+      display: flex; gap: 10px; align-items: center; margin-bottom: 10px;
+      background: var(--surface-alt); padding: 12px 14px; border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .member-item input {
+      padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface); color: var(--text-main); font-size: 0.95rem; outline: none;
+    }
+    .member-item input:focus { border-color: var(--primary); }
+    .member-name { flex: 1.2; font-weight: 700; }
+    .member-price { flex: 2; font-family: var(--font-mono); font-weight: 700; text-align: right; }
+    .btn-del {
+      background: var(--danger-light); color: var(--danger); border: 1px solid var(--danger);
+      width: 32px; height: 32px; border-radius: var(--radius-sm); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; font-weight: bold;
+    }
+
+    .btn-add-member {
+      width: 100%; padding: 12px; border: 2px dashed var(--border); border-radius: var(--radius-md);
+      background: transparent; color: var(--primary); font-weight: 700; cursor: pointer;
+      margin: 10px 0 20px; transition: all 0.15s ease;
+    }
+    .btn-add-member:hover { border-color: var(--primary); background: var(--primary-light); }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    /* Result Receipt */
+    .receipt-card {
+      background: var(--surface-alt); border: 1.5px solid var(--border); border-radius: var(--radius-lg);
+      padding: 24px; margin-top: 24px;
+    }
+    .receipt-title { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 16px; display: flex; justify-content: space-between; }
+    
+    .receipt-row {
+      display: flex; justify-content: space-between; padding: 10px 0;
+      border-bottom: 1px dashed var(--border); font-size: 0.95rem;
+    }
+    .receipt-row.total {
+      border-bottom: none; border-top: 2px solid var(--border); margin-top: 8px; padding-top: 14px;
+      font-size: 1.15rem; font-weight: 800; color: var(--primary);
+    }
+
+    .share-box {
+      margin-top: 20px; background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); padding: 16px;
+    }
+    .share-textarea {
+      width: 100%; height: 130px; padding: 10px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--surface-alt); color: var(--text-main); font-size: 0.88rem; font-family: var(--font-mono);
+      resize: none; outline: none; margin-bottom: 10px;
+    }
+    .btn-copy-kakao {
+      width: 100%; padding: 12px; background: #fee500; color: #191919; font-weight: 800;
+      border: none; border-radius: var(--radius-md); cursor: pointer; font-size: 0.95rem;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-copy-kakao:hover { background: #fada0a; }
+
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="split-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">🍗 단톡방 정산 필수템</span>
+        <h1 class="page-title">배달비 n빵 & 모임 정산 계산기</h1>
+        <p class="page-desc">각자 먹은 메뉴 금액에 배달비와 할인쿠폰을 깔끔하게 배분하고 단톡방 공유 문구를 생성합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <!-- 배달비 & 할인 & 계좌 정보 -->
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">🛵 총 배달팁 (배달비)</label>
+            <input type="number" id="deliveryFee" class="input-field" value="3000" placeholder="0" oninput="calculateSplit()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🎁 쿠폰/이벤트 할인금액</label>
+            <input type="number" id="discount" class="input-field" value="1000" placeholder="0" oninput="calculateSplit()">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">💳 배달비/할인 분할 방식</label>
+            <select id="splitMode" class="select-field" onchange="calculateSplit()">
+              <option value="equal" selected>균등 1/N 배분 (추천 - 모두 똑같이 나눔)</option>
+              <option value="ratio">주문 금액 비례 배분 (많이 시킨 사람이 더 부담)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">🏦 정산받을 계좌번호 (선택)</label>
+            <input type="text" id="bankInfo" class="input-field" placeholder="예: 카카오뱅크 3333-00-00000 홍길동" oninput="calculateSplit()">
+          </div>
+        </div>
+
+        <!-- 인원별 메뉴 금액 입력 -->
+        <div style="margin-top: 10px;">
+          <label class="form-label">👥 멤버별 이름 및 개별 주문 금액</label>
+          <div id="membersList"></div>
+          <button type="button" class="btn-add-member" onclick="addMember()">+ 멤버 추가하기</button>
+        </div>
+
+        <!-- 정산 결과표 -->
+        <div class="receipt-card">
+          <div class="receipt-title">
+            <span>📋 멤버별 최종 송금액 영수증</span>
+            <span id="totalPayDisplay" style="color:var(--primary); font-size:1.1rem;">총 결제: 0원</span>
+          </div>
+
+          <div id="receiptResultList"></div>
+
+          <!-- 단톡방 복사용 텍스트 박스 -->
+          <div class="share-box">
+            <label class="form-label">💬 카카오톡 단톡방 전송용 텍스트</label>
+            <textarea id="kakaoMessageText" class="share-textarea" readonly></textarea>
+            <button type="button" class="btn-copy-kakao" onclick="copyKakaoMsg()">
+              💬 정산 메시지 1-클릭 복사하기
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>공평하고 깔끔한 배달비 n빵 정산 가이드</h2>
+        <p>배달의민족, 쿠팡이츠, 요기요 등 배달앱으로 단체 주문을 할 때 배달팁과 쿠폰 할인을 어떻게 나눌지 고민될 때가 많습니다. ToolMate 정산 계산기는 두 가지 공평한 방식을 제공합니다.</p>
+        
+        <h3>1. 균등 1/N 배분 (가장 대중적인 방식)</h3>
+        <p>각자 먹은 음식값에 [ (총 배달비 - 할인금액) ÷ 인원수 ]를 정확히 더하여 1원 단위 오차 없이 깔끔하게 분배합니다.</p>
+
+        <h3>2. 주문 금액 비례 배분 (합리적 방식)</h3>
+        <p>음식을 비싸게 주문한 사람이 배달팁도 더 많이 부담하고 할인 혜택도 더 많이 받는 비율제 정산 방식입니다.</p>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let members = [
+      { id: 1, name: "나(주문자)", price: 12000 },
+      { id: 2, name: "친구1", price: 9500 },
+      { id: 3, name: "친구2", price: 10500 }
+    ];
+
+    function renderMembers() {
+      const container = document.getElementById("membersList");
+      container.innerHTML = "";
+
+      members.forEach((m, idx) => {
+        const item = document.createElement("div");
+        item.className = "member-item";
+        item.innerHTML = `
+          <input type="text" class="member-name" value="${m.name}" placeholder="이름" oninput="updateMemberName(${m.id}, this.value)">
+          <input type="number" class="member-price" value="${m.price}" placeholder="메뉴 금액" step="100" oninput="updateMemberPrice(${m.id}, this.value)">
+          <span style="font-size:0.85rem; color:var(--text-muted);">원</span>
+          ${members.length > 1 ? `<button type="button" class="btn-del" onclick="removeMember(${m.id})">✕</button>` : ''}
+        `;
+        container.appendChild(item);
+      });
+
+      calculateSplit();
+    }
+
+    function addMember() {
+      const newId = Date.now();
+      members.push({ id: newId, name: `멤버${members.length + 1}`, price: 10000 });
+      renderMembers();
+    }
+
+    function removeMember(id) {
+      if (members.length <= 1) return;
+      members = members.filter(m => m.id !== id);
+      renderMembers();
+    }
+
+    function updateMemberName(id, val) {
+      const m = members.find(x => x.id === id);
+      if (m) m.name = val || "이름없음";
+      calculateSplit();
+    }
+
+    function updateMemberPrice(id, val) {
+      const m = members.find(x => x.id === id);
+      if (m) m.price = parseFloat(val) || 0;
+      calculateSplit();
+    }
+
+    function calculateSplit() {
+      const deliveryFee = parseFloat(document.getElementById("deliveryFee").value) || 0;
+      const discount = parseFloat(document.getElementById("discount").value) || 0;
+      const splitMode = document.getElementById("splitMode").value;
+      const bankInfo = document.getElementById("bankInfo").value.trim();
+
+      const totalMenuPrice = members.reduce((sum, m) => sum + m.price, 0);
+      const netExtra = deliveryFee - discount; // 배달비 - 할인
+      const totalPay = totalMenuPrice + netExtra;
+
+      document.getElementById("totalPayDisplay").textContent = `총 실결제액: ${Math.round(totalPay).toLocaleString()}원`;
+
+      const count = members.length || 1;
+      let memberResults = [];
+
+      members.forEach(m => {
+        let finalPay = 0;
+        if (splitMode === "equal") {
+          finalPay = m.price + (netExtra / count);
+        } else {
+          const ratio = totalMenuPrice > 0 ? (m.price / totalMenuPrice) : (1 / count);
+          finalPay = m.price + (netExtra * ratio);
+        }
+        memberResults.push({
+          name: m.name,
+          menuPrice: m.price,
+          finalPay: Math.round(finalPay)
+        });
+      });
+
+      // 렌더링
+      const resultContainer = document.getElementById("receiptResultList");
+      resultContainer.innerHTML = "";
+
+      let kakaoText = `🍗 [배달비 n빵 정산서]\n──────────────\n`;
+      kakaoText += `• 음식 총액: ${Math.round(totalMenuPrice).toLocaleString()}원\n`;
+      kakaoText += `• 배달팁: +${Math.round(deliveryFee).toLocaleString()}원 / 할인: -${Math.round(discount).toLocaleString()}원\n`;
+      kakaoText += `• 총 결제금액: ${Math.round(totalPay).toLocaleString()}원\n──────────────\n[보내주실 금액]\n`;
+
+      memberResults.forEach(res => {
+        const row = document.createElement("div");
+        row.className = "receipt-row";
+        row.innerHTML = `
+          <span><b>${res.name}</b> <small style="color:var(--text-muted);">(메뉴: ${res.menuPrice.toLocaleString()}원)</small></span>
+          <span style="font-family:var(--font-mono); font-weight:800; color:var(--primary); font-size:1.05rem;">${res.finalPay.toLocaleString()}원</span>
+        `;
+        resultContainer.appendChild(row);
+
+        kakaoText += `👉 ${res.name}: ${res.finalPay.toLocaleString()}원\n`;
+      });
+
+      if (bankInfo) {
+        kakaoText += `──────────────\n🏦 입금 계좌: ${bankInfo}\n`;
+      }
+      kakaoText += `\n빠른 입금 부탁드립니다! 감사합니다 😋`;
+
+      document.getElementById("kakaoMessageText").value = kakaoText;
+    }
+
+    function copyKakaoMsg() {
+      const text = document.getElementById("kakaoMessageText").value;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast("💬 카톡 정산 메시지가 복사되었습니다! 단톡방에 붙여넣으세요.");
+        });
+      } else {
+        const el = document.createElement("textarea");
+        el.value = text;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand("copy");
+        document.body.removeChild(el);
+        showToast("💬 카톡 정산 메시지가 복사되었습니다!");
+      }
+    }
+
+    renderMembers();
+  </script>
+</body>
+</html>

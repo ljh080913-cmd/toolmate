@@ -1,0 +1,312 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>예금·적금 복리이자 & 만기 수령액 정밀 계산기 | ToolMate</title>
+  <meta name="description" content="정기예금·정기적금 단리/월복리 이자 계산기. 일반과세(15.4%), 세금우대, 비과세 세후 만기 실수령액 및 연도별 원리금 증가 추이를 즉시 계산합니다.">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .interest-wrap { max-width: 780px; margin: 0 auto; }
+    
+    .tab-bar {
+      display: flex; background: var(--surface-alt);
+      border: 1px solid var(--border); border-radius: var(--radius-md);
+      padding: 4px; margin-bottom: 24px;
+    }
+    .tab-btn {
+      flex: 1; text-align: center; padding: 10px 14px;
+      font-size: 0.95rem; font-weight: 700; color: var(--text-muted);
+      border-radius: var(--radius-sm); border: none; background: transparent;
+      cursor: pointer; transition: all 0.15s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary); color: #ffffff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    .input-unit-wrap {
+      display: flex; align-items: center; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); background: var(--surface); overflow: hidden;
+      transition: border-color 0.15s ease;
+    }
+    .input-unit-wrap:focus-within {
+      border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .input-unit-wrap input[type=number] {
+      flex: 1; border: none; outline: none; padding: 12px 16px;
+      font-family: var(--font-mono); font-size: 1.15rem; font-weight: 700;
+      color: var(--text-main); background: transparent;
+    }
+    .input-unit-wrap .unit-tag {
+      padding: 0 16px; font-size: 0.88rem; font-weight: 700;
+      color: var(--text-muted); background: var(--surface-alt);
+      height: 100%; display: flex; align-items: center; border-left: 1px solid var(--border);
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .preset-chips { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .chip-btn {
+      font-size: 0.78rem; font-weight: 600; padding: 4px 10px;
+      border-radius: var(--radius-full); border: 1px solid var(--border);
+      background: var(--surface-alt); color: var(--text-main); cursor: pointer;
+    }
+    .chip-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* Result Card */
+    .result-section {
+      margin-top: 24px; background: var(--surface-alt);
+      border-radius: var(--radius-md); padding: 24px; border: 1px solid var(--border);
+    }
+    .result-heading { font-size: 1.15rem; font-weight: 800; color: var(--text-main); margin-bottom: 16px; }
+
+    .data-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 10px 0; border-bottom: 1px dotted var(--border); font-size: 0.95rem;
+    }
+    .data-row .lbl { color: var(--text-muted); font-weight: 600; }
+    .data-row .val { font-family: var(--font-mono); font-weight: 700; color: var(--text-main); font-size: 1.05rem; }
+    .data-row.plus .val { color: var(--success); }
+    .data-row.minus .val { color: var(--danger); }
+
+    .total-hero {
+      margin-top: 20px; padding: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+      color: #ffffff; border-radius: var(--radius-md);
+      box-shadow: 0 4px 20px var(--primary-glow);
+    }
+    .total-hero .th-label { font-size: 0.85rem; font-weight: 700; opacity: 0.9; }
+    .total-hero .th-value {
+      font-family: var(--font-mono); font-size: 2.2rem; font-weight: 800; margin-top: 6px; line-height: 1.1;
+    }
+    .total-hero .th-value span { font-size: 1.1rem; font-weight: 600; opacity: 0.85; margin-left: 6px; }
+
+    @media (max-width: 600px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .total-hero .th-value { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+        <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand">
+        <span class="logo-badge">⚡</span>
+        <span>ToolMate</span>
+      </a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (15개) ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="interest-wrap">
+      
+      <div class="page-header">
+        <span class="pill-badge">📈 금융 재테크 정밀 분석</span>
+        <h1 class="page-title">예금·적금 복리이자 & 만기 수령액 계산기</h1>
+        <p class="page-desc">정기예금(목돈 굴리기) 및 정기적금(목돈 모으기)의 단리/월복리 이자와 세후 만기 실수령액을 즉시 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tabDeposit" onclick="switchProduct('deposit')">💰 정기예금 (목돈 굴리기)</button>
+          <button class="tab-btn" id="tabSavings" onclick="switchProduct('savings')">🏦 정기적금 (매월 저축)</button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" id="amountLabel">예치 원금</label>
+          <div class="input-unit-wrap">
+            <input type="number" id="inputAmount" value="10000000" inputmode="numeric" oninput="calcInterest()">
+            <span class="unit-tag">원</span>
+          </div>
+          <div class="preset-chips" id="depositChips">
+            <button class="chip-btn" onclick="setAmt(5000000)">500만</button>
+            <button class="chip-btn" onclick="setAmt(10000000)">1,000만</button>
+            <button class="chip-btn" onclick="setAmt(30000000)">3,000만</button>
+            <button class="chip-btn" onclick="setAmt(50000000)">5,000만</button>
+          </div>
+          <div class="preset-chips" id="savingsChips" style="display:none;">
+            <button class="chip-btn" onclick="setAmt(100000)">월 10만</button>
+            <button class="chip-btn" onclick="setAmt(300000)">월 30만</button>
+            <button class="chip-btn" onclick="setAmt(500000)">월 50만</button>
+            <button class="chip-btn" onclick="setAmt(1000000)">월 100만</button>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">연 이자율 (금리)</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="inputRate" value="3.5" step="0.1" oninput="calcInterest()">
+              <span class="unit-tag">%</span>
+            </div>
+            <div class="preset-chips">
+              <button class="chip-btn" onclick="setRate(3.0)">3.0%</button>
+              <button class="chip-btn" onclick="setRate(3.5)">3.5%</button>
+              <button class="chip-btn" onclick="setRate(4.0)">4.0%</button>
+              <button class="chip-btn" onclick="setRate(5.0)">5.0%</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">저축 기간</label>
+            <div class="input-unit-wrap">
+              <input type="number" id="inputMonths" value="12" min="1" oninput="calcInterest()">
+              <span class="unit-tag">개월</span>
+            </div>
+            <div class="preset-chips">
+              <button class="chip-btn" onclick="setMonths(6)">6개월</button>
+              <button class="chip-btn" onclick="setMonths(12)">1년 (12개월)</button>
+              <button class="chip-btn" onclick="setMonths(24)">2년 (24개월)</button>
+              <button class="chip-btn" onclick="setMonths(36)">3년 (36개월)</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">이자 계산 방식</label>
+            <select id="calcType" class="select-field" onchange="calcInterest()">
+              <option value="simple" selected>단리 (일반적인 은행 상품)</option>
+              <option value="compound">월복리 (이자에 이자가 붙음)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">과세 구분</label>
+            <select id="taxType" class="select-field" onchange="calcInterest()">
+              <option value="15.4" selected>일반과세 (15.4%)</option>
+              <option value="9.5">세금우대 (9.5%)</option>
+              <option value="0">비과세 (0% / 청년도약계좌 등)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Result Box -->
+        <div class="result-section">
+          <h2 class="result-heading">📊 만기 해지 예상 명세</h2>
+
+          <div class="data-row"><span class="lbl">원금 합계</span><span class="val" id="rPrincipal">-</span></div>
+          <div class="data-row plus"><span class="lbl">세전 이자 수익</span><span class="val" id="rGrossInterest">-</span></div>
+          <div class="data-row minus"><span class="lbl">이자소득세 공제액</span><span class="val" id="rTaxDeduct">-</span></div>
+          <div class="data-row plus" style="font-weight:700;"><span class="lbl" style="color:var(--success);">세후 순 이자 수익</span><span class="val" id="rNetInterest">-</span></div>
+
+          <div class="total-hero">
+            <div class="th-label">만기 시 최종 수령액 (원금 + 세후이자)</div>
+            <div class="th-value" id="rTotalPay">0<span>원</span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SEO Article -->
+      <article class="seo-article">
+        <h2>단리와 복리의 차이 & 이자소득세 안내</h2>
+        <p><strong>단리(Simple Interest)</strong>는 원금에 대해서만 이자가 붙는 방식이며, <strong>복리(Compound Interest)</strong>는 매월 발생한 이자가 원금에 더해져 다음 달 이자를 생성하는 방식입니다. 기간이 길어질수록 복리 효과가 기하급수적으로 커집니다.</p>
+
+        <h3>이자소득세 과세 기준</h3>
+        <ul>
+          <li><strong>일반과세(15.4%):</strong> 소득세 14% + 지방소득세 1.4% (일반 시중은행 기본 적용).</li>
+          <li><strong>세금우대(9.5%):</strong> 상호금융권(신협, 새마을금고 등) 예탁금 혜택.</li>
+          <li><strong>비과세(0%):</strong> 청년도약계좌, ISA 계좌(비과세 한도 내) 등 정책 금융 상품.</li>
+        </ul>
+      </article>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex; gap:16px; justify-content:center; margin-bottom:12px; font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All processing done client-side in browser.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    let product = 'deposit';
+
+    function switchProduct(p) {
+      product = p;
+      document.getElementById('tabDeposit').classList.toggle('active', p === 'deposit');
+      document.getElementById('tabSavings').classList.toggle('active', p === 'savings');
+      
+      if (p === 'deposit') {
+        document.getElementById('amountLabel').textContent = '예치 원금 (목돈)';
+        document.getElementById('depositChips').style.display = 'flex';
+        document.getElementById('savingsChips').style.display = 'none';
+        document.getElementById('inputAmount').value = 10000000;
+      } else {
+        document.getElementById('amountLabel').textContent = '월 납입 금액 (매월 저축)';
+        document.getElementById('depositChips').style.display = 'none';
+        document.getElementById('savingsChips').style.display = 'flex';
+        document.getElementById('inputAmount').value = 500000;
+      }
+      calcInterest();
+    }
+
+    function setAmt(v) { document.getElementById('inputAmount').value = v; calcInterest(); }
+    function setRate(v) { document.getElementById('inputRate').value = v; calcInterest(); }
+    function setMonths(v) { document.getElementById('inputMonths').value = v; calcInterest(); }
+    function won(n) { return Math.round(n).toLocaleString('ko-KR') + '원'; }
+
+    function calcInterest() {
+      const amt = parseFloat(document.getElementById('inputAmount').value) || 0;
+      const annualRate = (parseFloat(document.getElementById('inputRate').value) || 0) / 100;
+      const months = parseInt(document.getElementById('inputMonths').value) || 1;
+      const calcType = document.getElementById('calcType').value;
+      const taxRate = parseFloat(document.getElementById('taxType').value) / 100;
+
+      let principal = 0;
+      let grossInterest = 0;
+
+      if (product === 'deposit') {
+        principal = amt;
+        if (calcType === 'simple') {
+          grossInterest = principal * annualRate * (months / 12);
+        } else {
+          const monthlyRate = annualRate / 12;
+          grossInterest = principal * (Math.pow(1 + monthlyRate, months) - 1);
+        }
+      } else {
+        principal = amt * months;
+        if (calcType === 'simple') {
+          grossInterest = amt * annualRate * (months * (months + 1) / 24);
+        } else {
+          const monthlyRate = annualRate / 12;
+          let total = 0;
+          for (let i = 1; i <= months; i++) {
+            total = (total + amt) * (1 + monthlyRate);
+          }
+          grossInterest = total - principal;
+        }
+      }
+
+      const tax = Math.floor((grossInterest * taxRate) / 10) * 10;
+      const netInterest = grossInterest - tax;
+      const totalPay = principal + netInterest;
+
+      document.getElementById('rPrincipal').textContent = won(principal);
+      document.getElementById('rGrossInterest').textContent = won(grossInterest);
+      document.getElementById('rTaxDeduct').textContent = '-' + won(tax);
+      document.getElementById('rNetInterest').textContent = '+' + won(netInterest);
+      document.getElementById('rTotalPay').innerHTML = won(totalPay) + '<span>원</span>';
+    }
+
+    calcInterest();
+  </script>
+</body>
+</html>
