@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 군인 월급 & 장병내일준비적금 만기 수령액 계산기 | ToolMate</title>
+  <meta name="description" content="2026년 군인 계급별 월급(병장, 상병, 일병, 이병)과 장병내일준비적금(월 최대 40만원)의 정부 100% 매칭지원금(사회복귀준비금), 이자, 18개월 만기 총 수령액(약 2,000만원)을 계산합니다.">
+  <meta name="keywords" content="군인월급계산기,장병내일준비적금,2026군인월급,병장월급,매칭지원금,군적금만기,사회복귀준비금">
+  <link rel="canonical" href="https://toolmate.kr/장병내일준비적금%20및%20군인%20월급%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .army-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #14532d 0%, #166534 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .main-total { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #facc15; margin: 8px 0; }
+    .army-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 16px; }
+    .army-box { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 12px 8px; text-align: center; }
+    .army-box .v { font-size: 1.15rem; font-weight: 800; color: #fff; font-family: var(--font-mono); }
+    .army-box .l { font-size: 0.75rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .army-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="army-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🎖️ 2026 국방부 장병 지원 정책</span>
+        <h1 class="page-title">군인 월급 & 장병내일준비적금 만기 계산기</h1>
+        <p class="page-desc">2026년 인상된 병사 봉급과 장병내일준비적금(월 최대 40만원)의 정부 100% 매칭지원금이 합쳐진 전역 시 목돈을 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">💰 월 적금 납입액 (은행 2곳 최대 40만원)</label>
+            <input type="number" id="monthlySaving" class="input-field" value="400000" min="10000" max="400000" step="10000" oninput="calcArmy()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">⏳ 복무 기간 (군별 복무 개월 수)</label>
+            <select id="serviceMonths" class="select-field" onchange="calcArmy()">
+              <option value="18" selected>육군 / 해병대 / 상근예비역 (18개월)</option>
+              <option value="20">해군 (20개월)</option>
+              <option value="21">공군 / 사회복무요원 (21개월)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">🏦 은행 기본 금리 (연 %)</label>
+            <input type="number" id="armyBankRate" class="input-field" value="5.0" step="0.1" oninput="calcArmy()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🎖️ 2026 계급별 월 기본급 기준 확인</label>
+            <select id="rankSalary" class="select-field">
+              <option>병장: 약 150만원 + 내일준비지원금 55만원 (실질 205만원)</option>
+              <option>상병: 약 120만원 + 지원금</option>
+              <option>일병: 약 96만원 + 지원금</option>
+              <option>이병: 약 86만원 + 지원금</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">전역 시 통장에 꽂히는 총 만기 수령액 (비과세 100%)</div>
+          <div class="main-total" id="finalArmyTotal">14,942,500원</div>
+          <div style="font-size:0.9rem; opacity:0.9;" id="armyProfitText">🎉 정부 100% 매칭지원금으로 납입 원금의 2배 이상 수령!</div>
+
+          <div class="army-grid">
+            <div class="army-box">
+              <div class="v" id="armyPrincipal">7,200,000원</div>
+              <div class="l">본인 납입 원금 (18회)</div>
+            </div>
+            <div class="army-box">
+              <div class="v" id="armyGovMatch">7,200,000원</div>
+              <div class="l">정부 매칭지원금 (100%)</div>
+            </div>
+            <div class="army-box">
+              <div class="v" id="armyInterest">542,500원</div>
+              <div class="l">은행 우대 이자 (연 5%)</div>
+            </div>
+            <div class="army-box">
+              <div class="v" id="armyTaxSave">83,545원</div>
+              <div class="l">이자소득세 면제 혜택</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>장병내일준비적금 핵심 혜택과 신청 방법</h2>
+        <ul>
+          <li><strong>정부 100% 매칭지원금:</strong> 원금 100% 상당의 사회복귀준비금을 국가에서 추가 지급합니다. (원금 720만원 ➔ 1,440만원+)</li>
+          <li><strong>비과세 및 고금리:</strong> 15.4% 이자소득세 전액 면제 및 은행 기본 5%대 금리 제공.</li>
+          <li><strong>가입 한도:</strong> 은행 1곳당 월 최대 20만원, 개인당 2개 은행 합산 최대 월 40만원까지 가입 가능합니다.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcArmy() {
+      const monthly = parseFloat(document.getElementById('monthlySaving').value) || 0;
+      const months = parseInt(document.getElementById('serviceMonths').value);
+      const rate = (parseFloat(document.getElementById('armyBankRate').value) || 5.0) / 100;
+
+      const principal = monthly * months;
+      // 적금 단리 이자 = 월적립액 * n(n+1)/2 * (연이율/12)
+      const interest = Math.round(monthly * (months * (months + 1) / 2) * (rate / 12));
+      // 정부 매칭지원금 100% (원금 100% 매칭)
+      const govMatch = principal;
+      const total = principal + govMatch + interest;
+      const taxSave = Math.round(interest * 0.154);
+
+      document.getElementById('finalArmyTotal').textContent = `${total.toLocaleString()}원`;
+      document.getElementById('armyPrincipal').textContent = `${principal.toLocaleString()}원`;
+      document.getElementById('armyGovMatch').textContent = `${govMatch.toLocaleString()}원`;
+      document.getElementById('armyInterest').textContent = `${interest.toLocaleString()}원`;
+      document.getElementById('armyTaxSave').textContent = `${taxSave.toLocaleString()}원`;
+    }
+
+    calcArmy();
+  </script>
+</body>
+</html>

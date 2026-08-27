@@ -1,19 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ToolMate - 실업급여·연봉·청약·더치페이·카톡분석 무료 온라인 도구 30선</title>
-  <meta name="description" content="실업급여, 연봉 실수령액, 4대보험, 주택청약 가점, 카톡 대화 호감도 분석, 백수 생존일수, 차수별 n빵 더치페이, 만 나이, 대출이자 등 대한민국 필수 30가지 웹 계산기 허브.">
-  <meta name="keywords" content="툴메이트,ToolMate,실업급여계산기,연봉실수령액,4대보험계산기,만나이계산기,주택청약가점,카톡호감도분석,n빵계산기,더치페이계산기,퇴사계산기">
+  <title>ToolMate - 실업급여·증여세·육아휴직·환율·군적금 무료 웹 도구 35선</title>
+  <meta name="description" content="실업급여, 알바 주휴수당, 가족 증여세 면제한도, 2026 육아휴직 급여(월 250만), 연봉 실수령액, 해외직구 관세, 실시간 환율, 장병적금, 카톡 호감도, 위드마크 음주 분해시간 등 대한민국 필수 35가지 웹 계산기 허브.">
+  <meta name="keywords" content="툴메이트,ToolMate,증여세계산기,육아휴직급여,주휴수당계산기,실업급여계산기,해외직구관세,실시간환율,군인월급,장병내일준비적금,카톡호감도,위드마크">
   <meta name="google-site-verification" content="zpR6hXO1x96ggA7Oo0kPV9pT2XN42O6aPVQniNdUSXc" />
   <meta name="naver-site-verification" content="85f361a2c3eb99dfd29dd3869e05ad599ae04839" />
   <link rel="canonical" href="https://toolmate.kr/">
   <link rel="stylesheet" href="shared/design-system.css">
-  <!-- Google AdSense 자동 광고 스크립트 -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"WebSite","name":"ToolMate","description":"대한민국 일상·금융·업무 필수 온라인 도구 30선","url":"https://toolmate.kr/","potentialAction":{"@type":"SearchAction","target":"https://toolmate.kr/?q={search_term_string}","query-input":"required name=search_term_string"}}
+  {"@context":"https://schema.org","@type":"WebSite","name":"ToolMate","description":"대한민국 일상·금융·업무 필수 온라인 도구 35선","url":"https://toolmate.kr/","potentialAction":{"@type":"SearchAction","target":"https://toolmate.kr/?q={search_term_string}","query-input":"required name=search_term_string"}}
   </script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
@@ -25,22 +24,19 @@
   ]}
   </script>
   <style>
-    /* Hero Section */
-    .hero-banner { text-align: center; padding: 42px 16px 24px; }
+    .hero-banner { text-align: center; padding: 42px 16px 20px; }
     .hero-title { font-size: 2.3rem; font-weight: 900; color: var(--text-main); letter-spacing: -0.03em; line-height: 1.25; margin-bottom: 12px; }
     .hero-title span { background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero-desc { font-size: 1.02rem; color: var(--text-muted); max-width: 680px; margin: 0 auto 24px; }
+    .hero-desc { font-size: 1.02rem; color: var(--text-muted); max-width: 680px; margin: 0 auto 20px; }
     
-    /* Search & Filter Bar */
-    .search-wrap { max-width: 600px; margin: 0 auto 22px; position: relative; }
+    .search-wrap { max-width: 600px; margin: 0 auto 20px; position: relative; }
     .search-wrap input { width: 100%; padding: 14px 20px 14px 46px; font-size: 0.96rem; font-weight: 600; border: 2px solid var(--border); border-radius: var(--radius-full); background: var(--surface); color: var(--text-main); outline: none; box-shadow: var(--shadow-md); transition: all 0.2s ease; }
     .search-wrap input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
     .search-wrap .si { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); font-size: 1.15rem; color: var(--text-subtle); }
-    .filter-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .filter-tabs { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 26px; }
     .filter-btn { padding: 7px 15px; border-radius: var(--radius-full); font-size: 0.84rem; font-weight: 700; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; transition: all 0.15s ease; }
     .filter-btn:hover, .filter-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); box-shadow: 0 2px 8px var(--primary-glow); }
     
-    /* 5-Column Ultra-Modern Dashboard Grid */
     .tools-5col-grid {
       display: grid;
       grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -85,7 +81,6 @@
     .badge-hot { position: absolute; top: -7px; right: 10px; background: #ef4444; color: #fff; font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: var(--radius-full); }
     .badge-viral { position: absolute; top: -7px; right: 10px; background: #ec4899; color: #fff; font-size: 0.65rem; font-weight: 800; padding: 2px 7px; border-radius: var(--radius-full); }
     
-    /* Responsive Breakpoints */
     @media (max-width: 1280px) { .tools-5col-grid { grid-template-columns: repeat(4, 1fr); } }
     @media (max-width: 960px) { .tools-5col-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 640px) {
@@ -103,7 +98,7 @@
       <a href="index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
       <div class="gnb-nav">
         <div class="dropdown" id="allToolsDropdown">
-          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (30종) ▾</button>
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (35종) ▾</button>
           <div class="dropdown-menu" id="dropdownMenu"></div>
         </div>
         <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
@@ -112,32 +107,33 @@
   </header>
 
   <main class="container">
-    <!-- Hero Banner -->
     <div class="hero-banner">
       <span class="pill-badge">🔒 100% 클라이언트 연산 · 개인정보 유출 0%</span>
       <h1 class="hero-title">일상과 업무를 똑똑하게, <span>ToolMate</span></h1>
-      <p class="hero-desc">실업급여·연봉·청약·더치페이·카톡 호감도 분석·만 나이·대출이자 등 대한민국 필수 30가지 웹 도구를 설치 없이 0.1초 만에 무료로 이용하세요.</p>
+      <p class="hero-desc">실업급여·증여세·육아휴직·주휴수당·환율·군적금·카톡 호감도 분석·위드마크 등 대한민국 필수 35가지 웹 도구를 설치 없이 무료로 이용하세요.</p>
       
+      <div id="userQuickBar" style="display:none; margin-bottom:12px;"></div>
+
       <div class="search-wrap">
         <span class="si">🔍</span>
-        <input type="text" id="toolSearchInput" placeholder="도구 검색... (예: 실업급여, 카톡, 연차, n빵, 청약, 주식, 연봉)" autocomplete="off">
+        <input type="text" id="toolSearchInput" placeholder="도구 검색... 초성 검색 지원 (예: ㅈㅇ, ㅇㅇ, ㅅㅇ, ㅈㅎ, ㅋㅌ, ㅂㅅ, ㅊㅇ, ㅇㅂ)" autocomplete="off">
       </div>
 
       <div class="filter-tabs">
-        <button class="filter-btn active" data-cat="all">전체 도구 (30)</button>
-        <button class="filter-btn" data-cat="finance">💰 금융·세금 (7)</button>
-        <button class="filter-btn" data-cat="realestate">🏠 부동산·재테크 (8)</button>
-        <button class="filter-btn" data-cat="life">💼 직장·생활·건강 (5)</button>
+        <button class="filter-btn active" data-cat="all">전체 도구 (35)</button>
+        <button class="filter-btn" data-cat="finance">💰 금융·세금 (9)</button>
+        <button class="filter-btn" data-cat="realestate">🏠 부동산·재테크 (10)</button>
+        <button class="filter-btn" data-cat="life">💼 직장·생활·건강 (6)</button>
         <button class="filter-btn" data-cat="media">🛠️ 생산성·업무 (5)</button>
         <button class="filter-btn" data-cat="viral">🎉 바이럴·꿀잼 (5)</button>
       </div>
     </div>
 
-    <!-- 30종 5열 대시보드 그리드 (6행 x 5열 = 30) -->
+    <!-- 35종 5열 대시보드 그리드 (7행 x 5열 = 35) -->
     <div class="tools-5col-grid" id="toolsGrid">
 
-      <!-- [ROW 1: 💰 금융 & 세금 핵심] -->
-      <a href="실업급여 계산기/index.html" class="t-card" data-cat="finance" data-kw="실업급여 구직급여 계산기 수급액 지급일수 고용보험">
+      <!-- [ROW 1: 💰 금융 & 세금] -->
+      <a href="실업급여 계산기/index.html" class="t-card" data-cat="finance" data-kw="실업급여 구직급여 계산기 수급액 지급일수 고용보험 ㅅㅇ">
         <span class="badge-hot">🔥 인기</span>
         <div class="t-tag">💰 금융·세금</div>
         <div class="t-icon">💸</div>
@@ -146,7 +142,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="실 수령액 계산기/index.html" class="t-card" data-cat="finance" data-kw="연봉 월급 실수령액 계산기 세후 4대보험 소득세">
+      <a href="실 수령액 계산기/index.html" class="t-card" data-cat="finance" data-kw="연봉 월급 실수령액 계산기 세후 4대보험 소득세 ㅇㅂ">
         <span class="badge-hot">🔥 인기</span>
         <div class="t-tag">💰 금융·세금</div>
         <div class="t-icon">💰</div>
@@ -155,7 +151,25 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="4대보험료 계산기/index.html" class="t-card" data-cat="finance" data-kw="4대보험 계산기 국민연금 건강보험 고용보험 산재보험">
+      <a href="주휴수당 및 알바 월급 계산기/index.html" class="t-card" data-cat="finance" data-kw="주휴수당 알바월급 계산기 2026최저시급 알바시급 ㅈㅎ ㅇㅂ">
+        <span class="badge-hot">🔥 알바</span>
+        <div class="t-tag">💰 금융·세금</div>
+        <div class="t-icon">💵</div>
+        <h2 class="t-title">주휴수당 & 알바 월급</h2>
+        <p class="t-desc">2026 최저시급(10,320원) 주 15시간 이상 법정 주휴수당+실질시급</p>
+        <div class="t-action"><span>계산하기</span><span>→</span></div>
+      </a>
+
+      <a href="가족 증여세 및 증여공제 계산기/index.html" class="t-card" data-cat="finance" data-kw="증여세계산기 증여세면제한도 부모자식증여 배우자증여 혼인증여공제 ㅈㅇ">
+        <span class="badge-hot">🔥 세무</span>
+        <div class="t-tag">💰 금융·세금</div>
+        <div class="t-icon">🎁</div>
+        <h2 class="t-title">가족 증여세 & 증여공제</h2>
+        <p class="t-desc">배우자(6억)·자녀(5천만)·혼인출산(최대3억) 면제한도 및 세액</p>
+        <div class="t-action"><span>계산하기</span><span>→</span></div>
+      </a>
+
+      <a href="4대보험료 계산기/index.html" class="t-card" data-cat="finance" data-kw="4대보험 계산기 국민연금 건강보험 고용보험 산재보험 ㅂㅎ">
         <div class="t-tag">💰 금융·세금</div>
         <div class="t-icon">📊</div>
         <h2 class="t-title">4대보험료 계산기</h2>
@@ -163,7 +177,8 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="퇴직금 계산기/index.html" class="t-card" data-cat="finance" data-kw="퇴직금 계산기 법정퇴직금 퇴직소득세 irp 평균임금">
+      <!-- [ROW 2: 💰 금융 & 🏠 부동산] -->
+      <a href="퇴직금 계산기/index.html" class="t-card" data-cat="finance" data-kw="퇴직금 계산기 법정퇴직금 퇴직소득세 irp 평균임금 ㅌㅈ">
         <div class="t-tag">💰 금융·세금</div>
         <div class="t-icon">💼</div>
         <h2 class="t-title">법정 퇴직금 계산기</h2>
@@ -171,7 +186,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="연말정산 계산기/index.html" class="t-card" data-cat="finance" data-kw="연말정산 환급금 계산기 소득공제 세액공제 신용카드">
+      <a href="연말정산 계산기/index.html" class="t-card" data-cat="finance" data-kw="연말정산 환급금 계산기 소득공제 세액공제 신용카드 ㅇㅁ">
         <div class="t-tag">💰 금융·세금</div>
         <div class="t-icon">📋</div>
         <h2 class="t-title">연말정산 환급금 모의</h2>
@@ -179,8 +194,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <!-- [ROW 2: 💰 금융 & 🏠 부동산] -->
-      <a href="부가세 및 원천징수 계산기/index.html" class="t-card" data-cat="finance" data-kw="부가세 vat 3.3 프리랜서 원천징수 계산기">
+      <a href="부가세 및 원천징수 계산기/index.html" class="t-card" data-cat="finance" data-kw="부가세 vat 3.3 프리랜서 원천징수 계산기 ㅂㄱ">
         <div class="t-tag">💰 금융·세금</div>
         <div class="t-icon">🧾</div>
         <h2 class="t-title">부가세 & 3.3% 계산기</h2>
@@ -188,7 +202,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="국민연금 예상 수령액 계산기/index.html" class="t-card" data-cat="finance" data-kw="국민연금 예상수령액 노령연금 수령나이 조기연금">
+      <a href="국민연금 예상 수령액 계산기/index.html" class="t-card" data-cat="finance" data-kw="국민연금 예상수령액 노령연금 수령나이 조기연금 ㄱㅁ">
         <div class="t-tag">💰 금융·세금</div>
         <div class="t-icon">👵</div>
         <h2 class="t-title">국민연금 예상 수령액</h2>
@@ -196,7 +210,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="주택청약 가점 계산기/index.html" class="t-card" data-cat="realestate" data-kw="주택청약 가점 계산기 1순위 무주택기간 부양가족">
+      <a href="주택청약 가점 계산기/index.html" class="t-card" data-cat="realestate" data-kw="주택청약 가점 계산기 1순위 무주택기간 부양가족 ㅊㅇ">
         <span class="badge-hot">🔥 인기</span>
         <div class="t-tag">🏠 부동산·재테크</div>
         <div class="t-icon">🏡</div>
@@ -205,7 +219,8 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="대출 이자 계산기/index.html" class="t-card" data-cat="realestate" data-kw="대출 이자 계산기 원리금균등 원금균등 만기일시 상환표">
+      <!-- [ROW 3: 🏠 부동산 & 재테크] -->
+      <a href="대출 이자 계산기/index.html" class="t-card" data-cat="realestate" data-kw="대출 이자 계산기 원리금균등 원금균등 만기일시 상환표 ㄷㅊ">
         <div class="t-tag">🏠 부동산·재테크</div>
         <div class="t-icon">🏦</div>
         <h2 class="t-title">대출 이자 & 상환표</h2>
@@ -213,7 +228,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="부동산 복비 및 취득세 계산기/index.html" class="t-card" data-cat="realestate" data-kw="부동산 복비 중개보수 취득세 매매 전세 월세">
+      <a href="부동산 복비 및 취득세 계산기/index.html" class="t-card" data-cat="realestate" data-kw="부동산 복비 중개보수 취득세 매매 전세 월세 ㅂㄷ">
         <div class="t-tag">🏠 부동산·재테크</div>
         <div class="t-icon">🏘️</div>
         <h2 class="t-title">부동산 복비 & 취득세</h2>
@@ -221,8 +236,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <!-- [ROW 3: 🏠 부동산/재테크 & 💼 직장] -->
-      <a href="예적금 복리 계산기/index.html" class="t-card" data-cat="realestate" data-kw="예금 적금 복리이자 단리 비과세 만기수령액">
+      <a href="예적금 복리 계산기/index.html" class="t-card" data-cat="realestate" data-kw="예금 적금 복리이자 단리 비과세 만기수령액 ㅇㅈ">
         <div class="t-tag">🏠 부동산·재테크</div>
         <div class="t-icon">📈</div>
         <h2 class="t-title">예적금 복리이자 계산기</h2>
@@ -230,7 +244,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="청년도약계좌 만기 수령액 계산기/index.html" class="t-card" data-cat="realestate" data-kw="청년도약계좌 만기수령액 정부기여금 청년적금 비과세">
+      <a href="청년도약계좌 만기 수령액 계산기/index.html" class="t-card" data-cat="realestate" data-kw="청년도약계좌 만기수령액 정부기여금 청년적금 비과세 ㅊㄴ">
         <span class="badge-hot">🔥 청년</span>
         <div class="t-tag">🏠 부동산·재테크</div>
         <div class="t-icon">🇰🇷</div>
@@ -239,7 +253,33 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="주식 물타기 평단가 계산기/index.html" class="t-card" data-cat="realestate" data-kw="주식 물타기 평단가 분할매수 본전탈출 계산기">
+      <a href="장병내일준비적금 및 군인 월급 계산기/index.html" class="t-card" data-cat="realestate" data-kw="군인월급 장병내일준비적금 병장월급 매칭지원금 군적금 ㄱㅇ ㅈㅂ">
+        <span class="badge-hot">🔥 군인</span>
+        <div class="t-tag">🏠 부동산·재테크</div>
+        <div class="t-icon">🎖️</div>
+        <h2 class="t-title">군인 월급 & 장병적금</h2>
+        <p class="t-desc">2026 병장 봉급 + 정부 100% 매칭지원금 전역 시 목돈 계산</p>
+        <div class="t-action"><span>계산하기</span><span>→</span></div>
+      </a>
+
+      <!-- [ROW 4: 🏠 재테크 & 💼 직장/생활] -->
+      <a href="해외직구 관세 및 부가세 계산기/index.html" class="t-card" data-cat="realestate" data-kw="해외직구관세 직구부가세 면세한도 알리 테무 아마존 ㅎㅇ ㅈㄱ">
+        <div class="t-tag">🏠 부동산·재테크</div>
+        <div class="t-icon">✈️</div>
+        <h2 class="t-title">해외직구 관세·부가세</h2>
+        <p class="t-desc">$150($200) 면세 한도 및 의류/전자기기 품목별 관세율 계산</p>
+        <div class="t-action"><span>계산하기</span><span>→</span></div>
+      </a>
+
+      <a href="실시간 환율 및 환전 우대 계산기/index.html" class="t-card" data-cat="realestate" data-kw="환율계산기 환전계산기 환전우대율 달러 엔화 토스환전 ㅎㅇ">
+        <div class="t-tag">🏠 부동산·재테크</div>
+        <div class="t-icon">💱</div>
+        <h2 class="t-title">실시간 환율 & 환전 우대</h2>
+        <p class="t-desc">달러/엔화/유로 매매기준율 및 은행 90% 우대 환전 원화 산출</p>
+        <div class="t-action"><span>계산하기</span><span>→</span></div>
+      </a>
+
+      <a href="주식 물타기 평단가 계산기/index.html" class="t-card" data-cat="realestate" data-kw="주식 물타기 평단가 분할매수 본전탈출 계산기 ㅈㅅ ㅁㅌ">
         <div class="t-tag">🏠 부동산·재테크</div>
         <div class="t-icon">📉</div>
         <h2 class="t-title">주식 물타기 평단가</h2>
@@ -247,7 +287,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="자동차세 및 차량 취득세 계산기/index.html" class="t-card" data-cat="realestate" data-kw="자동차세 차량취득세 배기량 연납할인 중고차취득세">
+      <a href="자동차세 및 차량 취득세 계산기/index.html" class="t-card" data-cat="realestate" data-kw="자동차세 차량취득세 배기량 연납할인 중고차취득세 ㅈㄷ">
         <div class="t-tag">🏠 부동산·재테크</div>
         <div class="t-icon">🚗</div>
         <h2 class="t-title">자동차세 & 차량 취득세</h2>
@@ -255,16 +295,17 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="아파트 평수 및 단위 환산기/index.html" class="t-card" data-cat="realestate" data-kw="평수계산기 평수변환기 제곱미터 단위환산 인치">
-        <div class="t-tag">🏠 부동산·재테크</div>
-        <div class="t-icon">📐</div>
-        <h2 class="t-title">아파트 평수 ↔ ㎡ 환산</h2>
-        <p class="t-desc">아파트 평수(평) ↔ 제곱미터(㎡), 인치↔cm 실시간 1초 양방향 변환</p>
-        <div class="t-action"><span>변환하기</span><span>→</span></div>
+      <a href="육아휴직 및 출산휴가 급여 계산기/index.html" class="t-card" data-cat="life" data-kw="육아휴직급여계산기 출산휴가급여 육아휴직250만원 통상임금 ㅇㅇ ㅊㅅ">
+        <span class="badge-hot">🔥 신규</span>
+        <div class="t-tag">💼 직장·생활</div>
+        <div class="t-icon">👶</div>
+        <h2 class="t-title">육아휴직 & 출산급여</h2>
+        <p class="t-desc">2026 정부 개편안(1~3개월 최대 월 250만) 1년 총 수급액 산출</p>
+        <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <!-- [ROW 4: 💼 직장/생활 & 🛠️ 생산성] -->
-      <a href="연차 일수 및 연차수당 계산기/index.html" class="t-card" data-cat="life" data-kw="연차계산기 연차수당 미사용연차 근로기준법 통상임금">
+      <!-- [ROW 5: 💼 직장/생활 & 🛠️ 생산성] -->
+      <a href="연차 일수 및 연차수당 계산기/index.html" class="t-card" data-cat="life" data-kw="연차계산기 연차수당 미사용연차 근로기준법 통상임금 ㅇㅊ">
         <span class="badge-hot">🔥 직장인</span>
         <div class="t-tag">💼 직장·생활</div>
         <div class="t-icon">🌴</div>
@@ -273,7 +314,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="만 나이 계산기/index.html" class="t-card" data-cat="life" data-kw="만나이 계산기 한국나이 세는나이 연나이 생일">
+      <a href="만 나이 계산기/index.html" class="t-card" data-cat="life" data-kw="만나이 계산기 한국나이 세는나이 연나이 생일 ㅁㄴ">
         <div class="t-tag">💼 직장·생활</div>
         <div class="t-icon">🎂</div>
         <h2 class="t-title">만 나이 계산기</h2>
@@ -281,7 +322,15 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="기초대사량 및 칼로리 계산기/index.html" class="t-card" data-cat="life" data-kw="기초대사량 bmr tdee 다이어트 칼로리 탄단지">
+      <a href="아파트 평수 및 단위 환산기/index.html" class="t-card" data-cat="life" data-kw="평수계산기 평수변환기 제곱미터 단위환산 인치 ㅍㅅ">
+        <div class="t-tag">💼 직장·생활</div>
+        <div class="t-icon">📐</div>
+        <h2 class="t-title">아파트 평수 ↔ ㎡ 환산</h2>
+        <p class="t-desc">아파트 평수(평) ↔ 제곱미터(㎡), 인치↔cm 실시간 1초 양방향 변환</p>
+        <div class="t-action"><span>변환하기</span><span>→</span></div>
+      </a>
+
+      <a href="기초대사량 및 칼로리 계산기/index.html" class="t-card" data-cat="life" data-kw="기초대사량 bmr tdee 다이어트 칼로리 탄단지 ㄱㅊ">
         <div class="t-tag">💼 직장·생활</div>
         <div class="t-icon">🥗</div>
         <h2 class="t-title">기초대사량(BMR) & 칼로리</h2>
@@ -289,15 +338,7 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <a href="수면 사이클 계산기/index.html" class="t-card" data-cat="life" data-kw="수면사이클 기상시간 취침시간 90분 렘수면">
-        <div class="t-tag">💼 직장·생활</div>
-        <div class="t-icon">💤</div>
-        <h2 class="t-title">수면 사이클 계산기</h2>
-        <p class="t-desc">90분 렘수면 주기 맞춤 아침 기상/취침 골든타임 추천</p>
-        <div class="t-action"><span>계산하기</span><span>→</span></div>
-      </a>
-
-      <a href="디데이 및 전역일 계산기/index.html" class="t-card" data-cat="life" data-kw="디데이 dday 전역일 계산기 군대 복무율 기념일">
+      <a href="디데이 및 전역일 계산기/index.html" class="t-card" data-cat="life" data-kw="디데이 dday 전역일 계산기 군대 복무율 기념일 ㄷㄷ ㅈㅇ">
         <div class="t-tag">💼 직장·생활</div>
         <div class="t-icon">⏳</div>
         <h2 class="t-title">D-Day & 군 전역일</h2>
@@ -305,8 +346,8 @@
         <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
-      <!-- [ROW 5: 🛠️ 생산성 & 업무] -->
-      <a href="글자 수 세기/index.html" class="t-card" data-cat="media" data-kw="글자수 세기 공백제외 바이트 자소서 맞춤법">
+      <!-- [ROW 6: 🛠️ 생산성 & 🎉 바이럴] -->
+      <a href="글자 수 세기/index.html" class="t-card" data-cat="media" data-kw="글자수 세기 공백제외 바이트 자소서 맞춤법 ㄱㅈ">
         <div class="t-tag">🛠️ 생산성·업무</div>
         <div class="t-icon">✍️</div>
         <h2 class="t-title">글자 수 & 바이트 세기</h2>
@@ -314,7 +355,7 @@
         <div class="t-action"><span>사용하기</span><span>→</span></div>
       </a>
 
-      <a href="PDF 도구 모음/index.html" class="t-card" data-cat="media" data-kw="pdf병합 pdf합치기 pdf분할 페이지추출">
+      <a href="PDF 도구 모음/index.html" class="t-card" data-cat="media" data-kw="pdf병합 pdf합치기 pdf분할 페이지추출 ㅍㄷ">
         <div class="t-tag">🛠️ 생산성·업무</div>
         <div class="t-icon">📑</div>
         <h2 class="t-title">PDF 병합 & 분할 툴킷</h2>
@@ -322,7 +363,7 @@
         <div class="t-action"><span>사용하기</span><span>→</span></div>
       </a>
 
-      <a href="이미지 용량 줄이기/index.html" class="t-card" data-cat="media" data-kw="이미지압축 용량줄이기 webp 변환 jpg png">
+      <a href="이미지 용량 줄이기/index.html" class="t-card" data-cat="media" data-kw="이미지압축 용량줄이기 webp 변환 jpg png ㅇㅁ">
         <div class="t-tag">🛠️ 생산성·업무</div>
         <div class="t-icon">🖼️</div>
         <h2 class="t-title">이미지 압축 & WEBP 변환</h2>
@@ -330,7 +371,7 @@
         <div class="t-action"><span>사용하기</span><span>→</span></div>
       </a>
 
-      <a href="QR코드 생성기/index.html" class="t-card" data-cat="media" data-kw="qr코드 생성기 바코드 와이파이 명함 png">
+      <a href="QR코드 생성기/index.html" class="t-card" data-cat="media" data-kw="qr코드 생성기 바코드 와이파이 명함 png ㅋㅇ">
         <div class="t-tag">🛠️ 생산성·업무</div>
         <div class="t-icon">📱</div>
         <h2 class="t-title">QR코드 & 바코드 생성기</h2>
@@ -338,7 +379,7 @@
         <div class="t-action"><span>사용하기</span><span>→</span></div>
       </a>
 
-      <a href="간이 영수증 및 견적서/index.html" class="t-card" data-cat="media" data-kw="간이영수증 견적서 양식 a4 인쇄 pdf">
+      <a href="간이 영수증 및 견적서/index.html" class="t-card" data-cat="media" data-kw="간이영수증 견적서 양식 a4 인쇄 pdf ㄱㅇ">
         <div class="t-tag">🛠️ 생산성·업무</div>
         <div class="t-icon">🧾</div>
         <h2 class="t-title">간이영수증 & 견적서 양식</h2>
@@ -346,14 +387,23 @@
         <div class="t-action"><span>출력하기</span><span>→</span></div>
       </a>
 
-      <!-- [ROW 6: 🎉 바이럴 & 꿀잼 SNS] -->
-      <a href="카카오톡 대화 호감도 분석기/index.html" class="t-card" data-cat="viral" data-kw="카톡호감도 인스타DM 캡처 스샷 대화분석 썸 애정도">
+      <!-- [ROW 7: 🎉 바이럴 & 꿀잼 SNS] -->
+      <a href="카카오톡 대화 호감도 분석기/index.html" class="t-card" data-cat="viral" data-kw="카톡호감도 인스타DM 캡처 스샷 대화분석 썸 애정도 ㅋㅌ ㅇㅅ">
         <span class="badge-viral">🔥 바이럴</span>
         <div class="t-tag">🎉 바이럴·꿀잼</div>
         <div class="t-icon">💬</div>
-        <h2 class="t-title">카톡 & 인스타 DM 호감도 분석</h2>
-        <p class="t-desc">카톡·인스타 DM 캡처 스샷 올리기 ➔ AI가 글자 읽어 썸/호감도 점수 리포트</p>
+        <h2 class="t-title">카톡 & 인스타 DM 호감도</h2>
+        <p class="t-desc">카톡·인스타 DM 캡처 스샷 올리기 ➔ AI가 글자 읽어 썸/호감도 점수</p>
         <div class="t-action"><span>분석하기</span><span>→</span></div>
+      </a>
+
+      <a href="위드마크 음주 알코올 분해시간 계산기/index.html" class="t-card" data-cat="viral" data-kw="위드마크 음주분해시간 혈중알코올농도 숙취해소 음주운전수치 ㅇㅈ ㅇㄷ">
+        <span class="badge-viral">🔥 술자리</span>
+        <div class="t-tag">🎉 바이럴·꿀잼</div>
+        <div class="t-icon">🍺</div>
+        <h2 class="t-title">위드마크 음주 분해시간</h2>
+        <p class="t-desc">소주/맥주 음주량·체중별 혈중알코올 0% 완전 분해(운전가능) 시간</p>
+        <div class="t-action"><span>계산하기</span><span>→</span></div>
       </a>
 
       <a href="퇴사 및 백수 생존일수 계산기/index.html" class="t-card" data-cat="viral" data-kw="퇴사계산기 백수생존일수 탕진잼 통장잔고 디데이 ㅂㅅ ㅌㅅ">
@@ -365,7 +415,7 @@
         <div class="t-action"><span>시뮬레이션</span><span>→</span></div>
       </a>
 
-      <a href="차수별 더치페이 복합 정산기/index.html" class="t-card" data-cat="viral" data-kw="차수별정산 더치페이 모임정산 1차2차3차 n빵">
+      <a href="차수별 더치페이 복합 정산기/index.html" class="t-card" data-cat="viral" data-kw="차수별정산 더치페이 모임정산 1차2차3차 n빵 ㅊㅅ">
         <span class="badge-viral">🔥 모임필수</span>
         <div class="t-tag">🎉 바이럴·꿀잼</div>
         <div class="t-icon">🍻</div>
@@ -374,15 +424,7 @@
         <div class="t-action"><span>정산하기</span><span>→</span></div>
       </a>
 
-      <a href="배달비 n빵 및 정산 계산기/index.html" class="t-card" data-cat="viral" data-kw="n빵계산기 n빵 더치페이 배달비n빵 모임정산 카카오페이">
-        <div class="t-tag">🎉 바이럴·꿀잼</div>
-        <div class="t-icon">🍗</div>
-        <h2 class="t-title">n빵 & 더치페이 정산기</h2>
-        <p class="t-desc">개인별 메뉴+배달비/할인 분할 및 단톡방 정산 영수증 복사</p>
-        <div class="t-action"><span>정산하기</span><span>→</span></div>
-      </a>
-
-      <a href="로또 번호 생성기/index.html" class="t-card" data-cat="viral" data-kw="로또번호생성기 로또645 당첨통계 번호추천">
+      <a href="로또 번호 생성기/index.html" class="t-card" data-cat="viral" data-kw="로또번호생성기 로또645 당첨통계 번호추천 ㄹㄸ">
         <div class="t-tag">🎉 바이럴·꿀잼</div>
         <div class="t-icon">🎱</div>
         <h2 class="t-title">로또 6/45 스마트 생성기</h2>
@@ -414,17 +456,17 @@
     <!-- SEO 아티클 -->
     <article class="seo-article">
       <h2>ToolMate — 대한민국 일상·금융·업무 필수 온라인 도구 허브</h2>
-      <p>ToolMate는 실업급여 계산기, 연봉 실수령액 계산기, 4대보험료 계산기, 주택청약 가점 계산기, 카카오톡 대화 호감도 분석기, 퇴사 생존일수 계산기, 차수별 더치페이 정산기, 연차수당 계산기, 청년도약계좌 만기 계산기 등 대한민국 직장인·학생·청년들이 매일 필요로 하는 핵심 유틸리티 도구 30선을 무료로 제공합니다.</p>
-      <p>모든 도구는 2026년 최신 법령(최저시급 10,320원, 근로기준법, 세법 개정안)을 반영하며, 개인정보는 브라우저 내부에서만 안전하게 처리됩니다.</p>
+      <p>ToolMate는 실업급여 계산기, 가족 증여세 계산기, 2026 육아휴직 급여 계산기, 알바 주휴수당 계산기, 연봉 실수령액 계산기, 4대보험료 계산기, 주택청약 가점 계산기, 실시간 환율 계산기, 해외직구 관세계산기, 장병내일준비적금 계산기, 카톡 & 인스타 DM 호감도 분석기, 위드마크 음주 분해시간 계산기 등 대한민국 국민들이 매일 필요로 하는 핵심 유틸리티 도구 35선을 무료로 제공합니다.</p>
+      <p>모든 도구는 2026년 최신 법령(최저시급 10,320원, 증여공제 개정안, 육아휴직 월 250만원 인상안)을 반영하며, 개인정보는 브라우저 내부에서만 안전하게 처리됩니다.</p>
     </article>
 
-    <!-- FAQ 섹션 (ToolMate 사이트 이용 & 기능 활용 가이드) -->
+    <!-- FAQ 섹션 -->
     <section style="max-width:800px; margin: 0 auto 40px;">
       <h2 style="font-size:1.3rem; font-weight:800; color:var(--text-main); margin-bottom:16px;">❓ ToolMate 사이트 이용 & 기능 가이드 (FAQ)</h2>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">계산 결과나 정산서를 카톡 단톡방이나 인스타로 바로 보낼 수 있나요? <span>▾</span></div><div class="faq-a">네, 가능합니다! 각 계산기 하단의 [카톡 공유] 또는 [정산서 복사] 버튼을 누르면 단톡방이나 인스타 DM에 바로 붙여넣을 수 있는 깔끔한 영수증 텍스트와 링크가 1초 만에 클립보드에 복사됩니다.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">스마트폰 홈 화면에 앱(어플)처럼 아이콘을 추가해서 쓸 수 있나요? <span>▾</span></div><div class="faq-a">네! 모바일 사파리(아이폰) 또는 크롬(갤럭시) 브라우저 하단/상단 메뉴에서 [홈 화면에 추가]를 누르시면 별도의 앱 설치 없이 스마트폰 바탕화면에 ToolMate 전용 앱 아이콘이 바로 생성되어 언제든 원터치로 실행할 수 있습니다.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">입력한 월급, 계좌번호, 카톡 캡처 사진이 외부로 유출될 위험은 없나요? <span>▾</span></div><div class="faq-a">100% 안전합니다. ToolMate는 모든 수치 계산과 AI 이미지 텍스트 인식이 사용자의 스마트폰/PC 웹 브라우저 메모리 안에서만 실행되는 '클라이언트 연산' 방식을 사용합니다. 입력하신 개인 데이터는 외부 서버로 1바이트도 전송되거나 저장되지 않습니다.</div></div>
-      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">2026년 최신 세법 개정안과 최저시급(10,320원)이 자동으로 반영되어 있나요? <span>▾</span></div><div class="faq-a">네! ToolMate의 모든 금융·세금·노동법 계산기는 2026년 최신 정부 고시 기준(최저시급 10,320원, 4대보험 최신 요율, 근로기준법 연차 기준, 청년도약계좌 개선안)을 실시간으로 정밀하게 반영하여 계산합니다.</div></div>
+      <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">2026년 최신 세법 개정안과 최저시급(10,320원)이 자동으로 반영되어 있나요? <span>▾</span></div><div class="faq-a">네! ToolMate의 모든 금융·세금·노동법 계산기는 2026년 최신 정부 고시 기준(최저시급 10,320원, 증여세 혼인출산공제, 육아휴직 250만 상한)을 실시간으로 정밀하게 반영하여 계산합니다.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">새로운 도구 제작을 요청하거나 오류를 제보하려면 어떻게 하나요? <span>▾</span></div><div class="faq-a">하단의 [문의하기] 메뉴를 통해 필요하신 새로운 계산기 도구나 개선 아이디어를 보내주시면 개발팀에서 적극 검토하여 사이트에 신규 도구로 즉시 반영해 드립니다.</div></div>
     </section>
   </main>
@@ -448,7 +490,6 @@
     const cards = document.querySelectorAll('.t-card');
     let currentCategory = 'all';
 
-    // 한글 초성 분해 함수 (ㄱㄴㄷ 검색 지원)
     const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
     function getChosung(str) {
       let result = '';

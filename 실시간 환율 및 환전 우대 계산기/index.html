@@ -1,0 +1,172 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>실시간 환율 & 은행 환전 수수료 우대 계산기 (달러·엔화·유로) | ToolMate</title>
+  <meta name="description" content="미국 달러(USD), 일본 엔화(JPY), 유로(EUR), 중국 위안(CNY)의 매매기준율과 주요 은행(토스, 카카오뱅크, 국민, 신한)의 환전 수수료 우대율(90%, 80%)을 적용한 최종 환전 금액을 즉시 계산합니다.">
+  <meta name="keywords" content="환율계산기,환전계산기,환전우대율,달러환율,엔화환율,환전수수료,토스환전,엔화환전">
+  <link rel="canonical" href="https://toolmate.kr/실시간%20환율%20및%20환전%20우대%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .fx-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #065f46 0%, #047857 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .main-krw { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #6ee7b7; margin: 8px 0; }
+    .fx-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .fx-box { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .fx-box .v { font-size: 1.25rem; font-weight: 800; color: #6ee7b7; font-family: var(--font-mono); }
+    .fx-box .l { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .fx-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="fx-wrap">
+      <div class="page-header">
+        <span class="pill-badge">💱 주요 통화 환율 & 환전 스프레드</span>
+        <h1 class="page-title">실시간 환율 & 환전 수수료 우대 계산기</h1>
+        <p class="page-desc">외화 금액과 은행별 수수료 우대율(90%, 80%, 50%)을 적용하여 실제 환전에 필요한 원화 금액과 아낀 수수료를 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">🌍 환전할 외화 통화 선택</label>
+            <select id="currency" class="select-field" onchange="updateDefaultRate(); calcFX();">
+              <option value="USD" selected>🇺🇸 미국 달러 (USD, $)</option>
+              <option value="JPY">🇯🇵 일본 엔화 (100엔, JPY, ¥)</option>
+              <option value="EUR">🇪🇺 유로 (EUR, €)</option>
+              <option value="CNY">🇨🇳 중국 위안 (CNY, ¥)</option>
+              <option value="GBP">🇬🇧 영국 파운드 (GBP, £)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">💵 외화 환전 신청 금액</label>
+            <input type="number" id="foreignAmount" class="input-field" value="1000" step="10" oninput="calcFX()">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">📈 매매기준율 (원화 기준)</label>
+            <input type="number" id="baseRate" class="input-field" value="1380.0" step="0.1" oninput="calcFX()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">🎁 은행 환전 수수료 우대율 (%)</label>
+            <select id="spreadDiscount" class="select-field" onchange="calcFX()">
+              <option value="1.00">100% 우대 (토스/트래블로그 무료 환전)</option>
+              <option value="0.90" selected>90% 우대 (주요 시중은행 모바일 환전)</option>
+              <option value="0.80">80% 우대 (일반 모바일 쿠폰)</option>
+              <option value="0.50">50% 우대 (은행 창구 일반 환전)</option>
+              <option value="0.00">0% 우대 (공항 환전소 / 기본 환율)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">실제 환전 시 필요한 원화 금액</div>
+          <div class="main-krw" id="totalKrwPay">1,382,415원</div>
+          <div style="font-size:0.9rem; opacity:0.9;" id="savedFeeText">🎉 90% 우대로 수수료 21,735원 절약!</div>
+
+          <div class="fx-grid">
+            <div class="fx-box">
+              <div class="v" id="appliedRateText">1,382.42원</div>
+              <div class="l">우대 적용 최종 환율</div>
+            </div>
+            <div class="fx-box">
+              <div class="v" id="standardPayText">1,404,150원</div>
+              <div class="l">우대 0%(공항) 환전 시 금액</div>
+            </div>
+            <div class="fx-box">
+              <div class="v" id="spreadFeeText">2,415원</div>
+              <div class="l">최종 발생 환전 수수료</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>환전 수수료와 우대율(스프레드)의 원리</h2>
+        <p>은행에서 외화를 살 때(현찰 살 때)는 기준 환율에 약 <strong>1.75% 내외의 환전 수수료(스프레드)</strong>가 붙습니다.</p>
+        <p><strong>'90% 우대'란:</strong> 은행이 가져가는 수수료 1.75% 중 90%를 깎아주고 10%만 받는다는 뜻입니다. 따라서 해외여행 전 모바일 앱(토스, 트래블로그, 시중은행 앱)을 통해 90~100% 우대를 받고 환전하는 것이 가장 현명합니다.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. All calculations done client-side.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    const DEFAULT_RATES = {
+      USD: 1380.0,
+      JPY: 915.0,  // 100엔당
+      EUR: 1500.0,
+      CNY: 190.0,
+      GBP: 1780.0
+    };
+
+    function updateDefaultRate() {
+      const cur = document.getElementById('currency').value;
+      document.getElementById('baseRate').value = DEFAULT_RATES[cur] || 1380.0;
+    }
+
+    function calcFX() {
+      const cur = document.getElementById('currency').value;
+      const amt = parseFloat(document.getElementById('foreignAmount').value) || 0;
+      const base = parseFloat(document.getElementById('baseRate').value) || 1380;
+      const discount = parseFloat(document.getElementById('spreadDiscount').value);
+
+      // 은행 현찰 수수료율 (보통 1.75%)
+      const spreadRatio = 0.0175;
+      const fullSpread = base * spreadRatio;
+      const actualSpread = fullSpread * (1 - discount);
+      const appliedRate = base + actualSpread;
+
+      // JPY는 100엔 기준
+      const unit = (cur === 'JPY') ? 100 : 1;
+      const finalKrw = Math.round((amt / unit) * appliedRate);
+      const standardKrw = Math.round((amt / unit) * (base + fullSpread));
+      const savedFee = standardKrw - finalKrw;
+      const spreadFee = finalKrw - Math.round((amt / unit) * base);
+
+      document.getElementById('totalKrwPay').textContent = `${finalKrw.toLocaleString()}원`;
+      document.getElementById('appliedRateText').textContent = `${appliedRate.toFixed(2)}원`;
+      document.getElementById('standardPayText').textContent = `${standardKrw.toLocaleString()}원`;
+      document.getElementById('spreadFeeText').textContent = `${spreadFee.toLocaleString()}원`;
+
+      const discountPct = Math.round(discount * 100);
+      document.getElementById('savedFeeText').textContent = discountPct > 0 
+        ? `🎉 ${discountPct}% 우대 적용으로 공항 대비 ${savedFee.toLocaleString()}원 절약!`
+        : `⚠️ 우대율 0%로 기본 은행 수수료가 전액 부과됩니다.`;
+    }
+
+    calcFX();
+  </script>
+</body>
+</html>

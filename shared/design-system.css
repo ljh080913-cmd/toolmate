@@ -1,4 +1,4 @@
-﻿/* ==========================================================================
+/* ==========================================================================
    ToolNest Shared Design System - Light / Dark Mode & Modern Glassmorphism
    ========================================================================== */
 
@@ -705,3 +705,69 @@ body {
   color: var(--text-muted);
 }
 .faq-a.open { max-height: 400px; padding: 14px 18px; }
+
+/* Quick Chips (⭐ 즐겨찾기 & 🕒 최근 사용한 도구) */
+.quick-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+.quick-chip:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+}
+.quick-chip.fav {
+  border-color: #f59e0b;
+  background: #fffbeb;
+  color: #b45309;
+}
+[data-theme="dark"] .quick-chip.fav {
+  background: #451a03;
+  color: #fde68a;
+  border-color: #d97706;
+}
+
+/* 공유 & 인쇄 버튼 스타일 */
+.share-btn-fav { background: #f59e0b !important; color: #fff !important; border-color: #f59e0b !important; }
+.share-btn-print { background: #0284c7 !important; color: #fff !important; border-color: #0284c7 !important; }
+.share-btn-img { background: #8b5cf6 !important; color: #fff !important; border-color: #8b5cf6 !important; }
+
+/* A4 인쇄 / PDF 출력 최적화 스타일 */
+@media print {
+  body { background: #fff !important; color: #000 !important; }
+  .gnb, .site-footer, .share-section, .adsense-slot, .related-tools-section, .dropdown, #themeToggleBtn, .btn, button, input[type=file] {
+    display: none !important;
+  }
+  .container, .card, .card-padded {
+    box-shadow: none !important;
+    border: none !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  .result-hero, .score-hero, .survive-hero {
+    background: #f8fafc !important;
+    color: #000 !important;
+    border: 2px solid #334155 !important;
+    page-break-inside: avoid;
+  }
+  .result-hero * { color: #000 !important; }
+  .insurance-table, table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+  .insurance-table th, .insurance-table td, table th, table td {
+    border: 1px solid #cbd5e1 !important;
+    color: #000 !important;
+  }
+}

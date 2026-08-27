@@ -1,0 +1,149 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 육아휴직 급여 & 출산휴가 수당 계산기 (최대 월 250만원) | ToolMate</title>
+  <meta name="description" content="2026년 정부 저출생 대책 개편안(1~3개월 최대 월 250만원, 4~6개월 월 200만원, 7개월 이후 월 160만원)을 반영한 육아휴직 1년 총 급여 및 출산전후휴가 급여를 즉시 계산합니다.">
+  <meta name="keywords" content="육아휴직급여계산기,육아휴직250만원,출산휴가급여,2026육아휴직,통상임금,사후지급금폐지,아빠육아휴직">
+  <link rel="canonical" href="https://toolmate.kr/육아휴직%20및%20출산휴가%20급여%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .leave-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #0f766e 0%, #115e59 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .main-benefit { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #5eead4; margin: 8px 0; }
+    .leave-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .leave-box { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .leave-box .v { font-size: 1.25rem; font-weight: 800; color: #5eead4; font-family: var(--font-mono); }
+    .leave-box .l { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .leave-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="leave-wrap">
+      <div class="page-header">
+        <span class="pill-badge">👶 2026 고용노동부 육아휴직 인상안</span>
+        <h1 class="page-title">육아휴직 급여 & 출산휴가 수당 계산기</h1>
+        <p class="page-desc">통상임금(기본 월급)을 입력하면 2026년 인상된 월별 상한액(최대 250만원)을 기준으로 1년간 받는 총 육아휴직 급여를 산출합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">💰 월 통상임금 (세전 기본급+고정수당)</label>
+            <input type="number" id="monthlyWage" class="input-field" value="3000000" step="100000" oninput="calcParentalLeave()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">⏳ 육아휴직 신청 기간 (개월)</label>
+            <select id="leaveMonths" class="select-field" onchange="calcParentalLeave()">
+              <option value="12" selected>12개월 (1년 풀 사용)</option>
+              <option value="6">6개월</option>
+              <option value="3">3개월</option>
+              <option value="18">18개월 (부모 모두 3개월 이상 사용 시 연장)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero">
+          <div style="font-size:0.92rem; opacity:0.85;">육아휴직 기간 동안 받는 총 예상 수급액</div>
+          <div class="main-benefit" id="totalLeavePay">23,100,000원</div>
+          <div style="font-size:0.9rem; opacity:0.9;" id="leaveSubText">1~3개월차 매달 250만원 (상한액 100% 적용)</div>
+
+          <div class="leave-grid">
+            <div class="leave-box">
+              <div class="v" id="phase1Pay">250만원/월</div>
+              <div class="l">1~3개월차 (상한 250만)</div>
+            </div>
+            <div class="leave-box">
+              <div class="v" id="phase2Pay">200만원/월</div>
+              <div class="l">4~6개월차 (상한 200만)</div>
+            </div>
+            <div class="leave-box">
+              <div class="v" id="phase3Pay">160만원/월</div>
+              <div class="l">7개월차 이후 (상한 160만)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>2026년 대폭 개편된 육아휴직 급여 인상 기준</h2>
+        <ul>
+          <li><strong>1~3개월차:</strong> 통상임금의 100% <strong>(월 상한 250만원)</strong></li>
+          <li><strong>4~6개월차:</strong> 통상임금의 100% <strong>(월 상한 200만원)</strong></li>
+          <li><strong>7개월차 이후:</strong> 통상임금의 80% <strong>(월 상한 160만원)</strong></li>
+          <li><strong>사후지급금 전면 폐지:</strong> 복직 후 6개월 뒤에 주던 사후지급금(25%) 제도가 폐지되어 휴직 기간 중 전액 100% 즉시 지급됩니다.</li>
+          <li><strong>배우자 출산휴가:</strong> 유급 10일 ➔ 유급 20일(근무일 기준 1달)로 확대 적용.</li>
+        </ul>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. 본 계산기는 2026 고용노동부 최신 지침을 따릅니다.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    function calcParentalLeave() {
+      const wage = parseFloat(document.getElementById('monthlyWage').value) || 0;
+      const months = parseInt(document.getElementById('leaveMonths').value);
+
+      // 1~3개월: 통상임금 100%, 상한 250만, 하한 70만
+      const m1_3_rate = 1.00;
+      const m1_3_cap = 2500000;
+      const p1 = Math.min(m1_3_cap, Math.max(700000, Math.round(wage * m1_3_rate)));
+
+      // 4~6개월: 통상임금 100%, 상한 200만, 하한 70만
+      const m4_6_rate = 1.00;
+      const m4_6_cap = 2000000;
+      const p2 = Math.min(m4_6_cap, Math.max(700000, Math.round(wage * m4_6_rate)));
+
+      // 7개월 이후: 통상임금 80%, 상한 160만, 하한 70만
+      const m7_rate = 0.80;
+      const m7_cap = 1600000;
+      const p3 = Math.min(m7_cap, Math.max(700000, Math.round(wage * m7_rate)));
+
+      let total = 0;
+      for (let i = 1; i <= months; i++) {
+        if (i <= 3) total += p1;
+        else if (i <= 6) total += p2;
+        else total += p3;
+      }
+
+      document.getElementById('totalLeavePay').textContent = `${total.toLocaleString()}원`;
+      document.getElementById('phase1Pay').textContent = `${(p1/10000).toLocaleString()}만원/월`;
+      document.getElementById('phase2Pay').textContent = `${(p2/10000).toLocaleString()}만원/월`;
+      document.getElementById('phase3Pay').textContent = `${(p3/10000).toLocaleString()}만원/월`;
+      document.getElementById('leaveSubText').textContent = `1~3개월 매달 ${(p1/10000).toLocaleString()}만원, 4~6개월 ${(p2/10000).toLocaleString()}만원, 7개월 이후 ${(p3/10000).toLocaleString()}만원 지급`;
+    }
+
+    calcParentalLeave();
+  </script>
+</body>
+</html>

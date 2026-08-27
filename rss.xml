@@ -1,28 +1,255 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
-  <channel>
-    <title>ToolMate - 대한민국 무료 온라인 도구 허브</title>
-    <link>https://toolmate.kr/</link>
-    <description>실업급여, 연봉 실수령액, 카톡 및 인스타 DM 호감도 분석기 등 일상·금융·업무 필수 웹 계산기 30선</description>
-    <language>ko</language>
-    <pubDate>Thu, 27 Aug 2026 08:49:08 GMT</pubDate>
-    <item>
-      <title>카톡 &amp; 인스타 DM 캡처 호감도 분석기</title>
-      <link>https://toolmate.kr/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1%20%EB%8C%80%ED%99%94%20%ED%98%B8%EA%B0%90%EB%8F%84%20%EB%B6%84%EC%84%9D%EA%B8%B0/index.html</link>
-      <description>카톡 또는 인스타 DM 스크린샷 캡처 사진을 올리면 AI OCR이 글자를 읽어 썸/호감도 점수를 0.1초 만에 분석합니다.</description>
-      <pubDate>Thu, 27 Aug 2026 08:49:08 GMT</pubDate>
-    </item>
-    <item>
-      <title>2026 실업급여(구직급여) 수급액 계산기</title>
-      <link>https://toolmate.kr/%EC%8B%A4%EC%97%85%EA%B8%89%EC%97%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
-      <description>2026년 최신 실업급여 하루 지급액과 총 수급액, 지급일수를 즉시 계산합니다.</description>
-      <pubDate>Thu, 27 Aug 2026 08:49:08 GMT</pubDate>
-    </item>
-    <item>
-      <title>청년도약계좌 5년 만기 수령액 &amp; 정부기여금 계산기</title>
-      <link>https://toolmate.kr/%EC%B2%AD%EB%85%84%EB%8F%84%EC%95%BD%EA%B3%84%EC%A2%8C%20%EB%A7%8C%EA%B8%B0%20%EC%88%98%EB%A0%B9%EC%95%A1%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
-      <description>5년 만기 시 본인원금 + 은행이자 + 정부기여금 5천만원 목돈 형성 시뮬레이션</description>
-      <pubDate>Thu, 27 Aug 2026 08:49:08 GMT</pubDate>
-    </item>
-  </channel>
+<channel>
+  <title>ToolMate - 대한민국 필수 웹 도구 35선</title>
+  <link>https://toolmate.kr/</link>
+  <description>실업급여, 증여세, 육아휴직, 주휴수당, 연봉, 환율, 직구관세, 군적금, 카톡 호감도, 위드마크 등 35가지 무료 웹 유틸리티</description>
+  <language>ko</language>
+  <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+  <item>
+    <title>실업급여 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%8B%A4%EC%97%85%EA%B8%89%EC%97%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>실업급여 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%8B%A4%EC%97%85%EA%B8%89%EC%97%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>실 수령액 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%8B%A4%20%EC%88%98%EB%A0%B9%EC%95%A1%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>실 수령액 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%8B%A4%20%EC%88%98%EB%A0%B9%EC%95%A1%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>주휴수당 및 알바 월급 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%A3%BC%ED%9C%B4%EC%88%98%EB%8B%B9%20%EB%B0%8F%20%EC%95%8C%EB%B0%94%20%EC%9B%94%EA%B8%89%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>주휴수당 및 알바 월급 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%A3%BC%ED%9C%B4%EC%88%98%EB%8B%B9%20%EB%B0%8F%20%EC%95%8C%EB%B0%94%20%EC%9B%94%EA%B8%89%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>가족 증여세 및 증여공제 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EA%B0%80%EC%A1%B1%20%EC%A6%9D%EC%97%AC%EC%84%B8%20%EB%B0%8F%20%EC%A6%9D%EC%97%AC%EA%B3%B5%EC%A0%9C%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>가족 증여세 및 증여공제 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EA%B0%80%EC%A1%B1%20%EC%A6%9D%EC%97%AC%EC%84%B8%20%EB%B0%8F%20%EC%A6%9D%EC%97%AC%EA%B3%B5%EC%A0%9C%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>4대보험료 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/4%EB%8C%80%EB%B3%B4%ED%97%98%EB%A3%8C%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>4대보험료 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/4%EB%8C%80%EB%B3%B4%ED%97%98%EB%A3%8C%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>퇴직금 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%ED%87%B4%EC%A7%81%EA%B8%88%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>퇴직금 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%ED%87%B4%EC%A7%81%EA%B8%88%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>연말정산 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%97%B0%EB%A7%90%EC%A0%95%EC%82%B0%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>연말정산 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%97%B0%EB%A7%90%EC%A0%95%EC%82%B0%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>부가세 및 원천징수 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EB%B6%80%EA%B0%80%EC%84%B8%20%EB%B0%8F%20%EC%9B%90%EC%B2%9C%EC%A7%95%EC%88%98%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>부가세 및 원천징수 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EB%B6%80%EA%B0%80%EC%84%B8%20%EB%B0%8F%20%EC%9B%90%EC%B2%9C%EC%A7%95%EC%88%98%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>국민연금 예상 수령액 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EA%B5%AD%EB%AF%BC%EC%97%B0%EA%B8%88%20%EC%98%88%EC%83%81%20%EC%88%98%EB%A0%B9%EC%95%A1%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>국민연금 예상 수령액 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EA%B5%AD%EB%AF%BC%EC%97%B0%EA%B8%88%20%EC%98%88%EC%83%81%20%EC%88%98%EB%A0%B9%EC%95%A1%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>주택청약 가점 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%A3%BC%ED%83%9D%EC%B2%AD%EC%95%BD%20%EA%B0%80%EC%A0%90%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>주택청약 가점 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%A3%BC%ED%83%9D%EC%B2%AD%EC%95%BD%20%EA%B0%80%EC%A0%90%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>대출 이자 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EB%8C%80%EC%B6%9C%20%EC%9D%B4%EC%9E%90%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>대출 이자 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EB%8C%80%EC%B6%9C%20%EC%9D%B4%EC%9E%90%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>부동산 복비 및 취득세 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EB%B6%80%EB%8F%99%EC%82%B0%20%EB%B3%B5%EB%B9%84%20%EB%B0%8F%20%EC%B7%A8%EB%93%9D%EC%84%B8%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>부동산 복비 및 취득세 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EB%B6%80%EB%8F%99%EC%82%B0%20%EB%B3%B5%EB%B9%84%20%EB%B0%8F%20%EC%B7%A8%EB%93%9D%EC%84%B8%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>예적금 복리 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%98%88%EC%A0%81%EA%B8%88%20%EB%B3%B5%EB%A6%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>예적금 복리 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%98%88%EC%A0%81%EA%B8%88%20%EB%B3%B5%EB%A6%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>청년도약계좌 만기 수령액 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%B2%AD%EB%85%84%EB%8F%84%EC%95%BD%EA%B3%84%EC%A2%8C%20%EB%A7%8C%EA%B8%B0%20%EC%88%98%EB%A0%B9%EC%95%A1%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>청년도약계좌 만기 수령액 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%B2%AD%EB%85%84%EB%8F%84%EC%95%BD%EA%B3%84%EC%A2%8C%20%EB%A7%8C%EA%B8%B0%20%EC%88%98%EB%A0%B9%EC%95%A1%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>장병내일준비적금 및 군인 월급 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%9E%A5%EB%B3%91%EB%82%B4%EC%9D%BC%EC%A4%80%EB%B9%84%EC%A0%81%EA%B8%88%20%EB%B0%8F%20%EA%B5%B0%EC%9D%B8%20%EC%9B%94%EA%B8%89%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>장병내일준비적금 및 군인 월급 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%9E%A5%EB%B3%91%EB%82%B4%EC%9D%BC%EC%A4%80%EB%B9%84%EC%A0%81%EA%B8%88%20%EB%B0%8F%20%EA%B5%B0%EC%9D%B8%20%EC%9B%94%EA%B8%89%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>해외직구 관세 및 부가세 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%ED%95%B4%EC%99%B8%EC%A7%81%EA%B5%AC%20%EA%B4%80%EC%84%B8%20%EB%B0%8F%20%EB%B6%80%EA%B0%80%EC%84%B8%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>해외직구 관세 및 부가세 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%ED%95%B4%EC%99%B8%EC%A7%81%EA%B5%AC%20%EA%B4%80%EC%84%B8%20%EB%B0%8F%20%EB%B6%80%EA%B0%80%EC%84%B8%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>실시간 환율 및 환전 우대 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%8B%A4%EC%8B%9C%EA%B0%84%20%ED%99%98%EC%9C%A8%20%EB%B0%8F%20%ED%99%98%EC%A0%84%20%EC%9A%B0%EB%8C%80%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>실시간 환율 및 환전 우대 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%8B%A4%EC%8B%9C%EA%B0%84%20%ED%99%98%EC%9C%A8%20%EB%B0%8F%20%ED%99%98%EC%A0%84%20%EC%9A%B0%EB%8C%80%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>주식 물타기 평단가 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%A3%BC%EC%8B%9D%20%EB%AC%BC%ED%83%80%EA%B8%B0%20%ED%8F%89%EB%8B%A8%EA%B0%80%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>주식 물타기 평단가 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%A3%BC%EC%8B%9D%20%EB%AC%BC%ED%83%80%EA%B8%B0%20%ED%8F%89%EB%8B%A8%EA%B0%80%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>자동차세 및 차량 취득세 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%9E%90%EB%8F%99%EC%B0%A8%EC%84%B8%20%EB%B0%8F%20%EC%B0%A8%EB%9F%89%20%EC%B7%A8%EB%93%9D%EC%84%B8%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>자동차세 및 차량 취득세 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%9E%90%EB%8F%99%EC%B0%A8%EC%84%B8%20%EB%B0%8F%20%EC%B0%A8%EB%9F%89%20%EC%B7%A8%EB%93%9D%EC%84%B8%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>육아휴직 및 출산휴가 급여 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%9C%A1%EC%95%84%ED%9C%B4%EC%A7%81%20%EB%B0%8F%20%EC%B6%9C%EC%82%B0%ED%9C%B4%EA%B0%80%20%EA%B8%89%EC%97%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>육아휴직 및 출산휴가 급여 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%9C%A1%EC%95%84%ED%9C%B4%EC%A7%81%20%EB%B0%8F%20%EC%B6%9C%EC%82%B0%ED%9C%B4%EA%B0%80%20%EA%B8%89%EC%97%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>연차 일수 및 연차수당 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%97%B0%EC%B0%A8%20%EC%9D%BC%EC%88%98%20%EB%B0%8F%20%EC%97%B0%EC%B0%A8%EC%88%98%EB%8B%B9%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>연차 일수 및 연차수당 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%97%B0%EC%B0%A8%20%EC%9D%BC%EC%88%98%20%EB%B0%8F%20%EC%97%B0%EC%B0%A8%EC%88%98%EB%8B%B9%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>만 나이 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EB%A7%8C%20%EB%82%98%EC%9D%B4%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>만 나이 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EB%A7%8C%20%EB%82%98%EC%9D%B4%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>아파트 평수 및 단위 환산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%95%84%ED%8C%8C%ED%8A%B8%20%ED%8F%89%EC%88%98%20%EB%B0%8F%20%EB%8B%A8%EC%9C%84%20%ED%99%98%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>아파트 평수 및 단위 환산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%95%84%ED%8C%8C%ED%8A%B8%20%ED%8F%89%EC%88%98%20%EB%B0%8F%20%EB%8B%A8%EC%9C%84%20%ED%99%98%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>기초대사량 및 칼로리 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EA%B8%B0%EC%B4%88%EB%8C%80%EC%82%AC%EB%9F%89%20%EB%B0%8F%20%EC%B9%BC%EB%A1%9C%EB%A6%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>기초대사량 및 칼로리 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EA%B8%B0%EC%B4%88%EB%8C%80%EC%82%AC%EB%9F%89%20%EB%B0%8F%20%EC%B9%BC%EB%A1%9C%EB%A6%AC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>디데이 및 전역일 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EB%94%94%EB%8D%B0%EC%9D%B4%20%EB%B0%8F%20%EC%A0%84%EC%97%AD%EC%9D%BC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>디데이 및 전역일 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EB%94%94%EB%8D%B0%EC%9D%B4%20%EB%B0%8F%20%EC%A0%84%EC%97%AD%EC%9D%BC%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>글자 수 세기 - ToolMate</title>
+    <link>https://toolmate.kr/%EA%B8%80%EC%9E%90%20%EC%88%98%20%EC%84%B8%EA%B8%B0/index.html</link>
+    <description>글자 수 세기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EA%B8%80%EC%9E%90%20%EC%88%98%20%EC%84%B8%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>PDF 도구 모음 - ToolMate</title>
+    <link>https://toolmate.kr/PDF%20%EB%8F%84%EA%B5%AC%20%EB%AA%A8%EC%9D%8C/index.html</link>
+    <description>PDF 도구 모음 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/PDF%20%EB%8F%84%EA%B5%AC%20%EB%AA%A8%EC%9D%8C/index.html</guid>
+  </item>
+  <item>
+    <title>이미지 용량 줄이기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%9D%B4%EB%AF%B8%EC%A7%80%20%EC%9A%A9%EB%9F%89%20%EC%A4%84%EC%9D%B4%EA%B8%B0/index.html</link>
+    <description>이미지 용량 줄이기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%9D%B4%EB%AF%B8%EC%A7%80%20%EC%9A%A9%EB%9F%89%20%EC%A4%84%EC%9D%B4%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>QR코드 생성기 - ToolMate</title>
+    <link>https://toolmate.kr/QR%EC%BD%94%EB%93%9C%20%EC%83%9D%EC%84%B1%EA%B8%B0/index.html</link>
+    <description>QR코드 생성기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/QR%EC%BD%94%EB%93%9C%20%EC%83%9D%EC%84%B1%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>간이 영수증 및 견적서 - ToolMate</title>
+    <link>https://toolmate.kr/%EA%B0%84%EC%9D%B4%20%EC%98%81%EC%88%98%EC%A6%9D%20%EB%B0%8F%20%EA%B2%AC%EC%A0%81%EC%84%9C/index.html</link>
+    <description>간이 영수증 및 견적서 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EA%B0%84%EC%9D%B4%20%EC%98%81%EC%88%98%EC%A6%9D%20%EB%B0%8F%20%EA%B2%AC%EC%A0%81%EC%84%9C/index.html</guid>
+  </item>
+  <item>
+    <title>카카오톡 대화 호감도 분석기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1%20%EB%8C%80%ED%99%94%20%ED%98%B8%EA%B0%90%EB%8F%84%20%EB%B6%84%EC%84%9D%EA%B8%B0/index.html</link>
+    <description>카카오톡 대화 호감도 분석기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%86%A1%20%EB%8C%80%ED%99%94%20%ED%98%B8%EA%B0%90%EB%8F%84%20%EB%B6%84%EC%84%9D%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>위드마크 음주 알코올 분해시간 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%9C%84%EB%93%9C%EB%A7%88%ED%81%AC%20%EC%9D%8C%EC%A3%BC%20%EC%95%8C%EC%BD%94%EC%98%AC%20%EB%B6%84%ED%95%B4%EC%8B%9C%EA%B0%84%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>위드마크 음주 알코올 분해시간 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%9C%84%EB%93%9C%EB%A7%88%ED%81%AC%20%EC%9D%8C%EC%A3%BC%20%EC%95%8C%EC%BD%94%EC%98%AC%20%EB%B6%84%ED%95%B4%EC%8B%9C%EA%B0%84%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>퇴사 및 백수 생존일수 계산기 - ToolMate</title>
+    <link>https://toolmate.kr/%ED%87%B4%EC%82%AC%20%EB%B0%8F%20%EB%B0%B1%EC%88%98%20%EC%83%9D%EC%A1%B4%EC%9D%BC%EC%88%98%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>퇴사 및 백수 생존일수 계산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%ED%87%B4%EC%82%AC%20%EB%B0%8F%20%EB%B0%B1%EC%88%98%20%EC%83%9D%EC%A1%B4%EC%9D%BC%EC%88%98%20%EA%B3%84%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>차수별 더치페이 복합 정산기 - ToolMate</title>
+    <link>https://toolmate.kr/%EC%B0%A8%EC%88%98%EB%B3%84%20%EB%8D%94%EC%B9%98%ED%8E%98%EC%9D%B4%20%EB%B3%B5%ED%95%A9%20%EC%A0%95%EC%82%B0%EA%B8%B0/index.html</link>
+    <description>차수별 더치페이 복합 정산기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EC%B0%A8%EC%88%98%EB%B3%84%20%EB%8D%94%EC%B9%98%ED%8E%98%EC%9D%B4%20%EB%B3%B5%ED%95%A9%20%EC%A0%95%EC%82%B0%EA%B8%B0/index.html</guid>
+  </item>
+  <item>
+    <title>로또 번호 생성기 - ToolMate</title>
+    <link>https://toolmate.kr/%EB%A1%9C%EB%98%90%20%EB%B2%88%ED%98%B8%20%EC%83%9D%EC%84%B1%EA%B8%B0/index.html</link>
+    <description>로또 번호 생성기 2026 최신 기준 즉시 무료 계산</description>
+    <pubDate>Thu, 27 Aug 2026 09:13:49 GMT</pubDate>
+    <guid>https://toolmate.kr/%EB%A1%9C%EB%98%90%20%EB%B2%88%ED%98%B8%20%EC%83%9D%EC%84%B1%EA%B8%B0/index.html</guid>
+  </item>
+</channel>
 </rss>

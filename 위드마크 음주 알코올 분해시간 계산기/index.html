@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>위드마크 음주 분해시간 & 혈중알코올농도 계산기 | ToolMate</title>
+  <meta name="description" content="경찰청 공식 위드마크(Widmark) 공식을 기반으로 마신 술(소주, 맥주, 양주, 와인)의 종류와 양, 체중, 성별에 따른 최고 혈중알코올농도와 0% 완전 분해(숙취 해소/운전 가능) 소요 시간을 즉시 계산합니다.">
+  <meta name="keywords" content="위드마크계산기,음주분해시간,혈중알코올농도계산기,음주운전수치,숙취해소시간,소주알코올분해">
+  <link rel="canonical" href="https://toolmate.kr/위드마크%20음주%20알코올%20분해시간%20계산기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
+  <style>
+    .drink-wrap { max-width: 800px; margin: 0 auto; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-hero { background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
+    .main-time { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #fecaca; margin: 8px 0; }
+    .drink-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .drink-box { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
+    .drink-box .v { font-size: 1.25rem; font-weight: 800; color: #fecaca; font-family: var(--font-mono); }
+    .drink-box .l { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
+    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .drink-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown">
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
+          <div class="dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="drink-wrap">
+      <div class="page-header">
+        <span class="pill-badge">🍺 경찰청 위드마크(Widmark) 공식 기준</span>
+        <h1 class="page-title">위드마크 음주 분해시간 계산기</h1>
+        <p class="page-desc">마신 술의 종류와 양, 체중을 입력하면 혈중알코올농도가 0%로 완전히 분해되기까지 걸리는 시간과 처벌 기준 여부를 계산합니다.</p>
+      </div>
+
+      <div class="card card-padded">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">🍺 마신 주종 선택</label>
+            <select id="drinkType" class="select-field" onchange="calcAlcohol()">
+              <option value="soju" selected>소주 (16.5도, 1병 360ml)</option>
+              <option value="beer">맥주 (4.5도, 1캔/병 500ml)</option>
+              <option value="wine">와인 (13도, 1잔 150ml)</option>
+              <option value="whiskey">위스키 / 양주 (40도, 1잔 45ml)</option>
+              <option value="makgeolli">막걸리 (6도, 1병 750ml)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">🍶 마신 잔/병/캔 수</label>
+            <input type="number" id="drinkCount" class="input-field" value="1.0" step="0.5" min="0.5" oninput="calcAlcohol()">
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">⚖️ 몸무게 (kg)</label>
+            <input type="number" id="bodyWeight" class="input-field" value="70" step="1" oninput="calcAlcohol()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">👤 성별 (위드마크 성별 계수)</label>
+            <select id="gender" class="select-field" onchange="calcAlcohol()">
+              <option value="0.86" selected>남성 (계수 0.86)</option>
+              <option value="0.64">여성 (계수 0.64)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 결과 히어로 -->
+        <div class="result-hero" id="resultHero">
+          <div style="font-size:0.92rem; opacity:0.85;">알코올 완전 분해 (0.000%) 예상 시간</div>
+          <div class="main-time" id="soberHoursDisplay">약 4시간 15분</div>
+          <div style="font-size:0.9rem; opacity:0.9;" id="penaltyLevelText">⚠️ 면허 정지 수준 (0.03% ~ 0.08%)</div>
+
+          <div class="drink-grid">
+            <div class="drink-box">
+              <div class="v" id="maxBacText">0.064%</div>
+              <div class="l">예상 최고 혈중알코올농도</div>
+            </div>
+            <div class="drink-box">
+              <div class="v" id="totalGramText">47.0g</div>
+              <div class="l">섭취 순수 알코올 총량</div>
+            </div>
+            <div class="drink-box">
+              <div class="v" id="safeTimeText">오전 06:30경</div>
+              <div class="l">운전 가능 예상 시각</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <article class="seo-article">
+        <h2>음주운전 처벌 기준과 숙취운전의 위험성</h2>
+        <p>대한민국 도로교통법 제44조에 따른 음주운전 처벌 기준:</p>
+        <ul>
+          <li><strong>0.03% ~ 0.08% 미만:</strong> 1년 이하 징역 또는 500만원 이하 벌금 (면허 정지 100일)</li>
+          <li><strong>0.08% ~ 0.20% 미만:</strong> 1년~2년 징역 또는 500만~1,000만원 벌금 (면허 취소 1년)</li>
+          <li><strong>0.20% 이상:</strong> 2년~5년 징역 또는 1,000만~2,000만원 벌금</li>
+        </ul>
+        <p><strong>숙취운전 주의:</strong> 전날 밤 술을 마시고 잠을 잤더라도 아침 출근길에 알코올이 완전히 분해되지 않아 0.03% 이상으로 면허 정지 처분을 받을 수 있습니다.</p>
+      </article>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. 본 계산기는 위드마크 평균치 기준이며 개인 체질에 따라 차이가 있습니다.</p>
+    </div>
+  </footer>
+
+  <script src="../shared/common.js"></script>
+  <script>
+    const DRINKS = {
+      soju: { vol: 360, abv: 0.165 },
+      beer: { vol: 500, abv: 0.045 },
+      wine: { vol: 150, abv: 0.13 },
+      whiskey: { vol: 45, abv: 0.40 },
+      makgeolli: { vol: 750, abv: 0.06 }
+    };
+
+    function calcAlcohol() {
+      const type = document.getElementById('drinkType').value;
+      const count = parseFloat(document.getElementById('drinkCount').value) || 0;
+      const weight = parseFloat(document.getElementById('bodyWeight').value) || 70;
+      const r = parseFloat(document.getElementById('gender').value) || 0.86;
+
+      const drink = DRINKS[type];
+      const totalMl = drink.vol * count;
+      // 순수 알코올 양(g) = 음주량(ml) * 도수 * 알코올비중(0.7894)
+      const pureAlcoholG = totalMl * drink.abv * 0.7894;
+
+      // 위드마크 공식: 최고 혈중알코올농도(BAC) = (알코올 흡수량 70% g) / (체중 kg * 10 * r)
+      const maxBAC = (pureAlcoholG * 0.70) / (weight * 10 * r);
+      // 시간당 분해율: 평균 0.015%/h
+      const burnPerHour = 0.015;
+      const soberHours = maxBAC / burnPerHour;
+
+      const hoursInt = Math.floor(soberHours);
+      const minsInt = Math.round((soberHours - hoursInt) * 60);
+
+      const now = new Date();
+      const safeTime = new Date(now.getTime() + (soberHours * 3600 * 1000));
+      const safeTimeStr = `${String(safeTime.getHours()).padStart(2,'0')}:${String(safeTime.getMinutes()).padStart(2,'0')}경`;
+
+      document.getElementById('soberHoursDisplay').textContent = `약 ${hoursInt}시간 ${minsInt}분`;
+      document.getElementById('maxBacText').textContent = `${maxBAC.toFixed(3)}%`;
+      document.getElementById('totalGramText').textContent = `${pureAlcoholG.toFixed(1)}g`;
+      document.getElementById('safeTimeText').textContent = safeTimeStr;
+
+      const penalty = document.getElementById('penaltyLevelText');
+      if (maxBAC >= 0.20) penalty.textContent = '🚨 [매우 위험] 만취 상태 (2년~5년 징역, 1천만~2천만 벌금)';
+      else if (maxBAC >= 0.08) penalty.textContent = '🛑 [면허 취소] 만취 수준 (0.08% 이상, 징역 1~2년)';
+      else if (maxBAC >= 0.03) penalty.textContent = '⚠️ [면허 정지] 단속 수치 (0.03% ~ 0.08% 미만, 100일 정지)';
+      else penalty.textContent = '✅ [훈방/기준 미만] 단속 기준치(0.03%) 미만이나 절대 운전 금지!';
+    }
+
+    calcAlcohol();
+  </script>
+</body>
+</html>
