@@ -1,4 +1,7 @@
 ﻿User-agent: *
 Allow: /
 
+# 네이버 서치어드바이저 / 구글 서치콘솔 공식 사이트맵 & 호스트 지정
+Host: https://toolmate.kr
 Sitemap: https://toolmate.kr/sitemap.xml
+Sitemap: https://toolmate.kr/rss.xml

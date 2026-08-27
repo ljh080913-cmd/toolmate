@@ -1,4 +1,4 @@
-﻿// ==========================================================================
+// ==========================================================================
 // ToolMate Common Script v3 - 30종 올인원 도구 레지스트리 & 자동 광고 & 연관추천
 // ==========================================================================
 
@@ -37,7 +37,7 @@ const ALL_TOOLS = [
   { name: "🧾 간이영수증 & 견적서 출력기", path: "간이 영수증 및 견적서/index.html", cat: "media", related: ["부가세 및 원천징수 계산기","QR코드 생성기","PDF 도구 모음"] },
 
   // [5. 🎉 바이럴 & 꿀잼 SNS]
-  { name: "💬 카톡 대화 호감도 분석기", path: "카카오톡 대화 호감도 분석기/index.html", cat: "viral", related: ["배달비 n빵 및 정산 계산기","퇴사 및 백수 생존일수 계산기","로또 번호 생성기"] },
+  { name: "💬 카톡 & 인스타 DM 호감도", path: "카카오톡 대화 호감도 분석기/index.html", cat: "viral", related: ["배달비 n빵 및 정산 계산기","퇴사 및 백수 생존일수 계산기","로또 번호 생성기"] },
   { name: "🏖️ 퇴사 & 백수 생존일수 계산기", path: "퇴사 및 백수 생존일수 계산기/index.html", cat: "viral", related: ["카카오톡 대화 호감도 분석기","실업급여 계산기","배달비 n빵 및 정산 계산기"] },
   { name: "🍻 차수별 더치페이 복합 정산기", path: "차수별 더치페이 복합 정산기/index.html", cat: "viral", related: ["배달비 n빵 및 정산 계산기","카카오톡 대화 호감도 분석기","로또 번호 생성기"] },
   { name: "🍗 n빵 & 더치페이 모임 정산기", path: "배달비 n빵 및 정산 계산기/index.html", cat: "viral", related: ["차수별 더치페이 복합 정산기","카카오톡 대화 호감도 분석기","로또 번호 생성기"] },
@@ -211,10 +211,11 @@ const ADSENSE_SLOTS = {
     const shareDiv = document.createElement("div");
     shareDiv.className = "share-section";
     shareDiv.innerHTML = `
-      <div class="share-title">📢 유용하셨다면 친구에게 공유해 주세요!</div>
+      <div class="share-title">📢 계산 결과를 친구에게 공유하거나 이미지로 저장하세요!</div>
       <div class="share-buttons">
-        <button type="button" class="share-btn share-btn-kakao" onclick="shareToKakao()">💬 카카오톡 공유</button>
-        <button type="button" class="share-btn share-btn-insta" onclick="shareToInstagram()">📸 인스타그램 공유</button>
+        <button type="button" class="share-btn" style="background:#8b5cf6;color:#fff;border-color:#8b5cf6;" onclick="downloadResultImage()">🖼️ 결과 이미지 저장</button>
+        <button type="button" class="share-btn share-btn-kakao" onclick="shareToKakao()">💬 카톡 공유</button>
+        <button type="button" class="share-btn share-btn-insta" onclick="shareToInstagram()">📸 인스타 공유</button>
         <button type="button" class="share-btn share-btn-copy" onclick="copyShareUrl()">🔗 링크 복사</button>
       </div>
     `;
@@ -227,7 +228,75 @@ const ADSENSE_SLOTS = {
       document.body.appendChild(t);
     }
   }
+
+  // Google Analytics 4 (GA4) & html2canvas 동적 로드
+  function loadExternalLibraries() {
+    // 1. html2canvas 로드
+    if (!window.html2canvas) {
+      const script = document.createElement("script");
+      script.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+      script.async = true;
+      document.head.appendChild(script);
+    }
+
+    // 2. Google Analytics 4 (GA4) 기본 세팅
+    const gaId = "G-TOOLMATE01"; // 필요 시 실제 GA4 ID로 교체 가능
+    const gaScript = document.createElement("script");
+    gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    gaScript.async = true;
+    document.head.appendChild(gaScript);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', gaId);
+  }
+  loadExternalLibraries();
 })();
+
+// 결과 카드 고화질 이미지 캡처 다운로드 (인스타 스토리 / 단톡방 인증용)
+function downloadResultImage() {
+  const target = document.querySelector(".result-hero") ||
+                 document.querySelector(".report-card") ||
+                 document.querySelector(".survive-hero") ||
+                 document.querySelector(".big-result") ||
+                 document.querySelector(".receipt-box") ||
+                 document.querySelector(".card-padded");
+
+  if (!target) {
+    showToast("저장할 결과 화면이 없습니다.");
+    return;
+  }
+
+  showToast("📸 결과 이미지를 생성하고 있습니다...");
+
+  const runCapture = () => {
+    window.html2canvas(target, {
+      scale: 2, // 고해상도 2배수
+      useCORS: true,
+      backgroundColor: document.documentElement.getAttribute("data-theme") === "dark" ? "#1e293b" : "#ffffff",
+    }).then(canvas => {
+      const link = document.createElement("a");
+      const pageTitle = document.title.split("|")[0].trim().replace(/[^a-zA-Z0-9가-힣]/g, "_");
+      link.download = `ToolMate_${pageTitle}_결과.png`;
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      showToast("🎉 결과 이미지가 다운로드되었습니다!");
+    }).catch(err => {
+      console.error(err);
+      showToast("이미지 저장 중 오류가 발생했습니다.");
+    });
+  };
+
+  if (window.html2canvas) {
+    runCapture();
+  } else {
+    const s = document.createElement("script");
+    s.src = "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
+    s.onload = runCapture;
+    document.head.appendChild(s);
+  }
+}
 
 function showToast(msg) {
   let t = document.getElementById("shareToast");
