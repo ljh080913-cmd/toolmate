@@ -617,7 +617,7 @@
       const zipBlob = await zip.generateAsync({ type: 'blob' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(zipBlob);
-      a.download = `toolnest_images_${Date.now()}.zip`;
+      a.download = `toolmate_images_${Date.now()}.zip`;
       a.click();
       showToast('🎉 전체 이미지 ZIP 다운로드 완료!');
     }
