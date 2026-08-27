@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ToolMate - 실업급여·증여세·육아휴직·환율·군적금 무료 웹 도구 35선</title>
-  <meta name="description" content="실업급여, 알바 주휴수당, 가족 증여세 면제한도, 2026 육아휴직 급여(월 250만), 연봉 실수령액, 해외직구 관세, 실시간 환율, 장병적금, 카톡 호감도, 위드마크 음주 분해시간 등 대한민국 필수 35가지 웹 계산기 허브.">
+  <meta name="description" content="실업급여, 알바 주휴수당, 가족 증여세 면제한도, 2026 육아휴직 급여(월 250만), 연봉 실수령액, 해외직구 관세, 실시간 환율, 장병적금, 카톡 호감도, 위드마크 음주 분해시간 등 대한민국 필수 40가지 웹 계산기 허브.">
   <meta name="keywords" content="툴메이트,ToolMate,증여세계산기,육아휴직급여,주휴수당계산기,실업급여계산기,해외직구관세,실시간환율,군인월급,장병내일준비적금,카톡호감도,위드마크">
   <meta name="google-site-verification" content="zpR6hXO1x96ggA7Oo0kPV9pT2XN42O6aPVQniNdUSXc" />
   <meta name="naver-site-verification" content="85f361a2c3eb99dfd29dd3869e05ad599ae04839" />
@@ -98,7 +98,7 @@
       <a href="index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
       <div class="gnb-nav">
         <div class="dropdown" id="allToolsDropdown">
-          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (35종) ▾</button>
+          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 (40종) ▾</button>
           <div class="dropdown-menu" id="dropdownMenu"></div>
         </div>
         <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
@@ -110,7 +110,7 @@
     <div class="hero-banner">
       <span class="pill-badge">🔒 100% 클라이언트 연산 · 개인정보 유출 0%</span>
       <h1 class="hero-title">일상과 업무를 똑똑하게, <span>ToolMate</span></h1>
-      <p class="hero-desc">실업급여·증여세·육아휴직·주휴수당·환율·군적금·카톡 호감도 분석·위드마크 등 대한민국 필수 35가지 웹 도구를 설치 없이 무료로 이용하세요.</p>
+      <p class="hero-desc">실업급여·증여세·육아휴직·주휴수당·환율·군적금·카톡 호감도 분석·위드마크 등 대한민국 필수 40가지 웹 도구를 설치 없이 무료로 이용하세요.</p>
       
       <div id="userQuickBar" style="display:none; margin-bottom:12px;"></div>
 
@@ -129,7 +129,7 @@
       </div>
     </div>
 
-    <!-- 35종 5열 대시보드 그리드 (7행 x 5열 = 35) -->
+    <!-- 40종 5열 대시보드 그리드 (7행 x 5열 = 35) -->
     <div class="tools-5col-grid" id="toolsGrid">
 
       <!-- [ROW 1: 💰 금융 & 세금] -->
@@ -468,6 +468,430 @@
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">입력한 월급, 계좌번호, 카톡 캡처 사진이 외부로 유출될 위험은 없나요? <span>▾</span></div><div class="faq-a">100% 안전합니다. ToolMate는 모든 수치 계산과 AI 이미지 텍스트 인식이 사용자의 스마트폰/PC 웹 브라우저 메모리 안에서만 실행되는 '클라이언트 연산' 방식을 사용합니다. 입력하신 개인 데이터는 외부 서버로 1바이트도 전송되거나 저장되지 않습니다.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">2026년 최신 세법 개정안과 최저시급(10,320원)이 자동으로 반영되어 있나요? <span>▾</span></div><div class="faq-a">네! ToolMate의 모든 금융·세금·노동법 계산기는 2026년 최신 정부 고시 기준(최저시급 10,320원, 증여세 혼인출산공제, 육아휴직 250만 상한)을 실시간으로 정밀하게 반영하여 계산합니다.</div></div>
       <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">새로운 도구 제작을 요청하거나 오류를 제보하려면 어떻게 하나요? <span>▾</span></div><div class="faq-a">하단의 [문의하기] 메뉴를 통해 필요하신 새로운 계산기 도구나 개선 아이디어를 보내주시면 개발팀에서 적극 검토하여 사이트에 신규 도구로 즉시 반영해 드립니다.</div></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
+        <a href="about.html" style="color:var(--text-muted);">사이트 소개</a>
+        <a href="privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
+        <a href="terms.html" style="color:var(--text-muted);">이용약관</a>
+        <a href="contact.html" style="color:var(--text-muted);">문의하기</a>
+      </div>
+      <p>© 2026 ToolMate. 본 계산기는 참고용이며 정확한 금액은 관련 기관에 문의하세요.</p>
+    </div>
+  </footer>
+
+  <script src="shared/common.js"></script>
+  <script>
+    const searchInput = document.getElementById('toolSearchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.t-card');
+    let currentCategory = 'all';
+
+    const CHOSUNG_LIST = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+    function getChosung(str) {
+      let result = '';
+      for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i) - 44032;
+        if (code >= 0 && code <= 11171) {
+          result += CHOSUNG_LIST[Math.floor(code / 588)];
+        } else {
+          result += str.charAt(i);
+        }
+      }
+      return result.toLowerCase();
+    }
+
+    function filterTools() {
+      const q = searchInput.value.toLowerCase().trim();
+      const qCho = q.replace(/\s+/g, '');
+
+      cards.forEach(card => {
+        const cat = card.getAttribute('data-cat');
+        const kw = (card.getAttribute('data-kw') || '').toLowerCase();
+        const title = (card.querySelector('.t-title')?.textContent || '').toLowerCase();
+        const desc = (card.querySelector('.t-desc')?.textContent || '').toLowerCase();
+
+        const fullText = `${title} ${desc} ${kw}`;
+        const chosungText = getChosung(fullText);
+
+        const matchCat = currentCategory === 'all' || cat === currentCategory;
+        const matchQ = !q || fullText.includes(q) || chosungText.includes(qCho);
+        card.style.display = (matchCat && matchQ) ? 'flex' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', filterTools);
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentCategory = btn.getAttribute('data-cat');
+        filterTools();
+      });
+    });
+  </script>
+</body>
+</html>    <section class="category-section" id="sec-finance">
+      <div class="category-header">
+        <h2 class="category-title">💰 금융 & 세금 & 급여 (12종)</h2>
+      </div>
+      <div class="tools-grid">
+        <a href="실업급여 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">2026 최신</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">💰 실업급여 계산기</h3>
+          <p class="tool-desc">2026년 최신 구직급여 수급액 및 지급일수 계산</p>
+        </a>
+        <a href="실 수령액 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">인기 1위</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">💸 연봉 실수령액 계산기</h3>
+          <p class="tool-desc">2026년 비과세 식대 및 4대보험 공제 후 실수령액</p>
+        </a>
+        <a href="4대보험료 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">📊 4대보험료 계산기</h3>
+          <p class="tool-desc">국민연금·건강·장기요양·고용 근로자/사업주 분담금</p>
+        </a>
+        <a href="퇴직금 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">법정 기준</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">💼 퇴직금 계산기</h3>
+          <p class="tool-desc">근로기준법 3개월 평균임금 기준 세전/세후 퇴직금</p>
+        </a>
+        <a href="연말정산 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">절세 꿀팁</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">📋 연말정산 환급금 계산기</h3>
+          <p class="tool-desc">소득공제·세액공제 시뮬레이션 및 13월의 월급 환급액</p>
+        </a>
+        <a href="부가세 및 원천징수 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">프리랜서</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🧾 부가세 & 3.3% 원천징수</h3>
+          <p class="tool-desc">프리랜서 3.3% 환급액 및 일반/간이과세자 부가세</p>
+        </a>
+        <a href="주휴수당 및 알바 월급 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">알바 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">💵 주휴수당 & 알바 월급</h3>
+          <p class="tool-desc">주 15시간 이상 주휴수당 및 2026 최저시급(10,320원)</p>
+        </a>
+        <a href="국민연금 예상 수령액 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">노후 대비</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">👵 국민연금 예상 수령액</h3>
+          <p class="tool-desc">가입 기간 및 소득월액별 만 65세 예상 노령연금</p>
+        </a>
+        <a href="가족 증여세 및 증여공제 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">절세</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🎁 가족 증여세 & 증여공제</h3>
+          <p class="tool-desc">배우자(6억)·직계존비속(5천만) 10년 합산 공제 세액</p>
+        </a>
+        <a href="연차 일수 및 연차수당 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">직장인</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🌴 연차 일수 & 수당 계산기</h3>
+          <p class="tool-desc">입사일/회계연도 기준 잔여 연차 일수 및 미사용 수당</p>
+        </a>
+        <a href="육아휴직 및 출산휴가 급여 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">정부 지원</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">👶 육아휴직 & 출산휴가 급여</h3>
+          <p class="tool-desc">통상임금 80% 고용보험 상하한액 월 지급액 계산</p>
+        </a>
+        <a href="퇴사 및 백수 생존일수 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">퇴사 준비</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🏃 퇴사 후 백수 생존일수</h3>
+          <p class="tool-desc">통장 잔고 + 퇴직금으로 다음 이직까지 버틸 수 있는 기간</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="category-section" id="sec-realestate">
+      <div class="category-header">
+        <h2 class="category-title">🏠 부동산 & 재테크 (10종)</h2>
+      </div>
+      <div class="tools-grid">
+        <a href="주택청약 가점 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">청약 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🏡 주택청약 가점 계산기</h3>
+          <p class="tool-desc">무주택기간(32점)·부양가족(35점)·통장가입(17점) 84점 만점</p>
+        </a>
+        <a href="대출 이자 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">금융 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🏦 대출 이자 & 상환 계산기</h3>
+          <p class="tool-desc">원리금균등·원금균등·만기일시 총 이자 및 월 상환표</p>
+        </a>
+        <a href="부동산 복비 및 취득세 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">이사/계약</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🏘️ 부동산 복비 & 취득세</h3>
+          <p class="tool-desc">매매·전월세 중개보수 상한요율 및 주택수별 취득세</p>
+        </a>
+        <a href="예적금 복리 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">재테크</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">📈 예적금 복리이자 계산기</h3>
+          <p class="tool-desc">단리 vs 월복리 이자 차이 및 15.4% 이자과세 실지급액</p>
+        </a>
+        <a href="청년도약계좌 만기 수령액 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">청년 꿀혜택</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🇰🇷 청년도약계좌 만기 계산기</h3>
+          <p class="tool-desc">5년 만기 정부기여금(최대 6%) + 비과세 최종 5,000만원</p>
+        </a>
+        <a href="장병내일준비적금 및 군인 월급 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">군인 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🎖️ 군인 월급 & 장병내일적금</h3>
+          <p class="tool-desc">2026년 병장 월급 + 매칭지원금 100% 전역 수령액</p>
+        </a>
+        <a href="해외직구 관세 및 부가세 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">직구 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">✈️ 해외직구 관세 & 부가세</h3>
+          <p class="tool-desc">미국 $200 / 일반 $150 면세 한도 및 품목별 관부가세</p>
+        </a>
+        <a href="실시간 환율 및 환전 우대 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">해외여행</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">💱 실시간 환율 & 환전 우대</h3>
+          <p class="tool-desc">USD, JPY, EUR, CNY 환전 수수료 우대율 계산</p>
+        </a>
+        <a href="주식 물타기 평단가 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">주식 투자</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">📉 주식 물타기 평단가 계산기</h3>
+          <p class="tool-desc">추가 매수 시 낮아지는 평단가 및 탈출 필요 상승률</p>
+        </a>
+        <a href="자동차세 및 차량 취득세 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">차량 구매</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🚗 자동차세 & 차량 취득세</h3>
+          <p class="tool-desc">배기량별 연간 자동차세 및 신차/중고차 등록세 취득세</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="category-section" id="sec-life">
+      <div class="category-header">
+        <h2 class="category-title">🌿 생활 & 일상 & 건강 (6종)</h2>
+      </div>
+      <div class="tools-grid">
+        <a href="만 나이 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">법적 나이</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🎂 만 나이 계산기</h3>
+          <p class="tool-desc">만 나이 통일법 완벽 적용 및 세는 나이·연 나이 동시 비교</p>
+        </a>
+        <a href="디데이 및 전역일 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">디데이</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">⏳ D-Day & 전역일 계산기</h3>
+          <p class="tool-desc">시험, 기념일, 군대 전역일 복무율 퍼센트 실시간 계산</p>
+        </a>
+        <a href="기초대사량 및 칼로리 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">헬스/다이어트</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🥗 기초대사량(BMR) & 칼로리</h3>
+          <p class="tool-desc">미플린 공식 기반 하루 유지 칼로리 및 다이어트 목표</p>
+        </a>
+        <a href="수면 사이클 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">갓생 수면</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">💤 수면 사이클 & 기상시간</h3>
+          <p class="tool-desc">90분 렘수면 주기 기반 뇌가 개운하게 일어나는 최적 시간</p>
+        </a>
+        <a href="알코올 해독 및 숙취 시간 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">음주 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🍺 알코올 해독 & 숙취시간</h3>
+          <p class="tool-desc">소주·맥주 음주량 및 체중별 숙취 해소 및 운전 가능 시간</p>
+        </a>
+        <a href="아파트 평수 및 단위 환산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">부동산</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">📐 아파트 평수 ↔ ㎡ 환산</h3>
+          <p class="tool-desc">전용면적 59㎡, 84㎡를 국민 평형(25평, 34평)으로 즉시 변환</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="category-section" id="sec-media">
+      <div class="category-header">
+        <h2 class="category-title">🛠️ 생산성 & 미디어 (6종)</h2>
+      </div>
+      <div class="tools-grid">
+        <a href="글자 수 세기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">자소서 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">✍️ 글자 수 & 맞춤법 검사기</h3>
+          <p class="tool-desc">공백 포함/제외 글자 수, 바이트, 자소서 글자수 실시간 체크</p>
+        </a>
+        <a href="PDF 도구 모음/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">문서 도구</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">📑 PDF 병합 & 분할 툴킷</h3>
+          <p class="tool-desc">여러 PDF 파일 하나로 합치기, 페이지 추출 및 분할</p>
+        </a>
+        <a href="이미지 용량 줄이기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">용량 다이어트</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🖼️ 이미지 압축 & WEBP 변환</h3>
+          <p class="tool-desc">화질 손실 없이 이미지 용량 80% 압축 및 WebP 변환</p>
+        </a>
+        <a href="QR코드 생성기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">QR 제작</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">📱 QR코드 & 바코드 생성기</h3>
+          <p class="tool-desc">URL, 와이파이, 텍스트 QR코드 즉시 제작 및 고화질 다운로드</p>
+        </a>
+        <a href="간이 영수증 및 견적서/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">사업자 양식</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🧾 간이영수증 & 견적서 양식</h3>
+          <p class="tool-desc">공급가액·세액 자동 계산 영수증 작성 및 즉시 인쇄/PDF 저장</p>
+        </a>
+        <a href="뽀모도로 및 백색소음/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">공부/업무</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">⏱️ 뽀모도로 타이머 & 백색소음</h3>
+          <p class="tool-desc">25분 몰입 + 5분 휴식 타이머와 집중력 향상 백색소음</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="category-section" id="sec-viral">
+      <div class="category-header">
+        <h2 class="category-title">🎉 바이럴 & 꿀잼 SNS (6종)</h2>
+      </div>
+      <div class="tools-grid">
+        <a href="카카오톡 대화 호감도 분석기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">SNS 화제</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">💬 카톡 대화 호감도 분석기</h3>
+          <p class="tool-desc">대화 내용 붙여넣기로 썸/그린라이트 4대 지표 즉시 진단</p>
+        </a>
+        <a href="인스타 폰트 생성기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">인스타 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">✨ 인스타 폰트 생성기</h3>
+          <p class="tool-desc">인스타 프로필·스토리에 쓰는 20여 가지 특수 폰트 복사</p>
+        </a>
+        <a href="랜덤 룰렛 및 사다리타기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">내기 꿀잼</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🎰 랜덤 룰렛 & 사다리타기</h3>
+          <p class="tool-desc">점심 메뉴 고르기, 벌칙 정하기, 커피 내기 회전 룰렛</p>
+        </a>
+        <a href="배달비 n빵 및 정산 계산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">단톡방 필수</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🍗 배달비 n빵 & 정산 계산기</h3>
+          <p class="tool-desc">메뉴별 가격이 달라도 배달팁까지 공평하게 1원 단위 정산</p>
+        </a>
+        <a href="차수별 더치페이 복합 정산기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">회식 정산</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🍻 차수별 더치페이 복합 정산</h3>
+          <p class="tool-desc">1차/2차/3차 참석자별 맞춤 차등 정산 및 카톡 전송 문구</p>
+        </a>
+        <a href="로또 번호 생성기/index.html" class="tool-card">
+          <div class="tool-card-header">
+            <span class="tool-badge">행운 추첨</span>
+            <span class="tool-arrow">→</span>
+          </div>
+          <h3 class="tool-title">🎱 로또 6/45 스마트 생성기</h3>
+          <p class="tool-desc">역대 최다 당첨 번호 통계 분석 가중치 행운 번호 추첨</p>
+        </a>
+      </div>
     </section>
   </main>
 
