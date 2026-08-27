@@ -3,22 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>해외직구 관세 & 부가세 계산기 (알리·테무·미국 직구) | ToolMate</title>
-  <meta name="description" content="알리익스프레스, 테무, 미국 아마존 등 해외직구 시 $150(미국 $200) 면세 한도와 품목별 관세율(의류 13%, 전자기기 0% 등), 부가세 10%, 총 예상 납부 세액을 즉시 계산합니다.">
-  <meta name="keywords" content="해외직구관세계산기,직구관세,직구부가세,면세한도,알리관세,테무관세,목록통관,일반통관">
-  <link rel="canonical" href="https://toolmate.kr/해외직구%20관세%20및%20부가세%20계산기/index.html">
+  <title>해외직구 관세 & 부가세 계산기 2026 | ToolMate</title>
+  <meta name="description" content="미국, 유럽, 일본, 중국 알리/테무 직구 시 면세 한도와 품목별 관부가세를 계산합니다.">
+  <meta name="keywords" content="해외직구관세,직구부가세,관세계산기,직구면세한도,알리관세">
+  <link rel="canonical" href="https://toolmate.kr/해외직구 관세 및 부가세 계산기/index.html">
   <link rel="stylesheet" href="../shared/design-system.css">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8342530091491582" crossorigin="anonymous"></script>
   <style>
-    .tariff-wrap { max-width: 800px; margin: 0 auto; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .result-hero { background: linear-gradient(135deg, #1e3a8a 0%, #0284c7 100%); color: #fff; border-radius: var(--radius-lg); padding: 30px 20px; text-align: center; margin: 24px 0; }
-    .main-tax { font-size: 3.4rem; font-weight: 900; font-family: var(--font-mono); color: #fef08a; margin: 8px 0; }
-    .tax-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
-    .tax-box { background: rgba(255,255,255,0.12); border-radius: var(--radius-md); padding: 14px; text-align: center; }
-    .tax-box .v { font-size: 1.25rem; font-weight: 800; color: #fef08a; font-family: var(--font-mono); }
-    .tax-box .l { font-size: 0.78rem; opacity: 0.85; margin-top: 4px; }
-    @media(max-width:600px){ .grid-2 { grid-template-columns: 1fr; } .tax-grid { grid-template-columns: 1fr; } }
+    .calc-wrap { max-width: 760px; margin: 0 auto; }
+    .result-hero { background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color:#fff; border-radius: var(--radius-lg); padding: 24px; text-align:center; margin-top:20px; }
   </style>
 </head>
 <body>
@@ -26,145 +18,71 @@
     <div class="gnb-inner">
       <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
       <div class="gnb-nav">
-        <div class="dropdown" id="allToolsDropdown">
-          <button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button>
-          <div class="dropdown-menu" id="dropdownMenu"></div>
-        </div>
+        <div class="dropdown" id="allToolsDropdown"><button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button><div class="dropdown-menu" id="dropdownMenu"></div></div>
         <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
       </div>
     </div>
   </header>
-
   <main class="container">
-    <div class="tariff-wrap">
+    <div class="calc-wrap">
       <div class="page-header">
-        <span class="pill-badge">✈️ 관세청 해외직구 간이통관 기준</span>
+        <span class="pill-badge">✈️ 관세청 2026 기준 적용</span>
         <h1 class="page-title">해외직구 관세 & 부가세 계산기</h1>
-        <p class="page-desc">구입 국가와 품목, 물품 가격을 입력하면 면세 여부와 예상 관세, 부가세 10%, 총 통관 세액을 0.1초 만에 산출합니다.</p>
+        <p class="page-desc">국가별 면세 한도(미국 , 기타 )와 품목별 관세율을 반영하여 총 예상 납부 세액을 계산합니다.</p>
       </div>
-
       <div class="card card-padded">
-        <div class="grid-2">
+        <div class="form-group">
+          <label class="form-label">구입 국가</label>
+          <select id="country" class="select-field" onchange="calcDuty()">
+            <option value="us">미국 (목록통관  이하 면세)</option>
+            <option value="other">중국, 일본, 유럽 등 기타 ( 이하 면세)</option>
+          </select>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
           <div class="form-group">
-            <label class="form-label">🌍 직구 국가 선택</label>
-            <select id="country" class="select-field" onchange="calcTariff()">
-              <option value="us" selected>미국 (목록통관 면세한도 $200 이하)</option>
-              <option value="other">중국/일본/유럽 등 기타 국가 (면세한도 $150 이하)</option>
-            </select>
+            <label class="form-label">물품 구매 금액 (USD)</label>
+            <input type="number" id="itemPrice" class="input-field" value="250" step="10" oninput="calcDuty()">
           </div>
           <div class="form-group">
-            <label class="form-label">📦 직구 품목 분류</label>
-            <select id="itemType" class="select-field" onchange="calcTariff()">
-              <option value="0.13">의류 / 신발 / 패션잡화 (관세 13%)</option>
-              <option value="0.08">가방 / 지갑 / 피혁제품 (관세 8%)</option>
-              <option value="0.00">전자기기 / 컴퓨터 / 스마트폰 (관세 0% 면제)</option>
-              <option value="0.08">화장품 / 뷰티 (관세 8%)</option>
-              <option value="0.08">건강기능식품 / 영양제 (관세 8% + 일반통관 $150)</option>
-              <option value="0.08">골프용품 / 스포츠 / 캠핑 (관세 8%)</option>
-              <option value="0.08">기타 일반 공산품 (관세 8%)</option>
+            <label class="form-label">품목 선택</label>
+            <select id="category" class="select-field" onchange="calcDuty()">
+              <option value="0.08">일반 의류 / 패션잡화 (관세 13% + 부가세 10%)</option>
+              <option value="0.00">전자기기 / 스마트폰 (관세 0% + 부가세 10%)</option>
+              <option value="0.065">화장품 / 향수 (관세 6.5% + 부가세 10%)</option>
+              <option value="0.08">건강기능식품 / 영양제 (관세 8% + 부가세 10%)</option>
             </select>
           </div>
         </div>
-
-        <div class="grid-2">
-          <div class="form-group">
-            <label class="form-label">💵 물품 가격 (달러 기준, $)</label>
-            <input type="number" id="usdPrice" class="input-field" value="180" step="1" oninput="calcTariff()">
-          </div>
-          <div class="form-group">
-            <label class="form-label">💱 적용 환율 (원/달러 기준, 원)</label>
-            <input type="number" id="exchangeRate" class="input-field" value="1380" step="10" oninput="calcTariff()">
-          </div>
-        </div>
-
-        <!-- 결과 히어로 -->
         <div class="result-hero">
-          <div style="font-size:0.92rem; opacity:0.85;">예상 납부 세액 합계 (관세 + 부가세)</div>
-          <div class="main-tax" id="totalTaxDisplay">0원</div>
-          <div style="font-size:0.9rem; opacity:0.9;" id="exemptionNotice">🎉 면세 한도 이내로 세금이 발생하지 않습니다!</div>
-
-          <div class="tax-grid">
-            <div class="tax-box">
-              <div class="v" id="krwPriceText">248,400원</div>
-              <div class="l">물품 원화 환산 가격</div>
-            </div>
-            <div class="tax-box">
-              <div class="v" id="customsDutyText">0원</div>
-              <div class="l">예상 관세</div>
-            </div>
-            <div class="tax-box">
-              <div class="v" id="vatText">0원</div>
-              <div class="l">예상 부가세 (10%)</div>
-            </div>
-          </div>
+          <div style="font-size:0.88rem;opacity:0.85;">예상 총 납부 세액 (관세 + 부가세)</div>
+          <div style="font-size:3rem;font-weight:900;font-family:var(--font-mono);color:#38bdf8;margin:6px 0;" id="totalTax">0원</div>
+          <div style="font-size:0.95rem;opacity:0.9;" id="taxDetail">과세 대상입니다.</div>
         </div>
       </div>
-
-      <article class="seo-article">
-        <h2>해외직구 면세 한도와 합산과세 주의사항</h2>
-        <p><strong>자가사용 인정 기준 면세 한도:</strong></p>
-        <ul>
-          <li><strong>미국발 목록통관:</strong> 물품 가격 미화 <strong>$200 이하</strong> 면세.</li>
-          <li><strong>중국(알리/테무)·일본·유럽 등:</strong> 물품 가격 미화 <strong>$150 이하</strong> 면세.</li>
-          <li><strong>일반통관 품목:</strong> 건강기능식품, 의약품, 가공식품, 향수 등은 미국이라도 $150 초과 시 관부가세가 부과됩니다.</li>
-        </ul>
-        <p><strong>합산과세 주의:</strong> 같은 날 여러 건의 직구 물품이 입항하여 합산 금액이 면세 한도를 초과하면 전액 과세될 수 있습니다.</p>
-      </article>
     </div>
   </main>
-
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div style="display:flex;gap:16px;justify-content:center;margin-bottom:12px;font-size:0.85rem;">
-        <a href="../about.html" style="color:var(--text-muted);">사이트 소개</a>
-        <a href="../privacy.html" style="color:var(--text-muted);">개인정보처리방침</a>
-        <a href="../terms.html" style="color:var(--text-muted);">이용약관</a>
-        <a href="../contact.html" style="color:var(--text-muted);">문의하기</a>
-      </div>
-      <p>© 2026 ToolMate. 본 계산기는 참고용이며 관세청 통관 기준에 따릅니다.</p>
-    </div>
-  </footer>
-
+  <footer class="site-footer"><div class="footer-inner"><p>© 2026 ToolMate.</p></div></footer>
   <script src="../shared/common.js"></script>
   <script>
-    function calcTariff() {
+    function calcDuty() {
       const country = document.getElementById('country').value;
-      const rate = parseFloat(document.getElementById('itemType').value);
-      const usd = parseFloat(document.getElementById('usdPrice').value) || 0;
-      const exRate = parseFloat(document.getElementById('exchangeRate').value) || 1380;
-
-      const krwPrice = Math.round(usd * exRate);
+      const price = parseFloat(document.getElementById('itemPrice').value) || 0;
+      const tariffRate = parseFloat(document.getElementById('category').value);
+      const exRate = 1380;
       const limit = country === 'us' ? 200 : 150;
-      const isTaxable = usd > limit;
-
-      let duty = 0;
-      let vat = 0;
-      let totalTax = 0;
-
-      if (isTaxable) {
-        // 과세가격 = 물품가격 (간이통관)
-        duty = Math.round(krwPrice * rate);
-        // 부가세 = (과세가격 + 관세) * 10%
-        vat = Math.round((krwPrice + duty) * 0.10);
-        totalTax = duty + vat;
+      if (price <= limit) {
+        document.getElementById('totalTax').textContent = '0원 (면세 통관)';
+        document.getElementById('taxDetail').textContent = 면세 기준(\{limit}) 이하로 관세와 부가세가 전액 면제됩니다!;
+        return;
       }
-
-      document.getElementById('totalTaxDisplay').textContent = `${totalTax.toLocaleString()}원`;
-      document.getElementById('krwPriceText').textContent = `${krwPrice.toLocaleString()}원`;
-      document.getElementById('customsDutyText').textContent = `${duty.toLocaleString()}원`;
-      document.getElementById('vatText').textContent = `${vat.toLocaleString()}원`;
-
-      const notice = document.getElementById('exemptionNotice');
-      if (isTaxable) {
-        notice.textContent = `⚠️ 면세 한도($${limit}) 초과로 관세(${Math.round(rate*100)}%) + 부가세(10%)가 부과됩니다!`;
-        notice.style.color = '#fef08a';
-      } else {
-        notice.textContent = `🎉 면세 한도(미화 $${limit} 이하) 이내로 관부가세가 전액 면제됩니다!`;
-        notice.style.color = '#a7f3d0';
-      }
+      const totalKrw = price * exRate;
+      const duty = totalKrw * tariffRate;
+      const vat = (totalKrw + duty) * 0.10;
+      const total = Math.floor(duty + vat);
+      document.getElementById('totalTax').textContent = total.toLocaleString() + '원';
+      document.getElementById('taxDetail').textContent = 관세 약 원 + 부가세 약 원;
     }
-
-    calcTariff();
+    calcDuty();
   </script>
 </body>
 </html>

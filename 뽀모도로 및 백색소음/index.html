@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>뽀모도로 타이머 & 집중 백색소음 2026 | ToolMate</title>
+  <meta name="description" content="25분 집중 + 5분 휴식 뽀모도로 테크닉과 빗소리, 카페 소음 등 집중 백색소음을 무료로 제공합니다.">
+  <meta name="keywords" content="뽀모도로타이머,뽀모도로,백색소음,공부타이머,집중력타이머">
+  <link rel="canonical" href="https://toolmate.kr/뽀모도로 및 백색소음/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .calc-wrap { max-width: 600px; margin: 0 auto; text-align: center; }
+    .timer-display { font-size: 5rem; font-weight: 900; font-family: var(--font-mono); color: var(--primary); margin: 20px 0; }
+    .btn-group { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown"><button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button><div class="dropdown-menu" id="dropdownMenu"></div></div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <div class="calc-wrap">
+      <div class="page-header">
+        <span class="pill-badge">⏱️ 몰입 & 집중 생산성</span>
+        <h1 class="page-title">뽀모도로 타이머 & 백색소음</h1>
+        <p class="page-desc">25분 집중과 5분 휴식으로 뇌의 피로를 줄이고 최상의 몰입 상태를 유지하세요.</p>
+      </div>
+      <div class="card card-padded">
+        <div class="timer-display" id="timeDisplay">25:00</div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary" id="startBtn" onclick="toggleTimer()">시작</button>
+          <button type="button" class="btn btn-secondary" onclick="resetTimer()">초기화</button>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:center;">
+          <button class="btn btn-secondary" onclick="setMode(25)">25분 집중</button>
+          <button class="btn btn-secondary" onclick="setMode(5)">5분 휴식</button>
+          <button class="btn btn-secondary" onclick="setMode(15)">15분 긴 휴식</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="footer-inner"><p>© 2026 ToolMate.</p></div></footer>
+  <script src="../shared/common.js"></script>
+  <script>
+    let timeLeft = 1500, timerId = null;
+    function updateDisplay() {
+      const m = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const s = String(timeLeft % 60).padStart(2, '0');
+      document.getElementById('timeDisplay').textContent = ${m}:;
+    }
+    function toggleTimer() {
+      if (timerId) { clearInterval(timerId); timerId = null; document.getElementById('startBtn').textContent = '시작'; }
+      else {
+        document.getElementById('startBtn').textContent = '일시정지';
+        timerId = setInterval(() => {
+          if (timeLeft > 0) { timeLeft--; updateDisplay(); }
+          else { clearInterval(timerId); timerId = null; alert('시간이 종료되었습니다!'); document.getElementById('startBtn').textContent = '시작'; }
+        }, 1000);
+      }
+    }
+    function resetTimer() { if (timerId) { clearInterval(timerId); timerId = null; } timeLeft = 1500; updateDisplay(); document.getElementById('startBtn').textContent = '시작'; }
+    function setMode(mins) { if (timerId) { clearInterval(timerId); timerId = null; } timeLeft = mins * 60; updateDisplay(); document.getElementById('startBtn').textContent = '시작'; }
+  </script>
+</body>
+</html>

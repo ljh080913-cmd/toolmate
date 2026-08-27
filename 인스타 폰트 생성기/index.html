@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>인스타 폰트 생성기 2026 - 특수문자 & 이모지 글씨체 변환 | ToolMate</title>
+  <meta name="description" content="인스타그램 프로필, 스토리, 피드용 예쁜 특수 영문 폰트와 귀여운 이모지 글씨체를 즉시 생성하고 원클릭 복사합니다.">
+  <meta name="keywords" content="인스타폰트,인스타그램글씨체,인스타특수문자,예쁜폰트,인스타프로필글씨체">
+  <link rel="canonical" href="https://toolmate.kr/인스타 폰트 생성기/index.html">
+  <link rel="stylesheet" href="../shared/design-system.css">
+  <style>
+    .calc-wrap { max-width: 800px; margin: 0 auto; }
+    .font-grid { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+    .font-card { background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--radius-md); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: all 0.2s ease; }
+    .font-card:hover { border-color: var(--primary); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .font-name { font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .font-preview { font-size: 1.25rem; color: var(--text-main); word-break: break-all; }
+    .btn-copy { background: var(--primary-light); color: var(--primary); border: none; padding: 8px 16px; border-radius: 8px; font-weight: 800; font-size: 0.85rem; cursor: pointer; white-space: nowrap; }
+    .btn-copy:hover { background: var(--primary); color: #fff; }
+  </style>
+</head>
+<body>
+  <header class="gnb">
+    <div class="gnb-inner">
+      <a href="../index.html" class="gnb-brand"><span class="logo-badge">⚡</span><span>ToolMate</span></a>
+      <div class="gnb-nav">
+        <div class="dropdown" id="allToolsDropdown"><button class="dropdown-toggle" onclick="toggleDropdown()">전체 도구 ▾</button><div class="dropdown-menu" id="dropdownMenu"></div></div>
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="테마 전환">🌙</button>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <div class="calc-wrap">
+      <div class="page-header">
+        <span class="pill-badge">✨ 인스타그램 바이럴 필수템</span>
+        <h1 class="page-title">인스타 폰트 생성기</h1>
+        <p class="page-desc">영문이나 숫자를 입력하면 인스타 프로필/소개글에 쓰는 20여 가지 특수 폰트로 즉시 변환되어 원클릭 복사할 수 있습니다.</p>
+      </div>
+      <div class="card card-padded">
+        <div class="form-group">
+          <label class="form-label">영문 텍스트 입력 (영어/숫자 지원)</label>
+          <input type="text" id="fontInput" class="input-field" value="ToolMate Love" placeholder="예: Happy Birthday, Love yourself" oninput="convertFonts()">
+        </div>
+        <div class="font-grid" id="fontResults"></div>
+      </div>
+    </div>
+  </main>
+  <footer class="site-footer"><div class="footer-inner"><p>© 2026 ToolMate.</p></div></footer>
+  <script src="../shared/common.js"></script>
+  <script>
+    const FONT_MAPS = [
+      { name: "𝔉𝔯𝔞𝔨𝔱𝔲𝔯 (고딕/다크)", map: s => s.replace(/[a-zA-Z]/g, c => { const code = c.charCodeAt(0); return code >= 97 ? String.fromCodePoint(0x1D586 + code - 97) : String.fromCodePoint(0x1D56C + code - 65); }) },
+      { name: "𝓒𝓾𝓻𝓼𝓲𝓿𝓮 (필기체/볼드)", map: s => s.replace(/[a-zA-Z]/g, c => { const code = c.charCodeAt(0); return code >= 97 ? String.fromCodePoint(0x1D4EA + code - 97) : String.fromCodePoint(0x1D4D0 + code - 65); }) },
+      { name: "𝔻𝕠𝕦𝕓𝕝𝕖-𝕊𝕥𝕣𝕦𝕔𝕜 (더블라인)", map: s => s.replace(/[a-zA-Z0-9]/g, c => { const code = c.charCodeAt(0); if(code>=48&&code<=57) return String.fromCodePoint(0x1D7D8+code-48); return code >= 97 ? String.fromCodePoint(0x1D552 + code - 97) : String.fromCodePoint(0x1D538 + code - 65); }) },
+      { name: "𝗦𝗮𝗻𝘀 𝗕𝗼𝗹𝗱 (산세리프 볼드)", map: s => s.replace(/[a-zA-Z0-9]/g, c => { const code = c.charCodeAt(0); if(code>=48&&code<=57) return String.fromCodePoint(0x1D7EC+code-48); return code >= 97 ? String.fromCodePoint(0x1D5EE + code - 97) : String.fromCodePoint(0x1D5D4 + code - 65); }) },
+      { name: "Ⓒⓘⓡⓒⓛⓔ (원형 동그라미)", map: s => s.replace(/[a-zA-Z0-9]/g, c => { const code = c.charCodeAt(0); if(code>=49&&code<=57) return String.fromCodePoint(0x2460+code-49); if(code===48) return '⓪'; return code >= 97 ? String.fromCodePoint(0x24D0 + code - 97) : String.fromCodePoint(0x24B6 + code - 65); }) },
+      { name: "🅂🅀🅄🄰🅁🄴 (네모 박스)", map: s => s.replace(/[a-zA-Z]/g, c => { const code = c.charCodeAt(0); return code >= 97 ? String.fromCodePoint(0x1F170 + code - 97) : String.fromCodePoint(0x1F130 + code - 65); }) },
+      { name: "W i d e (와이드 감성)", map: s => s.split('').join(' ') },
+      { name: "★ s t a r ★ (별무리)", map: s => '★ ' + s + ' ★' },
+      { name: "♥ h e a r t ♥ (하트)", map: s => '♥ ' + s + ' ♥' },
+      { name: "☁️ c l o u d ☁️ (구름)", map: s => '☁️ ' + s + ' ☁️' }
+    ];
+    function convertFonts() {
+      const text = document.getElementById('fontInput').value || "ToolMate";
+      const container = document.getElementById('fontResults');
+      container.innerHTML = '';
+      FONT_MAPS.forEach(f => {
+        const converted = f.map(text);
+        const card = document.createElement('div');
+        card.className = 'font-card';
+        card.innerHTML = <div><div class="font-name"></div><div class="font-preview"></div></div><button type="button" class="btn-copy" onclick="copyFont('')">복사</button>;
+        container.appendChild(card);
+      });
+    }
+    function copyFont(val) { if(navigator.clipboard) { navigator.clipboard.writeText(val).then(() => showToast('🎉 특수 폰트가 복사되었습니다! 인스타에 붙여넣으세요.')); } }
+    convertFonts();
+  </script>
+</body>
+</html>
